@@ -1,0 +1,25 @@
+{
+  "name": "backend-novoponto",
+  "version": "1.0.0",
+  "description": "Backend do Ponto da CPE desenvolvido em 2021 pelo InovaTeam",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx nodemon --exec babel-node src/index.js -e js,gql"
+  },
+  "repository": "https://github.com/cpejr/backend-novoponto.git",
+  "author": "João Prates <jvdprates@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.21.0",
+    "firebase": "^8.2.7",
+    "graphql": "^15.5.0",
+    "merge-graphql-schemas": "^1.7.8"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.16",
+    "@babel/core": "^7.12.16",
+    "@babel/node": "^7.12.16",
+    "@babel/preset-env": "^7.12.16",
+    "nodemon": "^2.0.7"
+  }
+}

@@ -1,0 +1,34 @@
+type Session {
+  _id: ID
+  member: Member!
+  start: String!
+  finish: String
+  description: String
+  status: String
+}
+
+type Query {
+  sessions(member: ID!): [Session!]!
+}
+
+input SessionCreateInput {
+  member: ID!
+  start: String!
+  description: String
+}
+
+input SessionUpdateInput {
+  finish: String
+  description: String
+  status: String
+}
+
+type Mutation {
+  createSession(data: SessionCreateInput): Session!
+  updateSession(id: ID, data: SessionUpdateInput): Session!
+  deleteSession(id: ID): Boolean
+}
+
+type Subscription {
+  sessionCreated: Session!
+}

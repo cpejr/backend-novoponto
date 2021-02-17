@@ -1,0 +1,32 @@
+type Member {
+  _id: ID
+  firstname: String!
+  lastname: String!
+  fullname: String
+  status: String
+  role_id: String
+  img_id: String
+  firebase_id: String
+  responsible: Member
+}
+
+type Query {
+  members: [Member!]!
+  member(name: String!): Member!
+}
+
+input MemberInput {
+  firstname: String!
+  lastname: String!
+  status: String
+  role_id: ID
+  img_id: ID
+  firebase_id: ID
+  responsible: ID
+}
+
+type Mutation {
+  createMember(data: MemberInput): Member!
+  updateMember(id: ID, data: MemberInput): Member!
+  deleteMember(id: ID): Boolean
+}
