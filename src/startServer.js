@@ -1,7 +1,8 @@
+import { ApolloServer, PubSub } from "apollo-server";
+
 import Firebase from "./services/Firebase";
 import FirebaseStore from "./services/FirebaseStore";
-
-import { ApolloServer, PubSub } from "apollo-server";
+import Mongo from "./services/Mongo";
 
 const pubsub = new PubSub();
 
@@ -31,14 +32,15 @@ let sessions = [
   },
 ];
 
-export default function startServer({ typeDefs, resolvers }) {
+export default async function startServer({ typeDefs, resolvers }) {
   Firebase.config();
   FirebaseStore.config();
+  await Mongo.config();
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: { pubsub, members, sessions },
+    context: { pubsub, sessions },
   });
   server
     .listen()

@@ -1,37 +1,19 @@
-import Member from "../../../models/Member";
+import MemberModel from "../../../models/Member";
 
 export default {
   Member: {
-    fullname: ({ firstname, lastname }) => `${firstname} ${lastname}`,
-    responsible: (memb, _, { members }) =>
-      members.find((member) => member._id === memb.responsible),
+    responsible: (memb, _) => MemberModel.findById(memb.responsible_id),
   },
   Query: {
-    members: (_, __, { members }) => members,
-    member: (_, { name }, { members }) => {
-      return members.find((member) => member.name === name);
+    members: () => MemberModel.find(),
+    membersByResponsible: ({ responsible_id }) =>
+      MemberModel.find({ responsible_id }),
+    member: (_, { _id }) => {
+      MemberModel.findById(_id);
     },
   },
   Mutation: {
-    createMember: (_, { data }, { members }) => {
-      const newMember = {
-        _id: String(Math.random()),
-        firstname: data.firstname,
-        lastname: data.lastname,
-        status: data.status,
-        role_id: String(Math.random()),
-        img_id: String(Math.random()),
-        firebase_id: String(Math.random()),
-        responsible: String(Math.random()),
-      };
-
-      return Member.createMember({
-        name: data.firstname,
-        status: data.status,
-        role_id: data.role_id,
-      });
-      members.push(newMember);
-      return newMember;
-    },
+    createMember: (_, { data }) => MemberModel.create(data),
+    //updateMember: (_, { id, data }) => MemberModel.findOneAndUpdate(id, data, {new: true})
   },
 };

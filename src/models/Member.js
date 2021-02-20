@@ -1,31 +1,46 @@
-import { getDB } from "../services/Firebase";
+import mongoose from "mongoose";
 
-// member {
-//   firebase_id: string!;
-//   name: string!;
-//   status: string;
-//   role_id: ref!;
-//   image_link: string;
-//   responsable_id: string;
-// }
+const SessionSchema = new mongoose.Schema(
+  {
+    start: Date,
+    finish: Date,
+  },
+  { timestamps: false, _id: false }
+);
 
-async function createMember({
-  name,
-  status,
-  role_id,
-  image_link,
-  responsable_id,
-}) {
-  
-  const data = {
-    name,
-    status,
-    role_id: getDB().collection("roles").doc(role_id),
-    image_link,
-    //   responsable_id: getDB().collection("members").doc(responsable_id),
-  };
+const JustificativeSchema = new mongoose.Schema(
+  {
+    date: Date,
+    time: Date,
+    description: String,
+  },
+  { timestamps: true }
+);
 
-  return await getDB().collection("members").add(data);
-}
+const MandatorySchema = new mongoose.Schema(
+  {
+    startTime: Date,
+    endTime: Date,
+    weekday: String,
+  },
+  { timestamps: false }
+);
 
-export default { createMember };
+const MemberSchema = new mongoose.Schema(
+  {
+    firebase_id: String,
+    name: String,
+    status: String,
+    role_id: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
+    image_link: String,
+    responsible_id: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
+    sessions: [SessionSchema],
+    justificatives: [JustificativeSchema],
+    mandatories: [MandatorySchema],
+  },
+  { timestamps: true }
+);
+
+const MemberModel = mongoose.model("members", MemberSchema);
+
+export default MemberModel;
