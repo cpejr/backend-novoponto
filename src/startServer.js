@@ -44,5 +44,5 @@ export default async function startServer({ typeDefs, resolvers }) {
   });
   server
     .listen()
-    .then(({ url }) => console.log(`🔥 Server started at ${url} 🔥`));
+    .then(({ url }) => console.log(`✅ Server started at ${url}`));
 }
