@@ -6,6 +6,4 @@ const resolversArray = fileLoader(
 );
 const resolvers = mergeResolvers(resolversArray);
 
-//console.log("🚀 ~ file: typeDefs.js ~ line 6 ~ typeDefs", typeDefs)
-
 export default resolvers;

@@ -1,3 +1,5 @@
+import Member from "../../../models/Member";
+
 export default {
   Member: {
     fullname: ({ firstname, lastname }) => `${firstname} ${lastname}`,
@@ -23,6 +25,11 @@ export default {
         responsible: String(Math.random()),
       };
 
+      return Member.createMember({
+        name: data.firstname,
+        status: data.status,
+        role_id: data.role_id,
+      });
       members.push(newMember);
       return newMember;
     },

@@ -1,3 +1,6 @@
+import Firebase from "./services/Firebase";
+import FirebaseStore from "./services/FirebaseStore";
+
 import { ApolloServer, PubSub } from "apollo-server";
 
 const pubsub = new PubSub();
@@ -24,11 +27,14 @@ let sessions = [
     member: "001",
     start: "Agora",
     description: "Dormindo",
-    status: "Logado"
-  }
+    status: "Logado",
+  },
 ];
 
 export default function startServer({ typeDefs, resolvers }) {
+  Firebase.config();
+  FirebaseStore.config();
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,

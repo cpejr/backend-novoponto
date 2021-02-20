@@ -5,11 +5,13 @@ export default {
     member: (sess, _, { members }) =>
       members.find((member) => member._id === sess.member),
   },
+  
   Query: {
     sessions: (_, { member }, { sessions }) => {
       return sessions.filter((session) => session.member === member);
     },
   },
+
   Mutation: {
     createSession: (_, { data }, { pubsub, sessions }) => {
       const newSession = {
@@ -27,6 +29,7 @@ export default {
       return newSession;
     },
   },
+
   Subscription: {
     sessionCreated: {
       subscribe: (obj, args, { pubsub }) =>

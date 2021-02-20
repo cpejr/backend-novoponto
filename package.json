@@ -10,8 +10,11 @@
   "author": "João Prates <jvdprates@hotmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/storage": "^5.8.0",
     "apollo-server": "^2.21.0",
+    "dotenv": "^8.2.0",
     "firebase": "^8.2.7",
+    "firebase-admin": "^9.5.0",
     "graphql": "^15.5.0",
     "merge-graphql-schemas": "^1.7.8"
   },

@@ -5,13 +5,13 @@ type Member {
   fullname: String
   status: String
   role_id: String
-  img_id: String
+  img_link: String
   firebase_id: String
   responsible: Member
 }
 
 type Query {
-  members: [Member!]!
+  members: [Member!]! 
   member(name: String!): Member!
 }
 
@@ -20,8 +20,7 @@ input MemberInput {
   lastname: String!
   status: String
   role_id: ID
-  img_id: ID
-  firebase_id: ID
+  img_link: ID
   responsible: ID
 }
 
