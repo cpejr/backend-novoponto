@@ -1,0 +1,21 @@
+type CompiledSessions {
+  sessions: [Session]!
+  justificatives: [Justificative]!
+  """
+  A soma total da duração dos valores retornadas em milisegundos
+  """
+  total: Int!
+
+  """
+  A soma total da duração dos valores retornados no formato hh:mm
+  """
+  formatedTotal: String!
+}
+
+type Query {
+  compiled(
+    memberId: ID!
+    startDate: DateScalar
+    endDate: DateScalar
+  ): CompiledSessions!
+}

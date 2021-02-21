@@ -1,0 +1,43 @@
+type Justificative {
+  _id: ID!
+  memberId: ID!
+  member: Member
+
+  """
+  Quantidade de milisegundos para adicionar ao compilado no dia informado
+  """
+  amount: Int!
+
+  """
+  Quantidade de milisegundos para adicionar ao compilado no dia informado
+  no formato hh:mm
+  """
+  formatedAmount: String!
+
+  description: String!
+  action: JustificativeTypes!
+}
+
+enum JustificativeTypes {
+  ADD
+  REMOVE
+}
+
+type Query {
+  Justificatives(
+    memberId: ID!
+    startDate: DateScalar
+    endDate: DateScalar
+  ): [Justificative]!
+}
+
+input JustificativeCreateInput {
+  memberId: ID!
+  amount: Int!
+  description: String!
+}
+
+type Mutation {
+  sendJustificative(data: JustificativeCreateInput!): Justificative!
+  deleteJustificative(_id: ID!): Boolean
+}

@@ -1,19 +1,21 @@
 import mongoose from "mongoose";
 import { castToObjectIdFields } from "../utils/modelsFunctions";
-const SessionSchema = new mongoose.Schema(
+
+const JustificativeSchema = new mongoose.Schema(
   {
     memberId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "members",
       required: true,
     },
-    start: { type: Date, required: true },
-    end: { type: Date, default: null },
+    date: { type: Date, required: true },
+    amount: { type: Number, required: true },
+    description: { type: String },
   },
   { timestamps: false, versionKey: false }
 );
 
-SessionSchema.virtual("member", {
+JustificativeSchema.virtual("member", {
   ref: "members", // The model to use
   localField: "memberId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
@@ -22,7 +24,7 @@ SessionSchema.virtual("member", {
   justOne: true,
 });
 
-SessionSchema.statics.findByDateRangeWithDuration = async function (
+JustificativeSchema.statics.findByDateRangeWithDuration = function (
   match,
   { startDate, endDate }
 ) {
@@ -50,6 +52,9 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   ]);
 };
 
-const SessionModel = mongoose.model("sessions", SessionSchema);
+const JustificativeModel = mongoose.model(
+  "justificatives",
+  JustificativeSchema
+);
 
-export default SessionModel;
+export default JustificativeModel;

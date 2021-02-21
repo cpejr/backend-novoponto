@@ -1,14 +1,5 @@
 import mongoose from "mongoose";
 
-const JustificativeSchema = new mongoose.Schema(
-  {
-    date: Date,
-    time: Date,
-    description: String,
-  },
-  { timestamps: true }
-);
-
 const MandatorySchema = new mongoose.Schema(
   {
     startTime: Date,
@@ -27,7 +18,6 @@ const MemberSchema = new mongoose.Schema(
     imageLink: String,
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: String,
-    justificatives: [JustificativeSchema],
     mandatories: [MandatorySchema],
   },
   { timestamps: true }

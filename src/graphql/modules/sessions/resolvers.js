@@ -1,6 +1,4 @@
 import { UserInputError } from "apollo-server";
-import { GraphQLScalarType, Kind } from "graphql";
-import mongoose from "mongoose";
 
 import SessionModel from "../../../models/Session";
 import MemberModel from "../../../models/Member";
@@ -34,44 +32,12 @@ export default {
     // },
   },
 
-  CompiledSessions: {
-    formatedTotal: ({ total }) => {
-      let dur = total;
-
-      if (!dur) dur = 0;
-
-      return mili2time(dur);
-    },
-  },
-
   Query: {
-    sessions: async (_, { memberId, startDate, endDate }) => {
-      const match = { memberId: mongoose.Types.ObjectId(memberId) };
-
-      if (startDate || endDate) {
-        const start = {};
-        if (startDate) start["$gte"] = startDate;
-        if (endDate) start["$lte"] = endDate;
-
-        match.start = start;
-      }
-
-      const aggregate = [
-        {
-          $match: match,
-        },
-        {
-          $addFields: {
-            duration: { $subtract: ["$end", "$start"] },
-          },
-        },
-      ];
-
-      const sessions = await SessionModel.aggregate(aggregate);
-      let total = 0;
-      sessions.forEach((session) => (total += session.duration));
-      return { sessions, total };
-    },
+    sessions: (_, { memberId, startDate, endDate }) =>
+      SessionModel.findByDateRangeWithDuration(
+        { memberId },
+        { startDate, endDate }
+      ),
 
     loggedMembers: async () => {
       const response = await SessionModel.find({
@@ -139,36 +105,4 @@ export default {
         pubsub.asyncIterator(SESSION_UPDATE),
     },
   },
-
-  DateScalar: new GraphQLScalarType({
-    name: "Date",
-    description: "Date custom scalar type",
-    /*
-     * Serialize method converts the scalar's back-end representation to a
-     * JSON-compatible format so Apollo Server can include it in
-     * an operation response.
-     */
-    serialize(value) {
-      return value.toISOString(); // Convert outgoing Date to integer for JSON
-    },
-    /**
-     * ParseValue Converts the scalar's serialized JSON value to its back-end
-     * representation
-     */
-    parseValue(value) {
-      return new Date(value); // Convert incoming value to Date
-    },
-
-    /**
-     * ParseLiteral method to convert the value's AST representation
-     * (which is always a string) to the JSON-compatible format expected
-     * by the parseValue method (the example above expects an integer).
-     */
-    parseLiteral(ast) {
-      if (ast.kind === Kind.INT || ast.kind === Kind.STRING)
-        return new Date(ast.value);
-
-      return null; // Invalid hard-coded value (not an integer nor an String)
-    },
-  }),
 };

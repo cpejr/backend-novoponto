@@ -1,5 +1,3 @@
-scalar DateScalar
-
 type Session {
   _id: ID!
   memberId: ID!
@@ -23,26 +21,12 @@ type Session {
   formatedDuration: String!
 }
 
-type CompiledSessions {
-  sessions: [Session]!
-
-  """
-  A soma total da duração das sessões retornadas em milisegundos
-  """
-  total: Int!
-
-  """
-  A soma total da duração das sessões retornadas no formato hh:mm
-  """
-  formatedTotal: String!
-}
-
 type Query {
   sessions(
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar
-  ): CompiledSessions!
+  ):  [Session]!
   loggedMembers: [Session]!
 }
 
