@@ -1,7 +1,6 @@
 import { UserInputError } from "apollo-server";
 
-import SessionModel from "../../../models/Session";
-import MemberModel from "../../../models/Member";
+import { SessionModel, MemberModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_UPDATE } from "./channels";
 

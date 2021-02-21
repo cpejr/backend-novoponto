@@ -1,5 +1,4 @@
-import JustificativeModel from "../../../models/Justificative";
-import SessionModel from "../../../models/Session";
+import { JustificativeModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 export default {

@@ -1,5 +1,4 @@
-import MemberModel from "../../../models/Member";
-import JustificativeModel from "../../../models/Justificative";
+import { MemberModel, JustificativeModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 export default {

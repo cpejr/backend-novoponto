@@ -1,4 +1,4 @@
-import MemberModel from "../../../models/Member";
+import { MemberModel } from "../../../models";
 
 export default {
   Member: {
@@ -11,8 +11,8 @@ export default {
   },
   Query: {
     members: () => MemberModel.find(),
-    membersByResponsible: (_,{ responsibleId }) =>
-      MemberModel.find({responsibleId}),
+    membersByResponsible: (_, { responsibleId }) =>
+      MemberModel.find({ responsibleId }),
     member: (_, { _id }) => MemberModel.findById(_id),
   },
   Mutation: {

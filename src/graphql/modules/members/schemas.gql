@@ -17,12 +17,13 @@ type Query {
 }
 
 input MemberInput {
+  firebaseId: String
   name: String!
   status: String
   roleId: ID
   imgLink: ID
   responsibleId: ID
-  firebaseId: String
+  message: String
 }
 
 type Mutation {
