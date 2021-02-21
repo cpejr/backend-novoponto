@@ -1,1 +1,1 @@
-export const SESSION_CREATED = 'SESSION_CREATED';
+export const SESSION_UPDATE = "SESSION_UPDATE";

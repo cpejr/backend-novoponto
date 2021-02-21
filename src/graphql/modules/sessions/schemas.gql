@@ -1,14 +1,14 @@
 type Session {
   _id: ID!
   memberId: ID!
-  member: Member!
+  member: Member
   start: String!
 
   """
   Se end é undefined, significa que o usuário ainda está logado
   """
   end: String
-  
+
   """
   Duração da sesssão em milisegundos,
   A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
@@ -44,6 +44,16 @@ type Mutation {
   deleteSession(_id: ID): Boolean
 }
 
+enum Actions {
+  STARTED
+  FINISHED
+}
+
+type sessionUpdate {
+  session: Session
+  action: Actions!
+}
+
 type Subscription {
-  sessionCreated: Session!
+  sessionUpdate: sessionUpdate!
 }
