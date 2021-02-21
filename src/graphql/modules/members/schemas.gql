@@ -1,6 +1,6 @@
 type Member {
   _id: ID!
-  firebase_id: String
+  firebaseId: String
   name: String!
   status: String
   roleId: ID

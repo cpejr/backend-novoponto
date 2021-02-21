@@ -11,8 +11,8 @@ export default {
   },
   Query: {
     members: () => MemberModel.find(),
-    membersByResponsible: ({ responsibleId }) =>
-      MemberModel.find({ responsibleId }),
+    membersByResponsible: (_,{ responsibleId }) =>
+      MemberModel.find({responsibleId}),
     member: (_, { _id }) => MemberModel.findById(_id),
   },
   Mutation: {
