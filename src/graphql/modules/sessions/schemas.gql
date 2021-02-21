@@ -15,7 +15,7 @@ type Session {
   Duração da sesssão em milisegundos,
   A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
   """
-  duration: String!
+  duration: Int!
   """
   Duração da sesssão no formato hh:mm
   A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
@@ -23,8 +23,26 @@ type Session {
   formatedDuration: String!
 }
 
+type CompiledSessions {
+  sessions: [Session]!
+
+  """
+  A soma total da duração das sessões retornadas em milisegundos
+  """
+  total: Int!
+
+  """
+  A soma total da duração das sessões retornadas no formato hh:mm
+  """
+  formatedTotal: String!
+}
+
 type Query {
-  sessions(memberId: ID!, startDate: DateScalar, endDate: DateScalar): [Session]!
+  sessions(
+    memberId: ID!
+    startDate: DateScalar
+    endDate: DateScalar
+  ): CompiledSessions!
   loggedMembers: [Session]!
 }
 

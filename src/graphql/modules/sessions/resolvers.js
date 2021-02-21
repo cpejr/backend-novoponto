@@ -1,10 +1,11 @@
+import { UserInputError } from "apollo-server";
+import { GraphQLScalarType, Kind } from "graphql";
+import mongoose from "mongoose";
+
 import SessionModel from "../../../models/Session";
 import MemberModel from "../../../models/Member";
 import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_UPDATE } from "./channels";
-import { UserInputError } from "apollo-server";
-import mongoose from "mongoose";
-import { GraphQLScalarType, Kind } from "graphql";
 
 export default {
   Session: {
@@ -33,8 +34,18 @@ export default {
     // },
   },
 
+  CompiledSessions: {
+    formatedTotal: ({ total }) => {
+      let dur = total;
+
+      if (!dur) dur = 0;
+
+      return mili2time(dur);
+    },
+  },
+
   Query: {
-    sessions: (_, { memberId, startDate, endDate }) => {
+    sessions: async (_, { memberId, startDate, endDate }) => {
       const match = { memberId: mongoose.Types.ObjectId(memberId) };
 
       if (startDate || endDate) {
@@ -56,7 +67,10 @@ export default {
         },
       ];
 
-      return SessionModel.aggregate(aggregate);
+      const sessions = await SessionModel.aggregate(aggregate);
+      let total = 0;
+      sessions.forEach((session) => (total += session.duration));
+      return { sessions, total };
     },
 
     loggedMembers: async () => {
