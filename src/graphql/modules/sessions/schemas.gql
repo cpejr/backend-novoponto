@@ -1,13 +1,15 @@
+scalar DateScalar
+
 type Session {
   _id: ID!
   memberId: ID!
   member: Member
-  start: String!
+  start: DateScalar!
 
   """
   Se end é undefined, significa que o usuário ainda está logado
   """
-  end: String
+  end: DateScalar
 
   """
   Duração da sesssão em milisegundos,
@@ -22,7 +24,7 @@ type Session {
 }
 
 type Query {
-  sessions(memberId: ID!): [Session]!
+  sessions(memberId: ID!, startDate: DateScalar, endDate: DateScalar): [Session]!
   loggedMembers: [Session]!
 }
 
@@ -38,10 +40,10 @@ input SessionUpdateInput {
 }
 
 type Mutation {
-  startSession(memberId: ID): Session!
-  endSession(memberId: ID): Session!
-  updateSession(_id: ID, data: SessionUpdateInput): Session!
-  deleteSession(_id: ID): Boolean
+  startSession(memberId: ID!): Session!
+  endSession(memberId: ID!): Session!
+  updateSession(_id: ID!, data: SessionUpdateInput!): Session!
+  deleteSession(_id: ID!): Boolean
 }
 
 enum Actions {
