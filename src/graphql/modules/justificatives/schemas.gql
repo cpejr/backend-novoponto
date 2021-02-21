@@ -3,6 +3,7 @@ type Justificative {
   memberId: ID!
   member: Member
 
+  date: DateScalar!
   """
   Quantidade de milisegundos para adicionar ao compilado no dia informado
   """
@@ -33,6 +34,7 @@ type Query {
 
 input JustificativeCreateInput {
   memberId: ID!
+  date: DateScalar!
   amount: Int!
   description: String!
 }
