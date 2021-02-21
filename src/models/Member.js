@@ -1,13 +1,5 @@
 import mongoose from "mongoose";
 
-const SessionSchema = new mongoose.Schema(
-  {
-    start: Date,
-    finish: Date,
-  },
-  { timestamps: false, _id: false }
-);
-
 const JustificativeSchema = new mongoose.Schema(
   {
     date: Date,
@@ -28,13 +20,13 @@ const MandatorySchema = new mongoose.Schema(
 
 const MemberSchema = new mongoose.Schema(
   {
-    firebase_id: String,
+    firebaseId: String,
     name: String,
     status: String,
-    role_id: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
-    image_link: String,
-    responsible_id: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
-    sessions: [SessionSchema],
+    roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
+    imageLink: String,
+    responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
+    message: String,
     justificatives: [JustificativeSchema],
     mandatories: [MandatorySchema],
   },

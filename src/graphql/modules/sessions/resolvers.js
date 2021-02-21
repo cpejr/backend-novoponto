@@ -1,32 +1,72 @@
+import SessionModel from "../../../models/Session";
+import MemberModel from "../../../models/Member";
+import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_CREATED } from "./channels";
+import { UserInputError } from "apollo-server";
 
 export default {
   Session: {
-    member: (sess, _, { members }) =>
-      members.find((member) => member._id === sess.member),
+    member: ({ memberId }) => MemberModel.findById(memberId),
+
+    duration: ({ duration, end, start }) => {
+      if (duration) return duration;
+      if (end) return end - start;
+      return Date.now() - start;
+    },
+
+    formatedDuration: ({ duration, end, start }) => {
+      let dur = duration;
+
+      if (!dur) {
+        if (end) dur = end - start;
+        else dur = Date.now() - start;
+      }
+
+      return mili2time(dur);
+    },
   },
-  
+
   Query: {
-    sessions: (_, { member }, { sessions }) => {
-      return sessions.filter((session) => session.member === member);
+    sessions: (_, { memberId }) => SessionModel.find({ memberId }),
+    
+    loggedMembers: async () => {
+      const response = await SessionModel.find({
+        end: null,
+      }).populate("member");
+
+      return response.map((session) => session.toJSON({ virtuals: true }));
     },
   },
 
   Mutation: {
-    createSession: (_, { data }, { pubsub, sessions }) => {
-      const newSession = {
-        _id: String(Math.random()),
-        member: data.member,
-        start: data.start,
-        description: data.description,
-        status: "Logado",
-      };
+    startSession: async (_, { memberId }) => {
+      const islogged = await SessionModel.findOne({
+        memberId,
+        end: null,
+      }).populate("member");
 
-      sessions.push(newSession);
-      pubsub.publish(SESSION_CREATED, {
-        sessionCreated: newSession,
-      });
-      return newSession;
+      if (!islogged)
+        return await SessionModel.create({ memberId, start: Date.now() });
+      else
+        throw new UserInputError(`${islogged.name} já está logado/a`, {
+          session: islogged.toJSON({ virtuals: true }),
+        });
+    },
+
+    endSession: async (_, { memberId }) => {
+      const islogged = await SessionModel.findOne({
+        memberId,
+        end: null,
+      }).populate("member");
+
+      if (islogged)
+        return await SessionModel.findByIdAndUpdate(islogged._id, {
+          end: Date.now(),
+        });
+      else
+        throw new UserInputError(`${islogged.name} você não está logado/a`, {
+          session: islogged.toJSON({ virtuals: true }),
+        });
     },
   },
 

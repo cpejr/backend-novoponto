@@ -8,7 +8,7 @@ function config() {
     );
 
     mongoose.connection.on("error", (error) => {
-      console.log("❌ failed to connect to mongoDB");
+      console.log("❌ Failed to connect to mongoDB");
       reject(error);
     });
 

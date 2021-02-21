@@ -3,25 +3,26 @@ type Member {
   firebase_id: String
   name: String!
   status: String
-  role_id: ID
-  image_link: String
-  responsible_id: Member
+  roleId: ID
+  imageLink: String
+  responsibleId: ID
   responsible: Member
+  message: String
 }
 
 type Query {
   members: [Member]!
-  membersByResponsible(responsible_id: ID!): [Member]!
+  membersByResponsible(responsibleId: ID!): [Member]!
   member(_id: ID!): Member
 }
 
 input MemberInput {
   name: String!
   status: String
-  role_id: ID
-  img_link: ID
-  responsible_id: ID
-  firebase_id: String
+  roleId: ID
+  imgLink: ID
+  responsibleId: ID
+  firebaseId: String
 }
 
 type Mutation {

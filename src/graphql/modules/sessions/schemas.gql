@@ -1,32 +1,47 @@
 type Session {
-  _id: ID
+  _id: ID!
+  memberId: ID!
   member: Member!
   start: String!
-  finish: String
-  description: String
-  status: String
+
+  """
+  Se end é undefined, significa que o usuário ainda está logado
+  """
+  end: String
+  
+  """
+  Duração da sesssão em milisegundos,
+  A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
+  """
+  duration: String!
+  """
+  Duração da sesssão no formato hh:mm
+  A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
+  """
+  formatedDuration: String!
 }
 
 type Query {
-  sessions(member: ID!): [Session!]!
+  sessions(memberId: ID!): [Session]!
+  loggedMembers: [Session]!
 }
 
 input SessionCreateInput {
-  member: ID!
+  memberId: ID!
   start: String!
-  description: String
+  end: String
 }
 
 input SessionUpdateInput {
-  finish: String
-  description: String
-  status: String
+  start: String
+  end: String
 }
 
 type Mutation {
-  createSession(data: SessionCreateInput): Session!
-  updateSession(id: ID, data: SessionUpdateInput): Session!
-  deleteSession(id: ID): Boolean
+  startSession(memberId: ID): Session!
+  endSession(memberId: ID): Session!
+  updateSession(_id: ID, data: SessionUpdateInput): Session!
+  deleteSession(_id: ID): Boolean
 }
 
 type Subscription {

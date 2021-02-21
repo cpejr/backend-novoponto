@@ -2,15 +2,18 @@ import MemberModel from "../../../models/Member";
 
 export default {
   Member: {
-    responsible: (memb, _) => MemberModel.findById(memb.responsible_id),
+    responsible: ({ responsible, responsibleId }) => {
+      // Se já existir o responsável, não faça a requisição novamente.
+      if (responsible) return responsible;
+      if (responsibleId) return MemberModel.findById(responsibleId);
+      return;
+    },
   },
   Query: {
     members: () => MemberModel.find(),
-    membersByResponsible: ({ responsible_id }) =>
-      MemberModel.find({ responsible_id }),
-    member: (_, { _id }) => {
-      MemberModel.findById(_id);
-    },
+    membersByResponsible: ({ responsibleId }) =>
+      MemberModel.find({ responsibleId }),
+    member: (_, { _id }) => MemberModel.findById(_id),
   },
   Mutation: {
     createMember: (_, { data }) => MemberModel.create(data),
