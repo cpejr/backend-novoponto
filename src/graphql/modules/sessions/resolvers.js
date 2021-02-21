@@ -6,12 +6,7 @@ import { UserInputError } from "apollo-server";
 
 export default {
   Session: {
-    member: async ({ memberId }) => {
-      const a = await MemberModel.findById(memberId);
-      console.log("🚀 ~ file: resolvers.js ~ line 11 ~ member: ~ a", a);
-
-      return a;
-    },
+    member: async ({ memberId }) => MemberModel.findById(memberId),
 
     duration: ({ duration, end, start }) => {
       if (duration) return duration;
@@ -62,10 +57,6 @@ export default {
         });
         newSession = newSession.toJSON({ virtuals: true });
 
-        console.log({
-          session: newSession,
-          action: "STARTED",
-        });
         pubsub.publish(SESSION_UPDATE, {
           sessionUpdate: {
             session: newSession,
