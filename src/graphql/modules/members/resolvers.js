@@ -17,6 +17,22 @@ export default {
   },
   Mutation: {
     createMember: (_, { data }) => MemberModel.create(data),
+    addMandatory: (_, { memberId, data }) =>
+      MemberModel.findByIdAndUpdate(
+        memberId,
+        { $push: { mandatories: data } },
+        { new: true }
+      ),
+    removeMandatory: (_, { memberId, mandatoryId }) =>
+      MemberModel.findOneAndUpdate(
+        {
+          _id: memberId,
+        },
+        {
+          $pull: { mandatories: { $elemMatch: { _id: mandatoryId } } },
+        }
+      ),
+
     //updateMember: (_, { id, data }) => MemberModel.findOneAndUpdate(id, data, {new: true})
   },
 };

@@ -12,10 +12,25 @@ type CompiledSessions {
   formatedTotal: String!
 }
 
+type Fault {
+  mandatory: Mandatory!
+  date: DateScalar!
+  amount: Int!
+  formatedAmount: String!
+  expectedAmount: Int!
+  formatedexpectedAmount: String!
+}
+
 type Query {
   compiled(
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar
   ): CompiledSessions!
+
+  checkFault(
+    memberId: ID!
+    startDate: DateScalar
+    endDate: DateScalar
+  ): [Fault]!
 }
