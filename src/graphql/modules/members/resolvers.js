@@ -33,6 +33,6 @@ export default {
         }
       ),
 
-    //updateMember: (_, { id, data }) => MemberModel.findOneAndUpdate(id, data, {new: true})
+    updateMember: (_, { memberId, data }) => MemberModel.findOneAndUpdate(id, data, {new: true})
   },
 };

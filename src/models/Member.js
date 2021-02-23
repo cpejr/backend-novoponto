@@ -24,6 +24,15 @@ const MemberSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+MemberSchema.virtual("role", {
+  ref: "roles", // The model to use
+  localField: "roleId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+
 MemberSchema.pre("remove", function (next) {
   // 'this' is the client being removed. Provide callbacks here if you want
   // to be notified of the calls' result.
