@@ -3,17 +3,17 @@ import { JustificativeModel, SessionModel } from "./";
 
 const MandatorySchema = new mongoose.Schema(
   {
-    startTime: Date,
-    endTime: Date,
-    weekday: String,
+    startAt: { type: Date, required: true },
+    endAt: { type: Date, required: true },
+    weekday: { type: Number, required: true },
   },
-  { timestamps: false }
+  { timestamps: false, versionKey: false }
 );
 
 const MemberSchema = new mongoose.Schema(
   {
     firebaseId: String,
-    name: String,
+    name: { type: String, required: true, unique: true },
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
     imageLink: String,

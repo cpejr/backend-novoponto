@@ -8,12 +8,37 @@ type Member {
   responsibleId: ID
   responsible: Member
   message: String
+  mandatories: [Mandatory]!
+}
+
+type Mandatory {
+  """
+  Hora de inicio em milisegundos do horário obrigatório
+  """
+  startAt: Int!
+  """
+  Hora de fim em milisegundos do horário obrigatório
+  """
+  endAt: Int!
+  weekDay: Int!
 }
 
 type Query {
   members: [Member]!
   membersByResponsible(responsibleId: ID!): [Member]!
   member(_id: ID!): Member
+}
+
+input MandatoryInput {
+  """
+  Hora de inicio em milisegundos do horário obrigatório
+  """
+  startAt: Int!
+  """
+  Hora de fim em milisegundos do horário obrigatório
+  """
+  endAt: Int!
+  weekDay: Int!
 }
 
 input MemberInput {
@@ -28,6 +53,8 @@ input MemberInput {
 
 type Mutation {
   createMember(data: MemberInput): Member!
-  updateMember(id: ID, data: MemberInput): Member!
-  deleteMember(id: ID): Boolean
+  # updateMember(_id: ID, data: MemberInput): Member!
+  # deleteMember(_id: ID): Boolean
+  addMandatory(memberId: ID!, data: MandatoryInput): Member!
+  removeMandatory(memberId: ID!, mandatoryId: ID!): Boolean!
 }

@@ -37,5 +37,19 @@ export default {
 
       return { sessions, total, justificatives };
     },
+
+    getMandatoriesReport: async (
+      _,
+      { memberId, startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
+    ) => {
+      let report = await SessionModel.findMandatoriesReport(
+        memberId,
+        startWeekYear,
+        startWeeknumber,
+        endWeekYear,
+        endWeeknumber
+      );
+      return report;
+    },
   },
 };
