@@ -3,9 +3,9 @@ import { JustificativeModel, SessionModel } from "./";
 
 const MandatorySchema = new mongoose.Schema(
   {
-    startAt: { type: Date, integer: true },
-    endAt: { type: Date, integer: true },
-    weekday: { type: Number, integer: true },
+    startAt: { type: Date, required: true },
+    endAt: { type: Date, required: true },
+    weekday: { type: Number, required: true },
   },
   { timestamps: false, versionKey: false }
 );

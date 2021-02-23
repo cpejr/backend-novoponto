@@ -37,18 +37,19 @@ export default {
 
       return { sessions, total, justificatives };
     },
-    checkFault: async (_, { memberId, startDate, endDate }) => {
-      let sessions = SessionModel.findByDateRangeWithDuration(
-        { memberId },
-        { startDate, endDate }
+
+    getMandatoriesReport: async (
+      _,
+      { memberId, startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
+    ) => {
+      let report = await SessionModel.findMandatoriesReport(
+        memberId,
+        startWeekYear,
+        startWeeknumber,
+        endWeekYear,
+        endWeeknumber
       );
-      //   segunda -> 16:00 - 17:00
-
-      //   start < 17:00
-      //   end > 16:00
-      //   dayweek = segunda;
-
-      // let a = { '10/20/20':}
+      return report;
     },
   },
 };

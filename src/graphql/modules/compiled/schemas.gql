@@ -12,13 +12,16 @@ type CompiledSessions {
   formatedTotal: String!
 }
 
-type Fault {
+type compiledMandatory {
+  sessions: [Session]!
   mandatory: Mandatory!
+  expectedDuration: Int!
+  duration: Int!
+}
+
+type MandatoryReport {
+  mandatories: [compiledMandatory]!
   date: DateScalar!
-  amount: Int!
-  formatedAmount: String!
-  expectedAmount: Int!
-  formatedexpectedAmount: String!
 }
 
 type Query {
@@ -28,9 +31,11 @@ type Query {
     endDate: DateScalar
   ): CompiledSessions!
 
-  checkFault(
+  getMandatoriesReport(
     memberId: ID!
-    startDate: DateScalar
-    endDate: DateScalar
-  ): [Fault]!
+    startWeekYear: Int!
+    startWeeknumber: Int!
+    endWeekYear: Int!
+    endWeeknumber: Int!
+  ): [MandatoryReport]!
 }
