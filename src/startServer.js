@@ -43,6 +43,6 @@ export default async function startServer({ typeDefs, resolvers }) {
     context: { pubsub, sessions },
   });
   server
-    .listen()
+    .listen({port: process.env.PORT || 4000})
     .then(({ url }) => console.log(`✅ Server started at ${url}`));
 }
