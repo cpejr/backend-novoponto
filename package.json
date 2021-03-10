@@ -7,7 +7,7 @@
     "dev": "npx nodemon --exec babel-node src/index.js -e js,gql",
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
-    "start": "npm run build && node ./build/server.js",
+    "start": "npm run build && node ./build/server.js"
   },
   "repository": "https://github.com/cpejr/backend-novoponto.git",
   "author": "João Prates <jvdprates@hotmail.com>",
