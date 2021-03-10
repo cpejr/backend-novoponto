@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon --exec babel-node src/index.js -e js,gql",
-    "start": "babel-node src/index.js"
+    "start": "node src/index.js"
   },
   "repository": "https://github.com/cpejr/backend-novoponto.git",
   "author": "João Prates <jvdprates@hotmail.com>",
