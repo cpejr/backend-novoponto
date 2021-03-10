@@ -27,6 +27,13 @@ type Query {
     startDate: DateScalar
     endDate: DateScalar
   ):  [Session]!
+
+  sessions(
+    memberId: [ID]!
+    startDate: DateScalar
+    endDate: DateScalar
+  ):  [Session]!
+
   loggedMembers: [Session]!
 }
 

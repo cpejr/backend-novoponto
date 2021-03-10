@@ -4,7 +4,8 @@
   "description": "Backend do Ponto da CPE desenvolvido em 2021 pelo InovaTeam",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon --exec babel-node src/index.js -e js,gql"
+    "dev": "npx nodemon --exec babel-node src/index.js -e js,gql",
+    "start": "babel-node src/index.js"
   },
   "repository": "https://github.com/cpejr/backend-novoponto.git",
   "author": "João Prates <jvdprates@hotmail.com>",
