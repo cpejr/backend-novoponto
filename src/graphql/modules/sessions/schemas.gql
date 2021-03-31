@@ -37,6 +37,10 @@ type Query {
   loggedMembers: [Session]!
 }
 
+type Subscription {
+  sessionUpdate: sessionUpdate!
+}
+
 input SessionCreateInput {
   memberId: ID!
   start: String!
@@ -63,8 +67,4 @@ enum Actions {
 type sessionUpdate {
   session: Session
   action: Actions!
-}
-
-type Subscription {
-  sessionUpdate: sessionUpdate!
 }
