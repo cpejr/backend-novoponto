@@ -1,8 +1,18 @@
-import { JustificativeModel, SessionModel } from "../../../models";
+import { JustificativeModel, MemberModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 export default {
   CompiledMember: {
+    formatedTotal: ({ total }) => {
+      let dur = total;
+
+      if (!dur) dur = 0;
+
+      return mili2time(dur);
+    },
+  },
+
+  SessionsReport: {
     formatedTotal: ({ total }) => {
       let dur = total;
 
@@ -52,21 +62,7 @@ export default {
       return report;
     },
 
-    allMembersSessions: async (_, { startDate, endDate }) => {
-      let sessions = SessionModel.findByDateRangeWithDuration(
-        { },
-        { startDate, endDate }
-      );
-
-      [sessions, justificatives] = await Promise.all([
-        sessions,
-        justificatives,
-      ]);
-
-      let total = 0;
-      sessions.forEach((session) => (total += session.duration));
-      
-      return { sessions, total, justificatives };
-    },
+    allMembersSessions: async (_, { startDate, endDate }) =>
+      await MemberModel.getAllSessionsByDateRange({ startDate, endDate }),
   },
 };
