@@ -1,8 +1,8 @@
-type CompiledSessions {
+type CompiledMember {
   sessions: [Session]!
   justificatives: [Justificative]!
   """
-  A soma total da duração dos valores retornadas em milisegundos
+  A soma total da duração dos valores retornados em milisegundos
   """
   total: Int!
 
@@ -12,7 +12,7 @@ type CompiledSessions {
   formatedTotal: String!
 }
 
-type compiledMandatory {
+type CompiledMandatory {
   sessions: [Session]!
   mandatory: Mandatory!
   expectedDuration: Int!
@@ -20,8 +20,22 @@ type compiledMandatory {
 }
 
 type MandatoryReport {
-  mandatories: [compiledMandatory]!
+  mandatories: [CompiledMandatory]!
   date: DateScalar!
+}
+
+type SessionsReport {
+  member: Member!
+  
+  """
+  A soma total da duração das sessoes em milisegundos
+  """
+  total: Int!
+
+  """
+  A soma total da duração das sessoes retornados no formato hh:mm
+  """
+  formatedTotal: String!
 }
 
 type Query {
@@ -29,7 +43,12 @@ type Query {
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar
-  ): CompiledSessions!
+  ): CompiledMember!
+
+  allMembersSessions(
+    startDate: DateScalar
+    endDate: DateScalar
+  ): [SessionsReport]!
 
   getMandatoriesReport(
     memberId: ID!

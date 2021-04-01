@@ -9,14 +9,17 @@ export default {
       return;
     },
   },
+
   Query: {
     members: () => MemberModel.find(),
     membersByResponsible: (_, { responsibleId }) =>
       MemberModel.find({ responsibleId }),
     member: (_, { _id }) => MemberModel.findById(_id),
   },
+
   Mutation: {
     createMember: (_, { data }) => MemberModel.create(data),
+
     addMandatory: (_, { memberId, data }) =>
       MemberModel.findByIdAndUpdate(
         memberId,
@@ -33,6 +36,7 @@ export default {
         }
       ),
 
-    updateMember: (_, { memberId, data }) => MemberModel.findOneAndUpdate(id, data, {new: true})
+    updateMember: (_, { memberId, data }) =>
+      MemberModel.findOneAndUpdate(id, data, { new: true }),
   },
 };

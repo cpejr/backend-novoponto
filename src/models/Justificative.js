@@ -52,6 +52,32 @@ JustificativeSchema.statics.findByDateRangeWithDuration = function (
   ]);
 };
 
+JustificativeSchema.statics.getAllMembersSessions = function (
+  match,
+  { startDate, endDate }
+) {
+  const newMatch = { ...match };
+
+  if (startDate || endDate) {
+    const start = {};
+    if (startDate) start["$gte"] = startDate;
+    if (endDate) start["$lte"] = endDate;
+
+    newMatch.start = start;
+  }
+
+  return this.aggregate([
+    {
+      $match: newMatch,
+    },
+    {
+      $addFields: {
+        duration: { $subtract: ["$end", "$start"] },
+      },
+    },
+  ]);
+};
+
 const JustificativeModel = mongoose.model(
   "justificatives",
   JustificativeSchema
