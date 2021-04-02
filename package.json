@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon --exec babel-node src/index.js -e js,gql",
-    "clean": "rm -rf build && mkdir build",
-    "build-babel": "babel -d ./build ./src -s",
+    "clean": "rm -rf ./node_modules/.cache/babel-loader && rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./src -s --copy-files",
     "build": "npm run clean && npm run build-babel",
     "start": "npm run build && node ./build/index.js"
   },
@@ -23,7 +23,7 @@
     "lodash": "^4.17.21",
     "luxon": "^1.26.0",
     "merge-graphql-schemas": "^1.7.8",
-    "mongoose": "5.11.15"
+    "mongoose": "^5.12.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",

@@ -2,7 +2,7 @@ import { RoleModel } from "../../../models";
 
 export default {
   Query: {
-    Roles: () => RoleModel.find(),
+    roles: () => RoleModel.find(),
   },
 
   Mutation: {
