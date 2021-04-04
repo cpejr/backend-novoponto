@@ -4,6 +4,7 @@ type Member {
   name: String!
   status: String
   roleId: ID
+  role: Role
   imageLink: String
   responsibleId: ID
   responsible: Member
@@ -60,7 +61,13 @@ input MemberUpdate {
   message: String
 }
 
+type LoginData {
+  accessToken: ID!
+  member: Member!
+}
+
 type Mutation {
+  login(tokenId: ID!): LoginData!
   createMember(data: MemberInput): Member!
   updateMember(memberId: ID!, data: MemberUpdate): Member!
   deleteMember(memberId: ID!): Boolean

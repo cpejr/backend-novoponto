@@ -7,32 +7,6 @@ import { PubSub, ApolloServer } from "apollo-server";
 
 const pubsub = new PubSub();
 
-let members = [
-  {
-    _id: "001",
-    firstname: "Jhonny",
-    lastname: "Prates",
-    status: "Tô aqui",
-    responsible: "002",
-  },
-  {
-    _id: "002",
-    firstname: "Arthur",
-    lastname: "Braga",
-    status: "Tô aqui não",
-    responsible: "001",
-  },
-];
-
-let sessions = [
-  {
-    member: "001",
-    start: "Agora",
-    description: "Dormindo",
-    status: "Logado",
-  },
-];
-
 export default async function startServer({ typeDefs, resolvers }) {
   Firebase.config();
   FirebaseStore.config();
