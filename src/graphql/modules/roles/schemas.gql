@@ -5,7 +5,7 @@ type Role {
 }
 
 type Query {
-  Roles: [Role]!
+  roles: [Role]!
 }
 
 input RoleInput {
