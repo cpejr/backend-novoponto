@@ -68,6 +68,7 @@ type LoginData {
 
 type Mutation {
   login(tokenId: ID!): LoginData!
+  getSessionData: Member!
   createMember(data: MemberInput): Member!
   updateMember(memberId: ID!, data: MemberUpdate): Member!
   deleteMember(memberId: ID!): Boolean

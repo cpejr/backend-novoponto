@@ -80,7 +80,7 @@ export default {
       // não cadastrada no sistema
       if (!!!member) {
         throw new AuthenticationError(
-          `O nome ${name} não encontrado no sistema, favor entre em contato com alguem da diretoria de desenvolvimento`
+          `O nome "${name}" não encontrado no sistema, favor entre em contato com alguem da diretoria de desenvolvimento`
         );
       }
 
@@ -88,6 +88,12 @@ export default {
       member = member.toJSON({ virtuals: true });
       const accessToken = jwt.sign({ member }, process.env.ACCESS_TOKEN_SECRET);
       return { member: member, accessToken };
+    },
+
+    getSessionData: (_, __, context) => {
+      if (!context.auth.authenticated)
+        throw new AuthenticationError("Invalid authentication token");
+      else return context.auth.member;
     },
   },
 };

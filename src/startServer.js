@@ -15,7 +15,10 @@ export default async function startServer({ typeDefs, resolvers }) {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: { pubsub, auth },
+    context: ({ req }) => ({
+      pubsub,
+      auth: auth(req),
+    }),
   });
 
   server
