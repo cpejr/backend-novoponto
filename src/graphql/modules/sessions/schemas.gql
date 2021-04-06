@@ -10,12 +10,12 @@ type Session {
   end: DateScalar
 
   """
-  Duração da sesssão em milisegundos,
+  Duração da sessão em milisegundos,
   A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
   """
   duration: Int!
   """
-  Duração da sesssão no formato hh:mm
+  Duração da sessão no formato hh:mm
   A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
   """
   formatedDuration: String!

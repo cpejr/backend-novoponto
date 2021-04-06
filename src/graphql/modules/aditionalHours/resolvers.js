@@ -26,7 +26,7 @@ export default {
   },
 
   Query: {
-    AditionalHours: (_, { memberId, startDate, endDate }) =>
+    aditionalHours: (_, { memberId, startDate, endDate }) =>
       AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate }
