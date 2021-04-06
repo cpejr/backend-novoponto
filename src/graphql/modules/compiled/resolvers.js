@@ -1,4 +1,4 @@
-import { JustificativeModel, MemberModel, SessionModel } from "../../../models";
+import { AditionalHours, MemberModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 export default {
@@ -29,23 +29,23 @@ export default {
         { startDate, endDate }
       );
 
-      let justificatives = JustificativeModel.findByDateRangeWithDuration(
+      let aditionalHours = AditionalHours.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate }
       );
 
-      [sessions, justificatives] = await Promise.all([
+      [sessions, aditionalHours] = await Promise.all([
         sessions,
-        justificatives,
+        aditionalHours,
       ]);
 
       let total = 0;
       sessions.forEach((session) => (total += session.duration));
-      justificatives.forEach(
-        (justificative) => (total += justificative.amount)
+      aditionalHours.forEach(
+        (aditionalHour) => (total += aditionalHour.amount)
       );
 
-      return { sessions, total, justificatives };
+      return { sessions, total, aditionalHours };
     },
 
     getMandatoriesReport: async (

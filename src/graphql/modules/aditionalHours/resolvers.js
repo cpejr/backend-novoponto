@@ -1,8 +1,8 @@
-import { MemberModel, JustificativeModel } from "../../../models";
+import { MemberModel, AditionalHourModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 export default {
-  Justificative: {
+  AditionalHour: {
     member: ({ member, memberId }) => {
       if (member) return member;
       else return MemberModel.findById(memberId);
@@ -26,17 +26,17 @@ export default {
   },
 
   Query: {
-    Justificatives: (_, { memberId, startDate, endDate }) =>
-      JustificativeModel.findByDateRangeWithDuration(
+    AditionalHours: (_, { memberId, startDate, endDate }) =>
+      AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate }
       ),
   },
 
   Mutation: {
-    sendJustificative: async (_, { data }) => JustificativeModel.create(data),
+    sendAditionalHour: async (_, { data }) => AditionalHourModel.create(data),
 
-    deleteJustificative: async (_, { _id }) =>
-      JustificativeModel.findByIdAndDelete(_id),
+    deleteAditionalHour: async (_, { _id }) =>
+      AditionalHourModel.findByIdAndDelete(_id),
   },
 };

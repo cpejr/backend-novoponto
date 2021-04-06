@@ -1,4 +1,4 @@
-type Justificative {
+type AditionalHour {
   _id: ID!
   memberId: ID!
   member: Member
@@ -16,23 +16,23 @@ type Justificative {
   formatedAmount: String!
 
   description: String!
-  action: JustificativeTypes!
+  action: AditionalHourTypes!
 }
 
-enum JustificativeTypes {
+enum AditionalHourTypes {
   ADD
   REMOVE
 }
 
 type Query {
-  Justificatives(
+  AditionalHours(
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar
-  ): [Justificative]!
+  ): [AditionalHour]!
 }
 
-input JustificativeCreateInput {
+input AditionalHourCreateInput {
   memberId: ID!
   date: DateScalar!
   amount: Int!
@@ -40,6 +40,6 @@ input JustificativeCreateInput {
 }
 
 type Mutation {
-  sendJustificative(data: JustificativeCreateInput!): Justificative!
-  deleteJustificative(_id: ID!): Boolean
+  sendAditionalHour(data: AditionalHourCreateInput!): AditionalHour!
+  deleteAditionalHour(_id: ID!): Boolean
 }

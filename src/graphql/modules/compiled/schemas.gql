@@ -1,6 +1,6 @@
 type CompiledMember {
   sessions: [Session]!
-  justificatives: [Justificative]!
+  aditionalHours: [AditionalHour]!
   """
   A soma total da duração dos valores retornados em milisegundos
   """
