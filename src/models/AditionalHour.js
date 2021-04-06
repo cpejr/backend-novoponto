@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { castToObjectIdFields } from "../utils/modelsFunctions";
 
-const JustificativeSchema = new mongoose.Schema(
+const AditionalHourSchema = new mongoose.Schema(
   {
     memberId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +15,7 @@ const JustificativeSchema = new mongoose.Schema(
   { timestamps: false, versionKey: false }
 );
 
-JustificativeSchema.virtual("member", {
+AditionalHourSchema.virtual("member", {
   ref: "members", // The model to use
   localField: "memberId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
@@ -24,7 +24,7 @@ JustificativeSchema.virtual("member", {
   justOne: true,
 });
 
-JustificativeSchema.statics.findByDateRangeWithDuration = function (
+AditionalHourSchema.statics.findByDateRangeWithDuration = function (
   match,
   { startDate, endDate }
 ) {
@@ -52,7 +52,7 @@ JustificativeSchema.statics.findByDateRangeWithDuration = function (
   ]);
 };
 
-JustificativeSchema.statics.getAllMembersSessions = function (
+AditionalHourSchema.statics.getAllMembersSessions = function (
   match,
   { startDate, endDate }
 ) {
@@ -78,9 +78,9 @@ JustificativeSchema.statics.getAllMembersSessions = function (
   ]);
 };
 
-const JustificativeModel = mongoose.model(
-  "justificatives",
-  JustificativeSchema
+const AditionalHourModel = mongoose.model(
+  "aditionalHours",
+  AditionalHourSchema
 );
 
-export default JustificativeModel;
+export default AditionalHourModel;

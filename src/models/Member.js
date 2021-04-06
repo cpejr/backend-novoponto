@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { JustificativeModel, SessionModel } from "./";
+import { AditionalHourModel, SessionModel } from "./";
 
 const MandatorySchema = new mongoose.Schema(
   {
@@ -38,7 +38,7 @@ MemberSchema.virtual("role", {
 MemberSchema.pre("remove", function (next) {
   // 'this' is the client being removed. Provide callbacks here if you want
   // to be notified of the calls' result.
-  JustificativeModel.remove({ memberId: this._id }).exec();
+  AditionalHourModel.remove({ memberId: this._id }).exec();
   SessionModel.remove({ memberId: this._id }).exec();
   next();
 });
