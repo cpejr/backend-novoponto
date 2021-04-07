@@ -34,7 +34,6 @@ JustificativeSchema.statics.findByDateRangeWithDuration = function (
   { startDate, endDate }
 ) {
   const newMatch = { ...match };
-  console.log("🚀 ~ file: Justificative.js ~ line 37 ~ match", match)
 
   castToObjectIdFields(newMatch, ["memberId", "_id"]);
 
@@ -44,7 +43,6 @@ JustificativeSchema.statics.findByDateRangeWithDuration = function (
     if (endDate) start["$lte"] = endDate;
 
     newMatch.start = start;
-    console.log("🚀 ~ file: Justificative.js ~ line 47 ~ newMatch", newMatch)
   }
 
   return this.aggregate([
