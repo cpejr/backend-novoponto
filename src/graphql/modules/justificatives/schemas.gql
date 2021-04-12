@@ -1,0 +1,55 @@
+type Justificative {
+  _id: ID!
+  memberId: ID!
+  """
+  Membro sendo justificado
+  """
+  member: Member
+
+  eventId: ID
+  """
+  Evento perdido
+  """
+  event: Event
+
+  date: DateScalar!
+  """
+  Quantidade de milisegundos para serem justificados
+  """
+  amount: Int!
+
+  """
+  Quantidade de milisegundos para serem justificados
+  no formato hh:mm
+  """
+  formatedAmount: String!
+
+  description: String
+  otherEventName: String
+}
+
+type Query {
+  justificatives(
+    memberId: ID!
+    startDate: DateScalar
+    endDate: DateScalar
+  ): [Justificative]!
+
+  justificativesByEvent(
+      eventId: ID!
+  ): [Justificative]!
+}
+
+input JustificativeCreateInput {
+  memberId: ID!
+  eventId: ID
+  date: DateScalar!
+  amount: Int!
+  description: String
+  otherEventName: String
+}
+
+type Mutation {
+  sendJustificative(data: JustificativeCreateInput!): Justificative!
+  deleteJustificative(_id: ID!): Boolean
+}

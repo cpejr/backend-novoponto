@@ -25,7 +25,7 @@ enum AditionalHourTypes {
 }
 
 type Query {
-  AditionalHours(
+  aditionalHours(
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar

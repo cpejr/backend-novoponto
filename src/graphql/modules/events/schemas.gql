@@ -1,0 +1,29 @@
+type Event {
+  _id: ID!
+  name: String!
+  startDate: DateScalar!
+  endDate: DateScalar!
+  """
+  Tempo de duração em milisegundos do evento
+  """
+  duration: Int!
+  description: String
+  required: Boolean!
+}
+
+type Query {
+  events: [Event]!
+}
+
+input EventInput {
+  name: String!
+  startDate: DateScalar!
+  endDate: DateScalar!
+  description: String
+  required: Boolean!
+}
+
+type Mutation {
+  createEvent(data: EventInput!): Event!
+  deleteEvent(eventId: ID!): Boolean!
+}
