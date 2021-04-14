@@ -13,7 +13,13 @@ input RoleInput {
   access: Int!
 }
 
+input RoleUpdate {
+  name: String
+  access: Int
+}
+
 type Mutation {
   createRole(data: RoleInput!): Role!
-  deleteRole(roleId: ID!): Boolean!
+  deleteRole(roleId: ID!): Role
+  updateRole(roleId: ID, data: RoleUpdate): Role
 }
