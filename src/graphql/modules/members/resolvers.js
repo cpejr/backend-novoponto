@@ -3,7 +3,11 @@ import jwt from "jsonwebtoken";
 
 import { MemberModel } from "../../../models";
 import { signInWithCustomToken } from "../../../services/FirebaseAuthentication";
-import { AuthenticationError, UserInputError } from "apollo-server-errors";
+import {
+  AuthenticationError,
+  ForbiddenError,
+  UserInputError,
+} from "apollo-server-errors";
 
 export default {
   Member: {
@@ -41,8 +45,22 @@ export default {
         }
       ),
 
-    updateMember: (_, { memberId, data }) =>
-      MemberModel.findOneAndUpdate(memberId, data, { new: true }),
+    updateMember: (_, { memberId, data }, { auth }) => {
+      let id;
+      if (!!!memberId && auth.member.role.access > 0) {
+        id = memberId;
+      } else if (!!!memberId) {
+        throw new ForbiddenError(
+          "O usário não tem o nível de acesso necessário para realizar tal ação"
+        );
+      } else {
+        id = auth.member._id;
+      }
+
+      return MemberModel.findOneAndUpdate(id, data, { new: true }).populate(
+        "role"
+      );
+    },
 
     login: async (_, { tokenId }) => {
       let firebaseData;
@@ -90,10 +108,10 @@ export default {
       return { member: member, accessToken };
     },
 
-    getSessionData: (_, __, context) => {
-      if (!context.auth.authenticated)
+    getSessionData: (_, __, { auth }) => {
+      if (!auth.authenticated)
         throw new AuthenticationError("Invalid authentication token");
-      else return context.auth.member;
+      else return auth.member;
     },
   },
 };
