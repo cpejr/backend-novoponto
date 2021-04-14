@@ -16,10 +16,10 @@ export default {
   },
 
   Query: {
-    members: () => MemberModel.find(),
+    members: () => MemberModel.find().populate("role"),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }),
-    member: (_, { _id }) => MemberModel.findById(_id),
+      MemberModel.find({ responsibleId }).populate("role"),
+    member: (_, { _id }) => MemberModel.findById(_id).populate("role") ,
   },
 
   Mutation: {
@@ -42,7 +42,7 @@ export default {
       ),
 
     updateMember: (_, { memberId, data }) =>
-      MemberModel.findOneAndUpdate(id, data, { new: true }),
+      MemberModel.findOneAndUpdate(memberId, data, { new: true }),
 
     login: async (_, { tokenId }) => {
       let firebaseData;
