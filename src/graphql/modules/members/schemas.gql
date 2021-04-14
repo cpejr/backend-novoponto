@@ -71,10 +71,15 @@ type Mutation {
   getSessionData: Member!
   createMember(data: MemberInput): Member!
   """
-  Atualiza campos de um usuário, caso não passe o memberId, as alterações serão feitas no usuário logado.
-  Caso seja enviado o ID do usuário será necessário ter a permissão para realiazar essa ação.
+  Atualiza campos de um usuário, o usuário deve ter a permissão para realizar essa ação.
   """
   updateMember(memberId: ID, data: MemberUpdate!): Member!
+
+  """
+  Atualiza campos do propio usuário logado, retorna um novo access token.
+  """
+  updateSelf(data: MemberUpdate!): LoginData!
+
   deleteMember(memberId: ID!): Boolean
   addMandatory(memberId: ID!, data: MandatoryInput): Member!
   removeMandatory(memberId: ID!, mandatoryId: ID!): Boolean!

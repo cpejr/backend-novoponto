@@ -9,6 +9,10 @@ import {
   UserInputError,
 } from "apollo-server-errors";
 
+function generateAccessToken(member) {
+  return jwt.sign({ member }, process.env.ACCESS_TOKEN_SECRET);
+}
+
 export default {
   Member: {
     responsible: ({ responsible, responsibleId }) => {
@@ -23,7 +27,7 @@ export default {
     members: () => MemberModel.find().populate("role"),
     membersByResponsible: (_, { responsibleId }) =>
       MemberModel.find({ responsibleId }).populate("role"),
-    member: (_, { _id }) => MemberModel.findById(_id).populate("role") ,
+    member: (_, { _id }) => MemberModel.findById(_id).populate("role"),
   },
 
   Mutation: {
@@ -35,6 +39,7 @@ export default {
         { $push: { mandatories: data } },
         { new: true }
       ),
+
     removeMandatory: (_, { memberId, mandatoryId }) =>
       MemberModel.findOneAndUpdate(
         {
@@ -47,19 +52,31 @@ export default {
 
     updateMember: (_, { memberId, data }, { auth }) => {
       let id;
-      if (!!!memberId && auth.member.role.access > 0) {
+
+      if (!!memberId && auth.member.role.access > 0) {
         id = memberId;
-      } else if (!!!memberId) {
+      } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
         );
-      } else {
-        id = auth.member._id;
       }
 
       return MemberModel.findOneAndUpdate(id, data, { new: true }).populate(
         "role"
       );
+    },
+
+    updateSelf: async (_, { data }, { auth }) => {
+      let id = auth.member._id;
+
+      let member = await MemberModel.findOneAndUpdate(id, data, {
+        new: true,
+      }).populate("role");
+
+      member = member.toJSON({ virtuals: true });
+
+      const accessToken = generateAccessToken(member);
+      return { member: member, accessToken };
     },
 
     login: async (_, { tokenId }) => {
@@ -104,7 +121,7 @@ export default {
 
       // Usuário logado com sucesso, gerar token de acesso
       member = member.toJSON({ virtuals: true });
-      const accessToken = jwt.sign({ member }, process.env.ACCESS_TOKEN_SECRET);
+      const accessToken = generateAccessToken(member);
       return { member: member, accessToken };
     },
 
