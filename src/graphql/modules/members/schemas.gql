@@ -2,12 +2,18 @@ type Member {
   _id: ID!
   firebaseId: String
   name: String!
+  """
+  Mensagem de status de login
+  """
   status: String
   roleId: ID
   role: Role
   imageLink: String
   responsibleId: ID
   responsible: Member
+  """
+  Mensagem do acompanhamento
+  """
   message: String
   mandatories: [Mandatory]!
 }
