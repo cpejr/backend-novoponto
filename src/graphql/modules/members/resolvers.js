@@ -24,7 +24,7 @@ export default {
   },
 
   Query: {
-    members: () => MemberModel.find().populate("role"),
+    members: () => MemberModel.find().populate("role").populate("responsible"),
     membersByResponsible: (_, { responsibleId }) =>
       MemberModel.find({ responsibleId }).populate("role"),
     member: (_, { _id }) => MemberModel.findById(_id).populate("role"),
@@ -32,6 +32,22 @@ export default {
 
   Mutation: {
     createMember: (_, { data }) => MemberModel.create(data),
+
+    deleteMember: (_, { memberId }, { auth }) => {
+      var id;
+      if (!auth.member)
+        throw new AuthenticationError("O usário não está autenticado");
+
+      if (!!memberId && auth.member.role?.access > 0) {
+        id = memberId;
+      } else if (!!memberId) {
+        throw new ForbiddenError(
+          "O usário não tem o nível de acesso necessário para realizar tal ação"
+        );
+      }
+
+      return MemberModel.findByIdAndDelete(id)
+    },
 
     addMandatory: (_, { memberId, data }) =>
       MemberModel.findByIdAndUpdate(
@@ -51,22 +67,21 @@ export default {
       ),
 
     updateMember: (_, { memberId, data }, { auth }) => {
-      let id;
+    console.log("🚀 ~ file: resolvers.js ~ line 70 ~ memberId", memberId)
 
       if (!auth.member)
         throw new AuthenticationError("O usário não está autenticado");
 
       if (!!memberId && auth.member.role?.access > 0) {
-        id = memberId;
+        return MemberModel.findOneAndUpdate({_id: memberId}, data, { new: true }).populate(
+          "role"
+        );
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
         );
       }
 
-      return MemberModel.findOneAndUpdate(id, data, { new: true }).populate(
-        "role"
-      );
     },
 
     updateSelf: async (_, { data }, { auth }) => {

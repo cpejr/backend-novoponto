@@ -34,6 +34,16 @@ MemberSchema.virtual("role", {
   justOne: true,
 });
 
+// Popular automagicamente o campo role
+MemberSchema.virtual("responsible", {
+  ref: "members", // The model to use
+  localField: "responsibleId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+
 // Quando deletar um membro, deletar suas sessoes e justificativas
 MemberSchema.pre("remove", function (next) {
   // 'this' is the client being removed. Provide callbacks here if you want

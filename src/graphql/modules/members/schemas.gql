@@ -86,7 +86,7 @@ type Mutation {
   """
   updateSelf(data: MemberUpdate!): LoginData!
 
-  deleteMember(memberId: ID!): Boolean
+  deleteMember(memberId: ID!): Member
   addMandatory(memberId: ID!, data: MandatoryInput): Member!
   removeMandatory(memberId: ID!, mandatoryId: ID!): Boolean!
 }
