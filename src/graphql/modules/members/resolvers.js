@@ -33,6 +33,22 @@ export default {
   Mutation: {
     createMember: (_, { data }) => MemberModel.create(data),
 
+    deleteMember: (_, { memberId }, { auth }) => {
+      var id;
+      if (!auth.member)
+        throw new AuthenticationError("O usário não está autenticado");
+
+      if (!!memberId && auth.member.role?.access > 0) {
+        id = memberId;
+      } else if (!!memberId) {
+        throw new ForbiddenError(
+          "O usário não tem o nível de acesso necessário para realizar tal ação"
+        );
+      }
+
+      return MemberModel.findByIdAndDelete(id)
+    },
+
     addMandatory: (_, { memberId, data }) =>
       MemberModel.findByIdAndUpdate(
         memberId,
