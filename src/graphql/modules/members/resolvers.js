@@ -53,7 +53,10 @@ export default {
     updateMember: (_, { memberId, data }, { auth }) => {
       let id;
 
-      if (!!memberId && auth.member.role.access > 0) {
+      if (!auth.member)
+        throw new AuthenticationError("O usário não está autenticado");
+
+      if (!!memberId && auth.member.role?.access > 0) {
         id = memberId;
       } else if (!!memberId) {
         throw new ForbiddenError(
