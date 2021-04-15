@@ -5,7 +5,7 @@ const MandatorySchema = new mongoose.Schema(
   {
     startAt: { type: Date, required: true },
     endAt: { type: Date, required: true },
-    weekday: { type: Number, required: true },
+    weekDay: { type: Number, required: true },
   },
   { timestamps: false, versionKey: false }
 );
