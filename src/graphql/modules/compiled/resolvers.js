@@ -1,4 +1,4 @@
-import { AditionalHours, MemberModel, SessionModel } from "../../../models";
+import { AditionalHourModel, MemberModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 export default {
@@ -29,7 +29,7 @@ export default {
         { startDate, endDate }
       );
 
-      let aditionalHours = AditionalHours.findByDateRangeWithDuration(
+      let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate }
       );
