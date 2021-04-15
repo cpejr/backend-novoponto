@@ -56,10 +56,6 @@ export default {
       if (!auth.member)
         throw new AuthenticationError("O usário não está autenticado");
 
-      console.log(
-        "🚀 ~ file: resolvers.js ~ line 57 ~ auth.member",
-        auth.member
-      );
       if (!!memberId && auth.member.role?.access > 0) {
         id = memberId;
       } else if (!!memberId) {
