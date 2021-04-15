@@ -15,7 +15,7 @@ type AditionalHour {
   """
   formatedAmount: String!
 
-  description: String!
+  description: String
   action: AditionalHourTypes!
 }
 
@@ -35,8 +35,12 @@ type Query {
 input AditionalHourCreateInput {
   memberId: ID!
   date: DateScalar!
+
+  """
+  Quantidade de milisegundos para adicionar ao compilado no dia informado
+  """
   amount: Int!
-  description: String!
+  description: String
 }
 
 type Mutation {
