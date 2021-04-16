@@ -63,6 +63,6 @@ export default {
     },
 
     allMembersSessions: async (_, { startDate, endDate }) =>
-      await MemberModel.getAllSessionsByDateRange({ startDate, endDate }),
+      await MemberModel.getAllMembersDataForCompilation({ startDate, endDate }),
   },
 };

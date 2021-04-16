@@ -53,8 +53,8 @@ MemberSchema.pre("remove", function (next) {
   next();
 });
 
-// Retorna a soma das sessoes de todos os membros em um dado intervalo de tempo
-MemberSchema.statics.getAllSessionsByDateRange = async function ({
+// Retorna a soma das sessoes com as horas adicionais de todos os membros em um dado intervalo de tempo
+MemberSchema.statics.getAllMembersDataForCompilation = async function ({
   startDate,
   endDate,
 }) {
@@ -94,9 +94,33 @@ MemberSchema.statics.getAllSessionsByDateRange = async function ({
       },
     },
     {
+      $lookup: {
+        from: "aditionalhours",
+        let: { memberId: "$member._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$memberId", "$$memberId"],
+              },
+              ...extraExpr,
+            },
+          },
+        ],
+        as: "aditionalhours",
+      },
+    },
+    {
       $project: {
         member: 1,
-        total: { $sum: "$sessions.duration" },
+        totalSessions: { $sum: "$sessions.duration" },
+        totalAditional: { $sum: "$aditionalhours.amount" },
+      },
+    },
+    {
+      $project: {
+        member: 1,
+        total: { $add: ["$totalSessions", "$totalAditional"] },
       },
     },
   ]);
