@@ -46,7 +46,7 @@ export default {
         );
       }
 
-      return MemberModel.findByIdAndDelete(id)
+      return MemberModel.findByIdAndDelete(id);
     },
 
     addMandatory: (_, { memberId, data }) =>
@@ -67,27 +67,24 @@ export default {
       ),
 
     updateMember: (_, { memberId, data }, { auth }) => {
-    console.log("🚀 ~ file: resolvers.js ~ line 70 ~ memberId", memberId)
-
       if (!auth.member)
         throw new AuthenticationError("O usário não está autenticado");
 
       if (!!memberId && auth.member.role?.access > 0) {
-        return MemberModel.findOneAndUpdate({_id: memberId}, data, { new: true }).populate(
-          "role"
-        );
+        return MemberModel.findOneAndUpdate({ _id: memberId }, data, {
+          new: true,
+        }).populate("role");
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
         );
       }
-
     },
 
     updateSelf: async (_, { data }, { auth }) => {
       let id = auth.member._id;
 
-      let member = await MemberModel.findOneAndUpdate(id, data, {
+      let member = await MemberModel.findOneAndUpdate({ _id: id }, data, {
         new: true,
       }).populate("role");
 
