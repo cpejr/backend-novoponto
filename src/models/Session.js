@@ -54,6 +54,42 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   ]);
 };
 
+SessionSchema.statics.getLoggedMembers = async function () {
+  return this.aggregate([
+    {
+      $match: {
+        end: null,
+      },
+    },
+    {
+      $lookup: {
+        from: "members",
+        localField: "memberId",
+        foreignField: "_id",
+        as: "member",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member",
+      },
+    },
+    {
+      $lookup: {
+        from: "roles",
+        localField: "member.roleId",
+        foreignField: "_id",
+        as: "member.role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role",
+      },
+    },
+  ]);
+};
+
 const SessionModel = mongoose.model("sessions", SessionSchema);
 
 export default SessionModel;

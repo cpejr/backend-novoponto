@@ -21,7 +21,7 @@ const MemberSchema = new mongoose.Schema(
     message: String,
     mandatories: [MandatorySchema],
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 // Popular automagicamente o campo role
