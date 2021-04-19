@@ -123,6 +123,19 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
         total: { $add: ["$totalSessions", "$totalAditional"] },
       },
     },
+    {
+      $lookup: {
+        from: "roles",
+        localField: "member.roleId",
+        foreignField: "_id",
+        as: "member.role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role",
+      },
+    },
   ]);
 };
 
