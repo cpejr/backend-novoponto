@@ -6,7 +6,10 @@ import { SESSION_UPDATE } from "./channels";
 
 export default {
   Session: {
-    member: async ({ memberId }) => MemberModel.findById(memberId),
+    member: async ({ member, memberId }) => {
+      if (!member) MemberModel.findById(memberId).populate("role");
+      return member;
+    },
 
     duration: ({ duration, end, start }) => {
       if (duration) return duration;
@@ -38,13 +41,7 @@ export default {
         { startDate, endDate }
       ),
 
-    loggedMembers: async () => {
-      const response = await SessionModel.find({
-        end: null,
-      }).populate("member");
-
-      return response.map((session) => session.toJSON({ virtuals: true }));
-    },
+    loggedMembers: () => SessionModel.getLoggedMembers(),
   },
 
   Mutation: {

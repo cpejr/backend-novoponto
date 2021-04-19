@@ -21,7 +21,7 @@ const MemberSchema = new mongoose.Schema(
     message: String,
     mandatories: [MandatorySchema],
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 // Popular automagicamente o campo role
@@ -121,6 +121,19 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
       $project: {
         member: 1,
         total: { $add: ["$totalSessions", "$totalAditional"] },
+      },
+    },
+    {
+      $lookup: {
+        from: "roles",
+        localField: "member.roleId",
+        foreignField: "_id",
+        as: "member.role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role",
       },
     },
   ]);
