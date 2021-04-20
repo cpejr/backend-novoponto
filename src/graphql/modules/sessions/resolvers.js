@@ -27,11 +27,6 @@ export default {
 
       return mili2time(dur);
     },
-
-    // action: ({ end }) => {
-    //   if (end !== null) return "FINISHED";
-    //   else return "STARTED";
-    // },
   },
 
   Query: {
@@ -92,6 +87,25 @@ export default {
 
         return session;
       } else throw new UserInputError(`Você não está logado/a`);
+    },
+
+    endAllSessions: async (_, __, { pubsub }) => {
+      const sessions = await SessionModel.updateMany(
+        {
+          end: null,
+        },
+        {
+          end: Date.now(),
+        }
+      ).populate("member");
+
+      pubsub.publish(SESSION_UPDATE, {
+        sessionUpdate: {
+          action: "END_ALL_SESSIONS",
+        },
+      });
+
+      return sessions.n;
     },
   },
 

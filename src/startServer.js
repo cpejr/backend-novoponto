@@ -19,6 +19,9 @@ export default async function startServer({ typeDefs, resolvers }) {
       pubsub,
       auth: auth(req),
     }),
+    subscriptions: {
+      path: "/subscriptions",
+    },
   });
 
   server

@@ -68,13 +68,13 @@ input MemberUpdate {
 }
 
 type LoginData {
-  accessToken: ID!
+  accessToken: ID
   member: Member!
 }
 
 type Mutation {
   login(tokenId: ID!): LoginData!
-  getSessionData: Member!
+  getSessionData: LoginData!
   createMember(data: MemberInput): Member!
   """
   Atualiza campos de um usuário, o usuário deve ter a permissão para realizar essa ação.

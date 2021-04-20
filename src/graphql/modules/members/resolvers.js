@@ -140,10 +140,30 @@ export default {
       return { member: member, accessToken };
     },
 
-    getSessionData: (_, __, { auth }) => {
+    getSessionData: async (_, __, { auth }) => {
       if (!auth.authenticated)
         throw new AuthenticationError("Invalid authentication token");
-      else return auth.member;
+
+      const { updatedAt } = await MemberModel.findById(auth.member._id).select(
+        "updatedAt"
+      );
+
+      if (!updatedAt)
+        throw new AuthenticationError("Invalid authentication token");
+
+      if (auth.member.updatedAt !== updatedAt) {
+        let newMember = await MemberModel.findOne({
+          _id: auth.member._id,
+        }).populate("role");
+
+        newMember = newMember.toJSON({ virtuals: true });
+
+        const accessToken = generateAccessToken(newMember);
+
+        return { member: newMember, accessToken };
+      }
+
+      return { member: auth.member };
     },
   },
 };
