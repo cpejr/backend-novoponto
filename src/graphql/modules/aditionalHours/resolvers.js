@@ -8,8 +8,8 @@ export default {
       else return MemberModel.findById(memberId);
     },
 
-    formatedAmount: ({ duration, end, start }) => {
-      let dur = duration;
+    formatedAmount: ({ amount: duration, end, start }) => {
+      let dur = Math.abs(duration);
 
       if (!dur) {
         if (end) dur = end - start;

@@ -9,6 +9,6 @@ export default {
     createRole: async (_, { data }) => RoleModel.create(data),
     deleteRole: async (_, { roleId }) => RoleModel.findByIdAndDelete(roleId),
     updateRole: (_, { roleId, data }) =>
-      RoleModel.findOneAndUpdate(roleId, data, { new: true }),
+      RoleModel.findOneAndUpdate({_id: roleId}, data, { new: true }),
   },
 };
