@@ -57,11 +57,13 @@ type Mutation {
   endSession(memberId: ID!): Session!
   updateSession(_id: ID!, data: SessionUpdateInput!): Session!
   deleteSession(_id: ID!): Boolean
+  endAllSessions: Int!
 }
 
 enum Actions {
   STARTED
   FINISHED
+  END_ALL_SESSIONS
 }
 
 type sessionUpdate {
