@@ -53,11 +53,46 @@ MemberSchema.pre("remove", function (next) {
   next();
 });
 
+MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
+  let query = [
+    {
+      $lookup: {
+        from: "roles",
+        localField: "roleId",
+        foreignField: "_id",
+        as: "role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$role",
+      },
+    },
+    {
+      $lookup: {
+        from: "members",
+        localField: "responsibleId",
+        foreignField: "_id",
+        as: "responsible",
+      },
+    },
+    {
+      $unwind: {
+        path: "$responsible",
+      },
+    },
+  ];
+  if (accessArray)
+    query.push({ $match: { "role.access": { $in: accessArray } } });
+
+  return this.aggregate(query);
+};
+
 // Retorna a soma das sessoes com as horas adicionais de todos os membros em um dado intervalo de tempo
 MemberSchema.statics.getAllMembersDataForCompilation = async function ({
   startDate,
   endDate,
-  compileGroup = 1
+  compileGroup = 1,
 }) {
   const extraExpr = {};
   if (startDate || endDate) {
@@ -138,8 +173,8 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
       },
     },
     {
-      $match: {"member.role.compileGroup": compileGroup}
-    }
+      $match: { "member.role.compileGroup": compileGroup },
+    },
   ]);
 };
 
