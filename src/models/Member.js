@@ -57,6 +57,7 @@ MemberSchema.pre("remove", function (next) {
 MemberSchema.statics.getAllMembersDataForCompilation = async function ({
   startDate,
   endDate,
+  compileGroup = 1
 }) {
   const extraExpr = {};
   if (startDate || endDate) {
@@ -136,6 +137,9 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
         path: "$member.role",
       },
     },
+    {
+      $match: {"member.role.compileGroup": compileGroup}
+    }
   ]);
 };
 

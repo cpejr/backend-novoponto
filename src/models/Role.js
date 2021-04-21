@@ -10,6 +10,14 @@ const RoleSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // Determina grupo de compilação da role
+    // 0 --> Não compilar
+    // 1 --> Compilação de membro
+    // 2 --> --- de trainees
+    compileGroup: {
+      type: Number,
+      default: 1
+    }
   },
   { timestamps: false, versionKey: false }
 );

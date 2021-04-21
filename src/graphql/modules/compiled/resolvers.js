@@ -62,7 +62,7 @@ export default {
       return report;
     },
 
-    allMembersSessions: async (_, { startDate, endDate }) =>
-      await MemberModel.getAllMembersDataForCompilation({ startDate, endDate }),
+    allMembersSessions: async (_, { startDate, endDate, compileGroup }) =>
+      await MemberModel.getAllMembersDataForCompilation({ startDate, endDate, compileGroup }),
   },
 };

@@ -48,6 +48,7 @@ type Query {
   allMembersSessions(
     startDate: DateScalar
     endDate: DateScalar
+    compileGroup: Int
   ): [SessionsReport]!
 
   getMandatoriesReport(
