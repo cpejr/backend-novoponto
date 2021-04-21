@@ -23,6 +23,15 @@ export default {
       if (amount > 0) return "ADD";
       else return "REMOVE";
     },
+
+    description: ({memberId, description}, _, { auth }) => {
+    
+      if(auth?.member?.role?.access > 0 || auth?.member?._id == memberId)
+        return description;
+
+      return;
+      
+    }
   },
 
   Query: {
