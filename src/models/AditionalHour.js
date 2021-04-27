@@ -29,17 +29,17 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
   { startDate, endDate }
 ) {
   const newMatch = { ...match };
-
-  castToObjectIdFields(newMatch, ["memberId", "_id"]);
+  
+  castToObjectIdFields(newMatch, ["memberId", "_id"])
 
   if (startDate || endDate) {
     const start = {};
     if (startDate) start["$gte"] = startDate;
     if (endDate) start["$lte"] = endDate;
 
-    newMatch.start = start;
+    newMatch.date = start;
   }
-
+  
   return this.aggregate([
     {
       $match: newMatch,

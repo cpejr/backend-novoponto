@@ -31,7 +31,7 @@ type Mandatory {
 }
 
 type Query {
-  members: [Member]!
+  members(accessArray: [Int]): [Member]!
   membersByResponsible(responsibleId: ID!): [Member]!
   member(_id: ID!): Member
 }

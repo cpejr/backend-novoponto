@@ -14,7 +14,13 @@ type AditionalHour {
   no formato hh:mm
   """
   formatedAmount: String!
-
+  
+  """
+    
+  A descrição somente é retornada se o usuário estiver autenticado e o 
+  memberId for o mesmo da sessão ou o nível de acesso do cargo for
+  superior a 1
+  """
   description: String
   action: AditionalHourTypes!
 }
