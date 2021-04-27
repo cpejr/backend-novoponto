@@ -66,6 +66,7 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
     {
       $unwind: {
         path: "$role",
+        preserveNullAndEmptyArrays: true,
       },
     },
     {
@@ -79,6 +80,7 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
     {
       $unwind: {
         path: "$responsible",
+        preserveNullAndEmptyArrays: true,
       },
     },
     {
@@ -175,6 +177,7 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     {
       $unwind: {
         path: "$member.role",
+        preserveNullAndEmptyArrays: true,
       },
     },
     {
