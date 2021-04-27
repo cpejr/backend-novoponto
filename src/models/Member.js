@@ -81,6 +81,11 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
         path: "$responsible",
       },
     },
+    {
+      $sort: {
+        name: 1,
+      },
+    },
   ];
   if (accessArray)
     query.push({ $match: { "role.access": { $in: accessArray } } });
