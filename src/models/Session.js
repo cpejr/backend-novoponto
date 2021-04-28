@@ -72,6 +72,7 @@ SessionSchema.statics.getLoggedMembers = async function () {
     {
       $unwind: {
         path: "$member",
+        preserveNullAndEmptyArrays: true
       },
     },
     {
@@ -85,6 +86,7 @@ SessionSchema.statics.getLoggedMembers = async function () {
     {
       $unwind: {
         path: "$member.role",
+        preserveNullAndEmptyArrays: true
       },
     },
   ]);
