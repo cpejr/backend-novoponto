@@ -119,7 +119,7 @@ export default {
         // Tente encontrar um membro e atualizar seus dados
         member = await MemberModel.findOneAndUpdate(
           {
-            name: { $regex: new RegExp(`\\b${name}\\b`, "i") },
+            name: { $regex: new RegExp(name, "i") },
           },
           { firebaseId: uid, imageLink: picture },
           { new: true }
