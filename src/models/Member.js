@@ -101,11 +101,20 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
   endDate,
   compileGroup = 1,
 }) {
-  const extraExpr = {};
+  const extraExpr1 = {};
+  const extraExpr2 = {};
   if (startDate || endDate) {
-    extraExpr.start = {};
-    if (startDate) extraExpr.start["$gte"] = startDate;
-    if (endDate) extraExpr.start["$lte"] = endDate;
+    extraExpr1.start = {};
+    extraExpr2.date = {};
+
+    if (startDate) {
+      extraExpr1.start["$gte"] = startDate;
+      extraExpr2.date["$gte"] = startDate;
+    }
+    if (endDate) {
+      extraExpr1.start["$lte"] = endDate;
+      extraExpr2.date["$lte"] = endDate;
+    }
   }
 
   return this.aggregate([
@@ -124,7 +133,7 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
               $expr: {
                 $eq: ["$memberId", "$$memberId"],
               },
-              ...extraExpr,
+              ...extraExpr1,
             },
           },
           {
@@ -146,7 +155,7 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
               $expr: {
                 $eq: ["$memberId", "$$memberId"],
               },
-              ...extraExpr,
+              ...extraExpr2,
             },
           },
         ],
@@ -156,6 +165,8 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     {
       $project: {
         member: 1,
+        aditionalhours: 1,
+        sessions: 1,
         totalSessions: { $sum: "$sessions.duration" },
         totalAditional: { $sum: "$aditionalhours.amount" },
       },
@@ -163,6 +174,8 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     {
       $project: {
         member: 1,
+        aditionalhours: 1,
+        sessions: 1,
         total: { $add: ["$totalSessions", "$totalAditional"] },
       },
     },
