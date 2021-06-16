@@ -1,0 +1,10 @@
+type Changelog {
+  _id: ID!
+  version: Int!
+  changeLogText: String!
+  date: DateScalar!
+}
+
+type Query {
+  lastChangeLog: Changelog!
+}

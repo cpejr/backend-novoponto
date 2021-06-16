@@ -27,7 +27,7 @@ export default {
 
     description: ({ memberId, description }, _, { auth }) => {
       if (auth?.member?.role?.access > 0 || auth?.member?._id == memberId)
-        return description;
+        return description || "";
 
       return;
     },
