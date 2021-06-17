@@ -5,8 +5,10 @@ function mili2time(timeInMilis) {
   let time = parseFloat(timeInMilis);
   let hours = Math.floor(time / 1000 / 60 / 60);
   let minutes = Math.floor(time / 1000 / 60) % 60;
-
-  return pad(hours, 2) + ":" + pad(minutes, 2);
+  if(hours<100)
+    return pad(hours, 2) + ":" + pad(minutes, 2);
+  else
+    return pad(hours, 3) + ":" + pad(minutes, 2);
 }
 
 export { mili2time };

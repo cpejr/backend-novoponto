@@ -72,9 +72,13 @@ export default {
         throw new AuthenticationError("O usário não está autenticado");
 
       if (!!memberId && auth.member.role?.access > 0) {
-        return MemberModel.findOneAndUpdate({ _id: memberId }, data, {
-          new: true,
-        }).populate("role");
+        return MemberModel.findOneAndUpdate(
+          { _id: memberId },
+          { $set: data },
+          {
+            new: true,
+          }
+        ).populate("role");
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"

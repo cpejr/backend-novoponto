@@ -1,11 +1,11 @@
 input MessageDataInput {
   read: Boolean
-  message: String
+  text: String
 }
 
 type MessageData {
   read: Boolean
-  message: String
+  text: String
 }
 
 type Member {

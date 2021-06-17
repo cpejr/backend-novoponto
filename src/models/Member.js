@@ -18,7 +18,7 @@ const MemberSchema = new mongoose.Schema(
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
     imageLink: String,
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
-    message: { message: String, read: Boolean },
+    message: { text: String, read: Boolean },
     mandatories: [MandatorySchema],
   },
   { timestamps: true, versionKey: false }

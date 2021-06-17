@@ -5,9 +5,9 @@ export default {
   CompiledMember: {
     formatedTotal: ({ total }) => {
       let dur = total;
-
+      
       if (!dur) dur = 0;
-
+      
       return mili2time(dur);
     },
   },
