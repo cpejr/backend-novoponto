@@ -1,3 +1,13 @@
+input MessageDataInput {
+  read: Boolean
+  message: String
+}
+
+type MessageData {
+  read: Boolean
+  message: String
+}
+
 type Member {
   _id: ID!
   firebaseId: String
@@ -14,7 +24,7 @@ type Member {
   """
   Mensagem do acompanhamento
   """
-  message: String
+  message: MessageData
   mandatories: [Mandatory]!
 }
 
@@ -55,7 +65,7 @@ input MemberInput {
   roleId: ID
   imgLink: ID
   responsibleId: ID
-  message: String
+  message: MessageDataInput
 }
 
 input MemberUpdate {
@@ -64,7 +74,7 @@ input MemberUpdate {
   roleId: ID
   imgLink: ID
   responsibleId: ID
-  message: String
+  message: MessageDataInput
 }
 
 type LoginData {
