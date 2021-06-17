@@ -60,6 +60,7 @@ export default {
           },
         });
 
+        newSession.member = MemberModel.findOne({ _id: memberId });
         return newSession;
       } else
         throw new UserInputError(`${islogged.member.name} já está logado/a`, {

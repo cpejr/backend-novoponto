@@ -24,7 +24,8 @@ export default {
   },
 
   Query: {
-    members: (_, { accessArray }) => MemberModel.getMembersWithAccessArray(accessArray),
+    members: (_, { accessArray }) =>
+      MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
       MemberModel.find({ responsibleId }).populate("role"),
     member: (_, { _id }) => MemberModel.findById(_id).populate("role"),
