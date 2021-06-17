@@ -1,0 +1,20 @@
+type Changelog {
+  _id: ID!
+  version: Int!
+  changeLogText: String!
+  date: DateScalar!
+}
+
+type Query {
+  lastChangeLog: Changelog!
+}
+
+input ChangelogCreateInput {
+  _id: ID!
+  version: Int!
+  changeLogText: String!
+}
+
+type Mutation {
+  createChangelog(data: ChangelogCreateInput!): Changelog!
+}

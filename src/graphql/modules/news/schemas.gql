@@ -1,0 +1,24 @@
+type News {
+  """
+  String que guarda o HTML da noticia
+  """
+  srcString: String!
+  """
+  Texto alternativo da noticia
+  """
+  altText: String,
+}
+
+input NewsData {
+  srcString: String!
+  altText: String,
+}
+
+type Query {
+  news: [News]!,
+}
+
+type Mutation {
+  createNews(data: NewsData!): News!
+  deleteNews(newsId: ID!): Boolean
+}
