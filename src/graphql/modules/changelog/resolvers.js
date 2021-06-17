@@ -7,4 +7,9 @@ export default {
       return result[0];
     },
   },
+  
+  Mutation: {
+    createChangelog: async (_, { data }) =>
+      ChangelogModel.create({ ...data, date: Date.now() }),
+  },
 };
