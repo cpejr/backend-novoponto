@@ -11,19 +11,19 @@ export default {
     deleteNews: (_, { newsId }) => NewsModel.findByIdAnddelete(newsId),
     replaceNews: async (_, { data }) => {
       const removedNews = await NewsModel.find({
-        numberId: { $nin: data.map(({ numberId }) => numberId) },
+        newsId: { $nin: data.map(({ newsId }) => newsId) },
       });
 
-      removedNews.forEach(({ numberId }) => {
-        deleteFolder(`Public/${numberId}/`);
+      removedNews.forEach(({ newsId }) => {
+        deleteFolder(`Public/${newsId}/`);
       });
 
       const result = await NewsModel.deleteMany({});
       return await NewsModel.insertMany(data);
     },
-    uploadImage: async (_, { file, numberId }) => {
+    uploadImage: async (_, { file, newsId }) => {
       const image = await file;
-      return uploadFile(image, numberId);
+      return uploadFile(image, newsId);
     },
   },
 };
