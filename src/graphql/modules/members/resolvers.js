@@ -149,14 +149,13 @@ export default {
       if (!auth.authenticated)
         throw new AuthenticationError("Invalid authentication token");
 
-      const { updatedAt } = await MemberModel.findById(auth.member._id).select(
-        "updatedAt"
-      );
+      const { updatedAt } =
+        (await MemberModel.findById(auth.member._id).select("updatedAt")) || {};
 
       if (!updatedAt)
         throw new AuthenticationError("Invalid authentication token");
 
-      if (auth.member.updatedAt !== updatedAt) {
+      if (auth?.member?.updatedAt !== updatedAt) {
         let newMember = await MemberModel.findOne({
           _id: auth.member._id,
         }).populate("role");
