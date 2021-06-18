@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 const NewsSchema = new mongoose.Schema(
   {
     //String que guarda o HTML da noticia
-    srcString: { type: String, required: true },
-    //Texto alternativo da noticia
-    altText: String,
+    html: { type: String, required: true },
+
+    index: { type: Number, required: true, unique: true },
+
+    numberId: { type: Number, required: true, unique: true },
   },
   { timestamps: false, versionKey: false }
 );

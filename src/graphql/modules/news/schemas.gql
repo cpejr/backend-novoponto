@@ -1,24 +1,36 @@
 type News {
+  _id: String!
+
   """
   String que guarda o HTML da noticia
   """
-  srcString: String!
+  html: String!
+
   """
-  Texto alternativo da noticia
+  Posição da notícia
   """
-  altText: String,
+  index: Int
+
+  """
+  Id inteiro da notícia gerado pelo front-end
+  """
+  numberId: Int
 }
 
-input NewsData {
-  srcString: String!
-  altText: String,
+input NewsInput {
+  _id: String
+
+  html: String!
+  index: Int!
+  numberId: Int!
 }
 
 type Query {
-  news: [News]!,
+  news: [News]!
 }
 
 type Mutation {
-  createNews(data: NewsData!): News!
+  createNews(data: NewsInput!): News!
+  replaceNews(data: [NewsInput]!): [News]!
   deleteNews(newsId: ID!): Boolean
 }
