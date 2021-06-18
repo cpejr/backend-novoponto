@@ -6,12 +6,16 @@ import { v4 } from "uuid";
 // Creates a client from a Google service account key.
 const storage = new Storage({
   projectId: "ponto-cpe",
-  keyFilename: "./ServiceAccountKey.json",
+  credentials: {
+    private_key: process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
+    client_email: process.env.CLIENT_EMAIL,
+  },
 });
+
+const bucketName = process.env.BUCKET_NAME;
 
 async function config() {
   try {
-    const bucketName = process.env.BUCKET_NAME;
     await storage.bucket(bucketName);
     console.log("✅ Store initialized, connected to bucket: " + bucketName);
   } catch (error) {
@@ -29,13 +33,12 @@ async function listFiles() {
   });
 }
 
-async function uploadFile(file, userId, prefix = "") {
+async function uploadFile(file, folder) {
   return new Promise((resolve, reject) => {
-    const fileName = `${userId}-${Date.now()}${path
-      .extname(file.originalname)
-      .replace(".", "-")}`;
-
-    const blob = storage.bucket(bucketName).file(`${prefix}${fileName}`);
+    const fileName = `Public/${folder}/${Date.now()}${file.filename}`;
+    //Sets the adress where the file will be stored
+    const blob = storage.bucket(bucketName).file(fileName);
+    //Create a writeStream that will receive the file data
     const blobWriter = blob.createWriteStream({
       resumable: false,
       metadata: {
@@ -45,7 +48,10 @@ async function uploadFile(file, userId, prefix = "") {
         },
       },
     });
-
+    //Turns the file into readStream
+    var readStream = file.createReadStream();
+    //Pushes the readStrem content into writeStream on bucket
+    readStream.pipe(blobWriter);
     // If there's an error
     blobWriter.on("error", (err) => {
       console.warn(err);
@@ -54,26 +60,24 @@ async function uploadFile(file, userId, prefix = "") {
     // If all is good and done
     blobWriter.on("finish", () => {
       // Assembling public URL for accessing the file via HTTP
-      // const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
-      //   blob.name
-      // )}?alt=media`;
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
+        blob.name
+      )}?alt=media`;
 
-      // Return the file name and its public URL
-      resolve(blob.name);
+      // Return the file's public URL
+      resolve(publicUrl);
     });
-    // When there is no more data to be consumed from the stream the end event gets emitted
-    blobWriter.end(file.buffer);
   });
 }
 
-async function deleteFile(filename) {
+async function deleteFolder(folderName) {
   // Deletes the file from the bucket
-  await storage.bucket(bucketName).file(filename).delete();
+  await storage.bucket(bucketName).deleteFiles({ prefix: folderName });
 }
 
 module.exports = {
   config,
   listFiles,
   uploadFile,
-  deleteFile,
+  deleteFolder,
 };

@@ -33,4 +33,5 @@ type Mutation {
   createNews(data: NewsInput!): News!
   replaceNews(data: [NewsInput]!): [News]!
   deleteNews(newsId: ID!): Boolean
+  uploadImage(file: Upload!, numberId: Int!): String!
 }
