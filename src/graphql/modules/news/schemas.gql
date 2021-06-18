@@ -12,9 +12,9 @@ type News {
   index: Int
 
   """
-  Id inteiro da notícia gerado pelo front-end
+  Id String da notícia gerado pelo front-end
   """
-  numberId: Int
+  newsId: ID
 }
 
 input NewsInput {
@@ -22,7 +22,7 @@ input NewsInput {
 
   html: String!
   index: Int!
-  numberId: Int!
+  newsId: ID!
 }
 
 type Query {
@@ -33,4 +33,5 @@ type Mutation {
   createNews(data: NewsInput!): News!
   replaceNews(data: [NewsInput]!): [News]!
   deleteNews(newsId: ID!): Boolean
+  uploadImage(file: Upload!, newsId: ID!): String!
 }

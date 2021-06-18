@@ -1,4 +1,5 @@
 import { NewsModel } from "../../../models";
+import { uploadFile, deleteFolder } from "../../../services/FirebaseStore";
 
 export default {
   Query: {
@@ -9,8 +10,20 @@ export default {
     createNews: (_, { data }) => NewsModel.create(data),
     deleteNews: (_, { newsId }) => NewsModel.findByIdAnddelete(newsId),
     replaceNews: async (_, { data }) => {
-      await NewsModel.deleteMany({});
+      const removedNews = await NewsModel.find({
+        newsId: { $nin: data.map(({ newsId }) => newsId) },
+      });
+
+      removedNews.forEach(({ newsId }) => {
+        deleteFolder(`Public/${newsId}/`);
+      });
+
+      const result = await NewsModel.deleteMany({});
       return await NewsModel.insertMany(data);
+    },
+    uploadImage: async (_, { file, newsId }) => {
+      const image = await file;
+      return uploadFile(image, newsId);
     },
   },
 };

@@ -7,7 +7,7 @@ const NewsSchema = new mongoose.Schema(
 
     index: { type: Number, required: true, unique: true },
 
-    numberId: { type: Number, required: true, unique: true },
+    newsId: { type: String, required: true, unique: true },
   },
   { timestamps: false, versionKey: false }
 );
