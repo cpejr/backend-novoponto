@@ -5,7 +5,6 @@ import { v4 } from "uuid";
 
 // Creates a client from a Google service account key.
 const storage = new Storage({
-  projectId: "ponto-cpe",
   credentials: {
     private_key: process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
     client_email: process.env.CLIENT_EMAIL,
