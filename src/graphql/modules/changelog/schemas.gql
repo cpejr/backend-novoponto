@@ -10,7 +10,6 @@ type Query {
 }
 
 input ChangelogCreateInput {
-  _id: ID!
   version: Int!
   changeLogText: String!
 }
