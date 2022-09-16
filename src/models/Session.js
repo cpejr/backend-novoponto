@@ -13,6 +13,7 @@ const SessionSchema = new mongoose.Schema(
     },
     start: { type: Date, required: true },
     end: { type: Date, default: null },
+    isPresential: { type: Boolean, default: false, required: true },
   },
   { timestamps: false, versionKey: false }
 );

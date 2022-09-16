@@ -3,6 +3,7 @@ type Session {
   memberId: ID!
   member: Member
   start: DateScalar!
+  isPresential: Boolean
 
   """
   Se end é undefined, significa que o usuário ainda está logado
@@ -26,12 +27,14 @@ type Query {
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar
+    isPresential: Boolean
   ): [Session]!
 
   sessions(
     memberId: [ID]!
     startDate: DateScalar
     endDate: DateScalar
+    isPresential: Boolean
   ): [Session]!
 
   loggedMembers: [Session]!

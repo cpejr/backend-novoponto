@@ -30,10 +30,11 @@ export default {
   },
 
   Query: {
-    sessions: (_, { memberId, startDate, endDate }) =>
+    sessions: (_, { memberId, startDate, endDate, isPresential }) =>
       SessionModel.findByDateRangeWithDuration(
         { memberId },
-        { startDate, endDate }
+        { startDate, endDate },
+        { isPresential },
       ),
 
     loggedMembers: () => SessionModel.getLoggedMembers(),
