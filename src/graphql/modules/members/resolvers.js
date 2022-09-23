@@ -27,8 +27,9 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role"),
-    member: (_, { _id }) => MemberModel.findById(_id).populate("role"),
+      MemberModel.find({ responsibleId }).populate("role").populate("tribe"),
+    member: (_, { _id }) =>
+      MemberModel.findById(_id).populate("role").populate("tribe"),
   },
 
   Mutation: {
@@ -67,7 +68,7 @@ export default {
         }
       ),
 
-    updateMember: (_, { memberId, data }, { auth }) => {
+    updateMember: async (_, { memberId, data }, { auth }) => {
       if (!auth.member)
         throw new AuthenticationError("O usário não está autenticado");
 
@@ -78,7 +79,9 @@ export default {
           {
             new: true,
           }
-        ).populate("role");
+        )
+          .populate("role")
+          .populate("tribe");
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
@@ -91,7 +94,9 @@ export default {
 
       let member = await MemberModel.findOneAndUpdate({ _id: id }, data, {
         new: true,
-      }).populate("role");
+      })
+        .populate("role")
+        .populate("tribe");
 
       member = member.toJSON({ virtuals: true });
 
@@ -115,9 +120,9 @@ export default {
       // Tentar encontrar o usuário com o ID da conta caso o usário não seja novo
       let member;
       if (!isNewUser)
-        member = await MemberModel.findOne({ firebaseId: uid }).populate(
-          "role"
-        );
+        member = await MemberModel.findOne({ firebaseId: uid })
+          .populate("role")
+          .populate("tribe");
 
       // Se não encontrou nenhum membro, procure se existe algum com o nome da conta
       if (!!!member) {
@@ -128,7 +133,9 @@ export default {
           },
           { firebaseId: uid, imageLink: picture },
           { new: true }
-        ).populate("role");
+        )
+          .populate("role")
+          .populate("tribe");
       }
 
       // Caso ainda não tenha um membro, significa que o usuário esta tentando usar uma conta
@@ -158,7 +165,9 @@ export default {
       if (auth?.member?.updatedAt !== updatedAt) {
         let newMember = await MemberModel.findOne({
           _id: auth.member._id,
-        }).populate("role");
+        })
+          .populate("role")
+          .populate("tribe");
 
         newMember = newMember.toJSON({ virtuals: true });
 

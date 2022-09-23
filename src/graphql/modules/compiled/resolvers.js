@@ -5,9 +5,9 @@ export default {
   CompiledMember: {
     formatedTotal: ({ total }) => {
       let dur = total;
-      
+
       if (!dur) dur = 0;
-      
+
       return mili2time(dur);
     },
   },
@@ -28,6 +28,8 @@ export default {
         { memberId },
         { startDate, endDate }
       );
+
+      const data = (await sessions).map(({ duration }) => mili2time(duration));
 
       let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
@@ -63,6 +65,10 @@ export default {
     },
 
     allMembersSessions: async (_, { startDate, endDate, compileGroup }) =>
-      await MemberModel.getAllMembersDataForCompilation({ startDate, endDate, compileGroup }),
+      await MemberModel.getAllMembersDataForCompilation({
+        startDate,
+        endDate,
+        compileGroup,
+      }),
   },
 };

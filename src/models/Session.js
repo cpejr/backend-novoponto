@@ -90,6 +90,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
       },
     },
     {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $sort: {
         start: -1,
       },
