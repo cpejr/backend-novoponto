@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { MemberModel } from ".";
 
 const hexColorRegex = /^#(?:[0-9a-fA-F]{3,4}){1,2}$/;
-
 const TribeSchema = new mongoose.Schema(
   {
     name: {
