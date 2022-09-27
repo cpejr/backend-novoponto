@@ -1,0 +1,28 @@
+type Tribe {
+  _id: ID!
+  name: String!
+  color: String!
+  segment: String!
+}
+
+type Query {
+  tribes: [Tribe]!
+}
+
+input TribeInput {
+  name: String!
+  color: String!
+  segment: String!
+}
+
+input TribeUpdate {
+  name: String
+  color: String
+  segment: String
+}
+
+type Mutation {
+  createTribe(data: TribeInput!): Tribe!
+  deleteTribe(tribeId: ID!): Tribe
+  updateTribe(tribeId: ID, data: TribeUpdate): Tribe
+}

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import { AditionalHourModel, SessionModel } from "./";
 
 const MandatorySchema = new mongoose.Schema(
@@ -16,6 +16,12 @@ const MemberSchema = new mongoose.Schema(
     name: { type: String, required: true, unique: true },
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
+    tribeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "tribes",
+      required: false,
+      default: null,
+    },
     imageLink: String,
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
@@ -34,10 +40,20 @@ MemberSchema.virtual("role", {
   justOne: true,
 });
 
-// Popular automagicamente o campo role
+// Popular automagicamente o campo responsible
 MemberSchema.virtual("responsible", {
   ref: "members", // The model to use
   localField: "responsibleId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+
+// Popular automagicamente o campo tribe
+MemberSchema.virtual("tribe", {
+  ref: "tribes", // The model to use
+  localField: "tribeId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
   // If `justOne` is true, 'members' will be a single doc as opposed to
   // an array. `justOne` is false by default.
@@ -84,11 +100,26 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
       },
     },
     {
+      $lookup: {
+        from: "tribes",
+        localField: "tribeId",
+        foreignField: "_id",
+        as: "tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $sort: {
         name: 1,
       },
     },
   ];
+
   if (accessArray)
     query.push({ $match: { "role.access": { $in: accessArray } } });
 
@@ -190,6 +221,20 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     {
       $unwind: {
         path: "$member.role",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
         preserveNullAndEmptyArrays: true,
       },
     },
