@@ -29,7 +29,8 @@ SessionSchema.virtual("member", {
 
 SessionSchema.statics.findByDateRangeWithDuration = async function (
   match,
-  { startDate, endDate }
+  { startDate, endDate },
+  { isPresential }
 ) {
   const newMatch = { ...match };
 
@@ -50,6 +51,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
+        isPresential: isPresential,
       },
     },
   ]);

@@ -10,6 +10,7 @@ type CompiledMember {
   A soma total da duração dos valores retornados no formato hh:mm
   """
   formatedTotal: String!
+  formatedPresentialTotal: String!
 }
 
 type CompiledMandatory {
@@ -36,6 +37,7 @@ type SessionsReport {
   A soma total da duração das sessoes retornados no formato hh:mm
   """
   formatedTotal: String!
+  formatedPresentialTotal: String!
 }
 
 type Query {

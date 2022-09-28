@@ -11,6 +11,7 @@ const AditionalHourSchema = new mongoose.Schema(
     date: { type: Date, required: true },
     amount: { type: Number, required: true },
     description: { type: String },
+    isPresential: { type: Boolean, required: true},
   },
   { timestamps: false, versionKey: false }
 );

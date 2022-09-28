@@ -2,6 +2,7 @@ type AditionalHour {
   _id: ID!
   memberId: ID!
   member: Member
+  isPresential: Boolean
 
   date: DateScalar!
   """
@@ -35,12 +36,14 @@ type Query {
     memberId: ID!
     startDate: DateScalar
     endDate: DateScalar
+    isPresential: Boolean
   ): [AditionalHour]!
 }
 
 input AditionalHourCreateInput {
   memberId: ID!
   date: DateScalar!
+  isPresential: Boolean
 
   """
   Quantidade de milisegundos para adicionar ao compilado no dia informado
