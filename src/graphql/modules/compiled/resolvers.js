@@ -1,24 +1,24 @@
 import { AditionalHourModel, MemberModel, SessionModel } from "../../../models";
-import { mili2time } from "../../../utils/dateFunctions";
+import moment from "moment";
 
 export default {
   CompiledMember: {
     formatedTotal: ({ total }) => {
-      let dur = total;
+      return Number(total) <= 0 
+        ? "00:00" 
+        : moment.utc(total).format("HH:mm");
 
-      if (!dur) dur = 0;
-
-      return mili2time(dur);
+      // if (!dur) dur = 0;
+      // console.log(moment.utc(dur).format('HH:mm'));
+      // return mili2time(dur);
     },
   },
 
   SessionsReport: {
     formatedTotal: ({ total }) => {
-      let dur = total;
-
-      if (!dur) dur = 0;
-
-      return mili2time(dur);
+      return Number(total) <= 0 
+        ? "00:00" 
+        : moment.utc(total).format("HH:mm");
     },
   },
 
@@ -28,8 +28,6 @@ export default {
         { memberId },
         { startDate, endDate }
       );
-
-      const data = (await sessions).map(({ duration }) => mili2time(duration));
 
       let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
         { memberId },

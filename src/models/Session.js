@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import _ from "lodash";
 import { castToObjectIdFields } from "../utils/modelsFunctions";
 import { MemberModel } from "./";
+import moment from "moment";
 
 const SessionSchema = new mongoose.Schema(
   {
@@ -38,6 +39,8 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     const start = {};
     if (startDate) start["$gte"] = startDate;
     if (endDate) start["$lte"] = endDate;
+
+    console.log(moment(endDate).format("DD/MM/YYYY HH:mm"));
 
     newMatch.start = start;
   }

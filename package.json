@@ -24,6 +24,7 @@
     "lodash": "^4.17.21",
     "luxon": "^1.26.0",
     "merge-graphql-schemas": "^1.7.8",
+    "moment": "^2.29.4",
     "mongoose": "^5.12.3",
     "yarn": "^1.22.18"
   },
