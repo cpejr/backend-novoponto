@@ -26,6 +26,8 @@ type MandatoryReport {
 
 type SessionsReport {
   member: Member!
+  # sessions: [Session]
+  # sessionsBiggerThan0: [Session]
 
   """
   A soma total da duração das sessoes em milisegundos
