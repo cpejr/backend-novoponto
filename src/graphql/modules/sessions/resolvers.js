@@ -41,15 +41,18 @@ export default {
 	},
 
 	Mutation: {
-		startSession: async (_, { memberId }, { pubsub }) => {
+		startSession: async (_, { memberId, isPresential}, { pubsub }) => {
 			const islogged = await SessionModel.findOne({
 				memberId,
 				end: null,
 			}).populate("member");
 
+			console.log(isPresential);
+			
 			if (!islogged) {
 				let newSession = await SessionModel.create({
 					memberId,
+					isPresential,
 					start: Date.now(),
 				});
 				newSession = newSession.toJSON({ virtuals: true });
