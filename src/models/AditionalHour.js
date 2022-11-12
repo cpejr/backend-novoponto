@@ -27,7 +27,8 @@ AditionalHourSchema.virtual("member", {
 
 AditionalHourSchema.statics.findByDateRangeWithDuration = function (
   match,
-  { startDate, endDate }
+  { startDate, endDate },
+  { isPresential }
 ) {
   const newMatch = { ...match };
   
@@ -41,6 +42,10 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     newMatch.date = start;
   }
   
+  if (typeof isPresential === "boolean") {
+    newMatch.isPresential = isPresential;
+  }
+
   return this.aggregate([
     {
       $match: newMatch,
@@ -55,7 +60,8 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
 
 AditionalHourSchema.statics.getAllMembersSessions = function (
   match,
-  { startDate, endDate }
+  { startDate, endDate },
+  { isPresential }
 ) {
   const newMatch = { ...match };
 
@@ -65,6 +71,10 @@ AditionalHourSchema.statics.getAllMembersSessions = function (
     if (endDate) start["$lte"] = endDate;
 
     newMatch.start = start;
+  }
+
+  if (typeof isPresential === "boolean") {
+    newMatch.isPresential = isPresential;
   }
 
   return this.aggregate([

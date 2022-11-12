@@ -42,7 +42,7 @@ export default {
       let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate },
-        {isPresential}
+        { isPresential }
       );
 
       [sessions, aditionalHours] = await Promise.all([
@@ -55,7 +55,6 @@ export default {
       let total = 0;
       sessions.forEach((session) => {
         if(session.isPresential){
-          console.log('sessões presenciais: ',session);
           totalPresential += session.duration
         }
         total += session.duration;});

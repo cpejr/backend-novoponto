@@ -43,6 +43,10 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
 
     newMatch.start = start;
   }
+  
+  if (typeof isPresential === "boolean") {
+    newMatch.isPresential = isPresential;
+  }
 
   return this.aggregate([
     {
@@ -51,7 +55,6 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
-        isPresential: isPresential,
       },
     },
   ]);
