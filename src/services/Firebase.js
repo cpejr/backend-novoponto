@@ -32,7 +32,7 @@ function config() {
       appId: process.env.APPID,
       measurementId: process.env.MEASUREMENTID,
     });
-
+ 
     db = admin.firestore();
     db.settings({ ignoreUndefinedProperties: true });
 

@@ -198,6 +198,13 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
         member: 1,
         aditionalhours: 1,
         sessions: 1,
+        sessionsBiggerThan0: {
+          $filter: {
+            input: "$sessions",
+            as: "session",
+            cond: { $gt: ["$$session.duration", 0] },
+          },
+        },
         totalSessions: { $sum: "$sessions.duration" },
         totalAditional: { $sum: "$aditionalhours.amount" },
       },
@@ -207,6 +214,7 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
         member: 1,
         aditionalhours: 1,
         sessions: 1,
+        sessionsBiggerThan0: 1,
         total: { $add: ["$totalSessions", "$totalAditional"] },
       },
     },

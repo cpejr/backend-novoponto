@@ -37,8 +37,6 @@ export default {
         { isPresential }
       );
 
-      const data = (await sessions).map(({ duration }) => mili2time(duration));
-
       let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate },
