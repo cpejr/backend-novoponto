@@ -30,18 +30,19 @@ export default {
   },
 
   Query: {
-    sessions: (_, { memberId, startDate, endDate, isPresential }) =>
+    sessions: (_, { memberId, startDate, endDate, isPresential, projectId, taskId }) =>
       SessionModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate },
-        { isPresential }
+        { isPresential },
+        { projectId, taskId }
       ),
 
     loggedMembers: () => SessionModel.getLoggedMembers(),
   },
 
   Mutation: {
-    startSession: async (_, { memberId, isPresential }, { pubsub }) => {
+    startSession: async (_, { memberId, isPresential, projectId, taskId }, { pubsub }) => {
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
@@ -51,6 +52,8 @@ export default {
         let newSession = await SessionModel.create({
           memberId,
           isPresential,
+          projectId,
+          taskId,
           start: Date.now(),
         });
 

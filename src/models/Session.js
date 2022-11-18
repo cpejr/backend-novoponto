@@ -14,6 +14,8 @@ const SessionSchema = new mongoose.Schema(
     start: { type: Date, required: true },
     end: { type: Date, default: null },
     isPresential: { type: Boolean, default: false, required: true },
+    projectId: { type: String, default: null },
+    taskId: { type: String, default: null },
   },
   { timestamps: false, versionKey: false }
 );
