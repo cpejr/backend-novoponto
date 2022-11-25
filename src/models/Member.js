@@ -23,8 +23,14 @@ const MemberSchema = new mongoose.Schema(
       default: null,
     },
     imageLink: String,
+    highlight: {
+      type: String,
+      enum: [null, "Highlight"],
+      default: null,
+    },
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
+
     mandatories: [MandatorySchema],
   },
   { timestamps: true, versionKey: false }

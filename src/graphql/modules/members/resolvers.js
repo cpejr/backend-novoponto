@@ -78,6 +78,7 @@ export default {
           { $set: data },
           {
             new: true,
+            runValidators: true,
           }
         )
           .populate("role")
