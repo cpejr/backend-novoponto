@@ -22,6 +22,12 @@ const MemberSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
+    badgesId: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "badges",
+      required: false,
+      default: null,
+    }],
     imageLink: String,
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
@@ -58,6 +64,16 @@ MemberSchema.virtual("tribe", {
   // If `justOne` is true, 'members' will be a single doc as opposed to
   // an array. `justOne` is false by default.
   justOne: true,
+});
+
+// Popular automagicamente o campo badge
+MemberSchema.virtual("badge", {
+  ref: "badges", // tribesThe model to use
+  localField: "badgeId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: false,
 });
 
 // Quando deletar um membro, deletar suas sessoes e justificativas

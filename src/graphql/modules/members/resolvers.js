@@ -27,9 +27,9 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role").populate("tribe"),
+      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("badge"),
     member: (_, { _id }) =>
-      MemberModel.findById(_id).populate("role").populate("tribe"),
+      MemberModel.findById(_id).populate("role").populate("tribe").populate("badge"),
   },
 
   Mutation: {
@@ -81,7 +81,8 @@ export default {
           }
         )
           .populate("role")
-          .populate("tribe");
+          .populate("tribe")
+          .populate("badge");
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
@@ -96,8 +97,8 @@ export default {
         new: true,
       })
         .populate("role")
-        .populate("tribe");
-
+        .populate("tribe")
+        .populate("badge");
       member = member.toJSON({ virtuals: true });
 
       const accessToken = generateAccessToken(member);
@@ -122,7 +123,8 @@ export default {
       if (!isNewUser)
         member = await MemberModel.findOne({ firebaseId: uid })
           .populate("role")
-          .populate("tribe");
+          .populate("tribe")
+          .populate("badge");
 
       // Se não encontrou nenhum membro, procure se existe algum com o nome da conta
       if (!!!member) {
@@ -135,7 +137,8 @@ export default {
           { new: true }
         )
           .populate("role")
-          .populate("tribe");
+          .populate("tribe")
+          .populate("badge")
       }
 
       // Caso ainda não tenha um membro, significa que o usuário esta tentando usar uma conta
@@ -167,7 +170,8 @@ export default {
           _id: auth.member._id,
         })
           .populate("role")
-          .populate("tribe");
+          .populate("tribe")
+          .populate("badge");
 
         newMember = newMember.toJSON({ virtuals: true });
 
