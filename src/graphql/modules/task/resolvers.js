@@ -2,7 +2,7 @@ import { TaskModel } from "../../../models";
 
 export default {
   Query: {
-    tasks: () => TaskModel.find(),
+    tasks: async (_, { taskId }) => TaskModel.findById({_id: taskId}),
   },
 
   Mutation: {

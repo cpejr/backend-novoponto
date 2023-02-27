@@ -1,6 +1,6 @@
 import { UserInputError } from "apollo-server";
 
-import { SessionModel, MemberModel } from "../../../models";
+import { SessionModel, MemberModel, TaskModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_UPDATE } from "./channels";
 
@@ -30,11 +30,12 @@ export default {
   },
 
   Query: {
-    sessions: (_, { memberId, startDate, endDate, isPresential }) =>
+    sessions: (_, { memberId, startDate, endDate, isPresential, taskId }) =>
       SessionModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate },
-        { isPresential }
+        { isPresential },
+        { taskId }
       ),
 
     loggedMembers: () => SessionModel.getLoggedMembers(),

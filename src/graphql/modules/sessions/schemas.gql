@@ -28,6 +28,7 @@ type Query {
     startDate: DateScalar
     endDate: DateScalar
     isPresential: Boolean
+    taskId: ID!
   ): [Session]!
 
   sessions(
