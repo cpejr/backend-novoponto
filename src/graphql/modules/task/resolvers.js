@@ -2,13 +2,17 @@ import { TaskModel } from "../../../models";
 
 export default {
   Query: {
-    tasks: async (_, { taskId }) => TaskModel.findById({_id: taskId}),
+    tasks: () => TaskModel.find({ active: true }),
   },
 
   Mutation: {
     createTask: async (_, { data }) => TaskModel.create(data),
     deleteTask: async (_, { taskId }) =>
-      TaskModel.findByIdAndUpdate({ _id: taskId }, { active: false }, { new: true }),
+      TaskModel.findByIdAndUpdate(
+        { _id: taskId },
+        { active: false },
+        { new: true }
+      ),
     updateTask: (_, { taskId, data }) =>
       TaskModel.findOneAndUpdate({ _id: taskId }, data, { new: true }),
   },
