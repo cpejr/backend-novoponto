@@ -1,6 +1,7 @@
 type Session {
   _id: ID!
   memberId: ID!
+  taskId: ID!
   member: Member
   start: DateScalar!
   isPresential: Boolean
@@ -36,6 +37,7 @@ type Query {
     startDate: DateScalar
     endDate: DateScalar
     isPresential: Boolean
+    taskId: ID!
   ): [Session]!
 
   loggedMembers: [Session]!
@@ -57,7 +59,7 @@ input SessionUpdateInput {
 }
 
 type Mutation {
-  startSession(memberId: ID!, isPresential: Boolean!): Session!
+  startSession(memberId: ID!, isPresential: Boolean!, taskId: ID!): Session!
   endSession(memberId: ID!): Session!
   updateSession(_id: ID!, data: SessionUpdateInput!): Session!
   deleteSession(_id: ID!): Boolean

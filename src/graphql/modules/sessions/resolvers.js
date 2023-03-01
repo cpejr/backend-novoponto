@@ -42,7 +42,7 @@ export default {
   },
 
   Mutation: {
-    startSession: async (_, { memberId, isPresential }, { pubsub }) => {
+    startSession: async (_, { memberId, isPresential, taskId }, { pubsub }) => {
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
@@ -52,6 +52,7 @@ export default {
         let newSession = await SessionModel.create({
           memberId,
           isPresential,
+          taskId,
           start: Date.now(),
         });
 
