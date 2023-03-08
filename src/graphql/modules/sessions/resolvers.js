@@ -46,8 +46,7 @@ export default {
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
-      }).populate("member");
-
+      }).populate(["member", "task"]);
       if (!islogged) {
         let newSession = await SessionModel.create({
           memberId,
