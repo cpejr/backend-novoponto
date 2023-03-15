@@ -116,7 +116,6 @@ export default {
       const { isNewUser, profile } = additionalUserInfo;
       const { uid } = user;
       const { picture, email } = profile;
-      console.log(firebaseData);
 
       // Tentar encontrar o usuário com o ID da conta caso o usário não seja novo
       let member;
