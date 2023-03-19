@@ -1,4 +1,5 @@
 node_modules
 serviceAccountKey.json
 .env
+.env.development
 build
