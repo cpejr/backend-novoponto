@@ -115,7 +115,7 @@ export default {
       const { user, additionalUserInfo } = firebaseData;
       const { isNewUser, profile } = additionalUserInfo;
       const { uid } = user;
-      const { picture, name } = profile;
+      const { picture, email } = profile;
 
       // Tentar encontrar o usuário com o ID da conta caso o usário não seja novo
       let member;
@@ -129,7 +129,7 @@ export default {
         // Tente encontrar um membro e atualizar seus dados
         member = await MemberModel.findOneAndUpdate(
           {
-            name: { $regex: new RegExp(name, "i") },
+            email,
           },
           { firebaseId: uid, imageLink: picture },
           { new: true }

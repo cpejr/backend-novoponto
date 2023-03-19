@@ -14,6 +14,7 @@ const MemberSchema = new mongoose.Schema(
   {
     firebaseId: String,
     name: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true},
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
     tribeId: {
