@@ -7,7 +7,6 @@ export default {
 
   Mutation: {
     createTask: async (_, { data }) => {
-      console.log(data);
       const newTask = await TaskModel.findOneAndUpdate(
         { name: data.name, active: false },
         { active: true },
