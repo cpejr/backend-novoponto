@@ -12,6 +12,7 @@ type Member {
   _id: ID!
   firebaseId: String
   name: String!
+  email: String!
   """
   Mensagem de status de login
   """
@@ -63,6 +64,7 @@ input MandatoryInput {
 input MemberInput {
   firebaseId: String
   name: String!
+  email: String!
   status: String
   roleId: ID
   tribeId: ID
@@ -73,6 +75,7 @@ input MemberInput {
 
 input MemberUpdate {
   name: String
+  email: String
   status: String
   roleId: ID
   tribeId: ID
