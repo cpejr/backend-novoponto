@@ -72,6 +72,20 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
         duration: { $subtract: ["$end", "$start"] },
       },
     },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
   ]);
 };
 
