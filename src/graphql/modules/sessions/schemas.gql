@@ -2,6 +2,7 @@ type Session {
   _id: ID!
   memberId: ID!
   taskId: ID!
+  task: Task
   member: Member
   start: DateScalar!
   isPresential: Boolean

@@ -18,7 +18,7 @@ input TaskUpdate {
 }
 
 type Mutation {
-  createTask(data: TaskInput!): Task!
+  createTask(data: TaskInput!): Task
   deleteTask(taskId: ID!): Task
   updateTask(taskId: ID!, data: TaskUpdate): Task
 }

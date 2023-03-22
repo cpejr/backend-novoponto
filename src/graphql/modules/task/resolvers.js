@@ -6,7 +6,18 @@ export default {
   },
 
   Mutation: {
-    createTask: async (_, { data }) => TaskModel.create(data),
+    createTask: async (_, { data }) => {
+      const newTask = await TaskModel.findOneAndUpdate(
+        { name: data.name, active: false },
+        { active: true },
+        { new: true }
+      );
+      console.log(newTask);
+      if (!newTask) {
+        console.log("if");
+        await TaskModel.create(data);
+      }
+    },
     deleteTask: async (_, { taskId }) =>
       TaskModel.findByIdAndUpdate(
         { _id: taskId },
