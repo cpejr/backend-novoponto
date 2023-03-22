@@ -16,7 +16,7 @@ export default {
       if (!dur) dur = 0;
 
       return mili2time(dur);
-  },
+    },
   },
 
   SessionsReport: {
@@ -47,25 +47,24 @@ export default {
         sessions,
         aditionalHours,
       ]);
-      
+
       let totalPresential = 0;
 
       let total = 0;
       sessions.forEach((session) => {
-        if(session.isPresential){
-          totalPresential += session.duration
+        if (session.isPresential) {
+          totalPresential += session.duration;
         }
-        total += session.duration;});
-      
-      aditionalHours.forEach(
-        (aditionalHour) => {
-          total += aditionalHour.amount;
-          if(aditionalHour.isPresential){
-            totalPresential += aditionalHour.amount;
-          }
+        total += session.duration;
+      });
+
+      aditionalHours.forEach((aditionalHour) => {
+        total += aditionalHour.amount;
+        if (aditionalHour.isPresential) {
+          totalPresential += aditionalHour.amount;
         }
-      );
-      
+      });
+
       return { sessions, total, aditionalHours, totalPresential };
     },
 

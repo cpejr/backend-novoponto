@@ -58,7 +58,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
 
     newMatch.start = start;
   }
-  
+
   if (typeof isPresential === "boolean") {
     newMatch.isPresential = isPresential;
   }
@@ -70,6 +70,20 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
       },
     },
   ]);
@@ -121,6 +135,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
     {
       $unwind: {
         path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
         preserveNullAndEmptyArrays: true,
       },
     },
