@@ -142,7 +142,7 @@ export default {
       // não cadastrada no sistema
       if (!!!member) {
         throw new AuthenticationError(
-          `O nome "${name}" não encontrado no sistema, favor entre em contato com alguem da diretoria de desenvolvimento`
+          `O e-mail "${email}" não foi encontrado no sistema, favor entre em contato com alguem da diretoria de desenvolvimento`
         );
       }
 
