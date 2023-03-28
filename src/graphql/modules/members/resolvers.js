@@ -104,52 +104,25 @@ export default {
       return { member: member, accessToken };
     },
 
-    login: async (_, { tokenId }) => {
-      let firebaseData;
-      try {
-        firebaseData = await signInWithCustomToken(tokenId);
-      } catch (error) {
-        throw new UserInputError("Google token inválido");
-      }
-
-      const { user, additionalUserInfo } = firebaseData;
-      const { isNewUser, profile } = additionalUserInfo;
-      const { uid } = user;
-      const { picture, email } = profile;
-
-      // Tentar encontrar o usuário com o ID da conta caso o usário não seja novo
-      let member;
-      if (!isNewUser)
-        member = await MemberModel.findOne({ firebaseId: uid })
-          .populate("role")
-          .populate("tribe");
-
-      // Se não encontrou nenhum membro, procure se existe algum com o nome da conta
-      if (!!!member) {
-        // Tente encontrar um membro e atualizar seus dados
-        member = await MemberModel.findOneAndUpdate(
-          {
-            email,
-          },
-          { firebaseId: uid, imageLink: picture },
-          { new: true }
-        )
-          .populate("role")
-          .populate("tribe");
-      }
-
-      // Caso ainda não tenha um membro, significa que o usuário esta tentando usar uma conta
-      // não cadastrada no sistema
-      if (!!!member) {
+    login: async (_, { data: { uid, email, photoURL } }) => {
+      const foundMember = await MemberModel.findOne({ email })
+        .populate(["role", "tribe"])
+        .exec();
+      if (!foundMember)
         throw new AuthenticationError(
           `O e-mail "${email}" não foi encontrado no sistema, favor entre em contato com alguem da diretoria de desenvolvimento`
         );
-      }
+
+      const member =
+        foundMember.toObject().firebaseId === uid
+          ? foundMember
+          : await foundMember
+              .set({ firebaseId: uid, imageLink: photoURL }) // First time login
+              .save();
 
       // Usuário logado com sucesso, gerar token de acesso
-      member = member.toJSON({ virtuals: true });
       const accessToken = generateAccessToken(member);
-      return { member: member, accessToken };
+      return { member: member.toJSON({ virtuals: true }), accessToken };
     },
 
     getSessionData: async (_, __, { auth }) => {
