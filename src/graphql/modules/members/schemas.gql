@@ -89,8 +89,14 @@ type LoginData {
   member: Member!
 }
 
+input LoginInput {
+  uid: String!
+  email: String!
+  photoURL: String!
+}
+
 type Mutation {
-  login(tokenId: ID!): LoginData!
+  login(data: LoginInput!): LoginData!
   getSessionData: LoginData!
   createMember(data: MemberInput): Member!
   """
