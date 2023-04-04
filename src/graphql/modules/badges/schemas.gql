@@ -1,29 +1,29 @@
 type Badge {
-    _id: ID!
-    name: String!
-    description: String!
-    url: String!
+  _id: ID!
+  name: String!
+  description: String!
+  url: String!
 }
 
 type Query {
-    badges: [Badge]!
-    badge(_id: ID!): Badge
+  badges: [Badge]!
+  badge(_id: ID!): Badge
 }
 
 input BadgeInput {
-    name: String!
-    description: String!
-    url: String!
+  name: String!
+  description: String!
+  image: Upload!
 }
 
 input BadgeUpdate {
-    name: String
-    description: String
-    url: String
+  name: String
+  description: String
+  image: Upload
 }
 
 type Mutation {
-    createBadge(data: BadgeInput!): Badge!
-    deleteBadge(badgeId: ID!): Badge
-    updateBadge(badgeId: ID, data: BadgeUpdate): Badge
+  createBadge(data: BadgeInput!): Badge!
+  deleteBadge(badgeId: ID!): Badge
+  updateBadge(badgeId: ID, data: BadgeUpdate): Badge
 }
