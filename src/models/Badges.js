@@ -5,6 +5,7 @@ const BadgesSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   url: { type: String, required: true },
+  fileName: { type: String, required: true },
 });
 
 // Quando deletar uma tribo, ela é deletada dos membros

@@ -69,6 +69,7 @@ export default {
       ),
 
     updateMember: async (_, { memberId, data }, { auth }) => {
+      console.log(data);
       if (!auth.member)
         throw new AuthenticationError("O usário não está autenticado");
 
