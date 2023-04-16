@@ -112,9 +112,26 @@ async function deleteFolder(folderName) {
 }
 
 async function deleteBadge(folderName) {
-  // Deletes the file from the bucket
-  const badge = `Public/badges/${folderName}`;
-  await storage.bucket(bucketName).file(badge).delete();
+  try {
+    // Define o caminho do arquivo que deseja excluir
+    const badgePath = `Public/badges/${folderName}`;
+
+    // Obtém uma referência para o arquivo que deseja excluir
+    const file = storage.bucket(bucketName).file(badgePath);
+
+    // Verifica se o arquivo existe
+    const exists = await file.exists();
+
+    // Se o arquivo existir, exclui-o
+    if (exists[0]) {
+      await file.delete();
+      console.log(`Arquivo ${badgePath} excluído com sucesso do bucket ${bucketName}.`);
+    } else {
+      console.log(`Arquivo ${badgePath} não encontrado no bucket ${bucketName}.`);
+    }
+  } catch (error) {
+    console.error(`Erro ao excluir o arquivo ${badgePath}: ${error}`);
+  }
 }
 
 module.exports = {
