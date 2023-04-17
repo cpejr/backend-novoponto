@@ -27,9 +27,9 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("badge"),
+      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("Badge"),
     member: (_, { _id }) =>
-      MemberModel.findById(_id).populate("role").populate("tribe").populate("badge"),
+      MemberModel.findById(_id).populate("role").populate("tribe").populate("Badge"),
   },
 
   Mutation: {
@@ -82,7 +82,7 @@ export default {
         )
           .populate("role")
           .populate("tribe")
-          .populate("badge");
+          .populate("Badge");
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
@@ -98,7 +98,7 @@ export default {
       })
         .populate("role")
         .populate("tribe")
-        .populate("badge");
+        .populate("Badge");
       member = member.toJSON({ virtuals: true });
 
       const accessToken = generateAccessToken(member);
@@ -124,7 +124,7 @@ export default {
         member = await MemberModel.findOne({ firebaseId: uid })
           .populate("role")
           .populate("tribe")
-          .populate("badge");
+          .populate("Badge");
 
       // Se não encontrou nenhum membro, procure se existe algum com o nome da conta
       if (!!!member) {
@@ -138,7 +138,7 @@ export default {
         )
           .populate("role")
           .populate("tribe")
-          .populate("badge")
+          .populate("Badge")
       }
 
       // Caso ainda não tenha um membro, significa que o usuário esta tentando usar uma conta
@@ -171,7 +171,7 @@ export default {
         })
           .populate("role")
           .populate("tribe")
-          .populate("badge");
+          .populate("Badge");
 
         newMember = newMember.toJSON({ virtuals: true });
 

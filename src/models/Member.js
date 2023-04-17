@@ -22,7 +22,7 @@ const MemberSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
-    badgesId: [{
+    badgeId: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "badges",
       required: false,
@@ -67,7 +67,7 @@ MemberSchema.virtual("tribe", {
 });
 
 // Popular automagicamente o campo badge
-MemberSchema.virtual("badge", {
+MemberSchema.virtual("Badge", {
   ref: "badges", // tribesThe model to use
   localField: "badgeId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
@@ -127,6 +127,14 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
       $unwind: {
         path: "$tribe",
         preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "badges",
+        localField: "badgeId",
+        foreignField: "_id",
+        as: "Badge",
       },
     },
     {
@@ -259,6 +267,20 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     {
       $unwind: {
         path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "badges",
+        localField: "member.badgeId",
+        foreignField: "_id",
+        as: "member.Badge",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.Badge",
         preserveNullAndEmptyArrays: true,
       },
     },
