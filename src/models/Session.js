@@ -110,6 +110,14 @@ SessionSchema.statics.getLoggedMembers = async function () {
       },
     },
     {
+      $lookup: {
+        from: "badges",
+        localField: "member.badgeId",
+        foreignField: "_id",
+        as: "member.Badge",
+      },
+    },
+    {
       $sort: {
         start: -1,
       },

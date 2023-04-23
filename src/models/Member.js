@@ -279,12 +279,6 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
       },
     },
     {
-      $unwind: {
-        path: "$member.Badge",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
       $match: { "member.role.compileGroup": compileGroup },
     },
   ]);
