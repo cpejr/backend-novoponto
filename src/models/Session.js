@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import _ from "lodash";
 import { castToObjectIdFields } from "../utils/modelsFunctions";
 import { MemberModel } from "./";
+import { TaskModel } from "./";
 
 const SessionSchema = new mongoose.Schema(
   {
@@ -14,6 +15,11 @@ const SessionSchema = new mongoose.Schema(
     start: { type: Date, required: true },
     end: { type: Date, default: null },
     isPresential: { type: Boolean, default: false, required: true },
+    taskId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "tasks",
+      required: false,
+    },
   },
   { timestamps: false, versionKey: false }
 );
@@ -23,6 +29,15 @@ SessionSchema.virtual("member", {
   localField: "memberId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
   // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+
+SessionSchema.virtual("task", {
+  ref: "tasks", // The model to use
+  localField: "taskId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, tasks' will be a single doc as opposed to
   // an array. `justOne` is false by default.
   justOne: true,
 });
@@ -43,7 +58,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
 
     newMatch.start = start;
   }
-  
+
   if (typeof isPresential === "boolean") {
     newMatch.isPresential = isPresential;
   }
@@ -55,6 +70,20 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
       },
     },
   ]);
@@ -115,6 +144,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
         localField: "member.badgeId",
         foreignField: "_id",
         as: "member.Badge",
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
       },
     },
     {

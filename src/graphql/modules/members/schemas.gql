@@ -12,6 +12,7 @@ type Member {
   _id: ID!
   firebaseId: String
   name: String!
+  email: String!
   """
   Mensagem de status de login
   """
@@ -65,6 +66,7 @@ input MandatoryInput {
 input MemberInput {
   firebaseId: String
   name: String!
+  email: String!
   status: String
   roleId: ID
   tribeId: ID
@@ -76,6 +78,7 @@ input MemberInput {
 
 input MemberUpdate {
   name: String
+  email: String
   status: String
   roleId: ID
   tribeId: ID
@@ -90,8 +93,14 @@ type LoginData {
   member: Member!
 }
 
+input LoginInput {
+  uid: String!
+  email: String!
+  photoURL: String!
+}
+
 type Mutation {
-  login(tokenId: ID!): LoginData!
+  login(data: LoginInput!): LoginData!
   getSessionData: LoginData!
   createMember(data: MemberInput): Member!
   """

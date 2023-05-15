@@ -34,8 +34,8 @@ const TribeSchema = new mongoose.Schema(
 // Quando deletar uma tribo, ela é deletada dos membros
 TribeSchema.pre("remove", function (next) {
   MemberModel.updateMany(
-    { tribreId: this._id },
-    { $set: { tribreId: null } },
+    { tribeId: this._id },
+    { $set: { tribeId: null } },
     { multi: true }
   );
   next();

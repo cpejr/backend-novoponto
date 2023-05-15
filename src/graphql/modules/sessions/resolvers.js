@@ -1,6 +1,6 @@
 import { UserInputError } from "apollo-server";
 
-import { SessionModel, MemberModel } from "../../../models";
+import { SessionModel, MemberModel, TaskModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_UPDATE } from "./channels";
 
@@ -30,27 +30,28 @@ export default {
   },
 
   Query: {
-    sessions: (_, { memberId, startDate, endDate, isPresential }) =>
+    sessions: (_, { memberId, startDate, endDate, isPresential, taskId }) =>
       SessionModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate },
-        { isPresential }
+        { isPresential },
+        { taskId }
       ),
 
     loggedMembers: () => SessionModel.getLoggedMembers(),
   },
 
   Mutation: {
-    startSession: async (_, { memberId, isPresential }, { pubsub }) => {
+    startSession: async (_, { memberId, isPresential, taskId }, { pubsub }) => {
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
-      }).populate("member");
-
+      }).populate(["member", "task"]);
       if (!islogged) {
         let newSession = await SessionModel.create({
           memberId,
           isPresential,
+          taskId,
           start: Date.now(),
         });
 
