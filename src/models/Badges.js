@@ -8,16 +8,18 @@ const BadgesSchema = new mongoose.Schema({
   fileName: { type: String, required: true },
 });
 
-// Quando deletar uma tribo, ela é deletada dos membros
+// Quando deletar uma badge, ela é deletada dos membros
 BadgesSchema.pre("remove", function (next) {
   MemberModel.updateMany(
-    { badgeId: this._id },
-    { $set: { badgeId: null } },
+    { badgeId: {$in: this._id} },
+    { $pull: { badgeId: this._id } },
     { multi: true }
   );
   next();
 });
 
+
 const BadgesModel = new mongoose.model("badges", BadgesSchema);
 
 export default BadgesModel;
+

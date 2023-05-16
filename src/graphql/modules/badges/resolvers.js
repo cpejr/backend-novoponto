@@ -26,9 +26,10 @@ export default {
     
     updateBadge: async (_, { badgeId, data }) =>{
       const { image, ...formatedData} = data;
-      if(image) {
-        const file = await image;
-        const removedBadge = await BadgesModel.findById(badgeId);
+      const file = await image;
+      const removedBadge = await BadgesModel.findById(badgeId);
+      if(file && file !== removedBadge.url) {
+        console.log("aqui", file, " -=- ", removedBadge);
         const result = await deleteBadge(removedBadge.fileName);
         formatedData.fileName = `${Date.now()}${formatedData.name}`;
         const folderName = `badges/${formatedData.fileName}`;
