@@ -20,8 +20,10 @@ export default {
     },
     deleteBadge: async (_, { badgeId }) => {
       const removedBadge = await BadgesModel.findById(badgeId);
-      const result = await deleteBadge(removedBadge.fileName);
-      return BadgesModel.findByIdAndDelete(badgeId);
+      await deleteBadge(removedBadge.fileName);
+
+      return removedBadge.deleteOne()
+      // return BadgesModel.deleteOne({_id: badgeId});
     },
     
     updateBadge: async (_, { badgeId, data }) =>{

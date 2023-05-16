@@ -9,13 +9,12 @@ const BadgesSchema = new mongoose.Schema({
 });
 
 // Quando deletar uma badge, ela é deletada dos membros
-BadgesSchema.pre("remove", function (next) {
-  MemberModel.updateMany(
+BadgesSchema.pre("deleteOne", { query: false, document: true } , function () {
+  return MemberModel.updateMany(
     { badgeId: {$in: this._id} },
     { $pull: { badgeId: this._id } },
     { multi: true }
   );
-  next();
 });
 
 
