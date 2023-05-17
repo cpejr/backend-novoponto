@@ -21,6 +21,8 @@ type Member {
   role: Role
   tribeId: ID
   tribe: Tribe
+  badgeId: [ID]
+  Badge: [Badge]
   imageLink: String
   responsibleId: ID
   responsible: Member
@@ -68,6 +70,7 @@ input MemberInput {
   status: String
   roleId: ID
   tribeId: ID
+  badgeId: [ID]
   imgLink: ID
   responsibleId: ID
   message: MessageDataInput
@@ -79,6 +82,7 @@ input MemberUpdate {
   status: String
   roleId: ID
   tribeId: ID
+  badgeId: [ID]
   imgLink: ID
   responsibleId: ID
   message: MessageDataInput
