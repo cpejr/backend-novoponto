@@ -8,5 +8,8 @@ export default {
 
   Mutation: {
     createProject: async (_, { data }) => ProjectsModel.create(data),
+    deleteProject: async (_, { _id }) => ProjectsModel.findByIdAndDelete(_id),
+    updateProject: async (_, { _id, data }) => 
+      ProjectsModel.findOneAndUpdate( { _id: _id }, data, { new: true }),
   },
 };

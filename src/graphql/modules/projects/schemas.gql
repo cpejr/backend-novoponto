@@ -14,6 +14,13 @@ input ProjectInput {
   area: String!
 }
 
+input ProjectUpdate {
+  name: String!
+  area: String!
+}
+
 type Mutation {
   createProject(data: ProjectInput!): Project!
+  deleteProject(_id: ID!): ID!
+  updateProject(_id: ID!, data: ProjectUpdate!): Project!
 }
