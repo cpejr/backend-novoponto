@@ -21,6 +21,6 @@ input ProjectUpdate {
 
 type Mutation {
   createProject(data: ProjectInput!): Project!
-  deleteProject(_id: ID!): ID!
+  deleteProject(_id: ID!): Project
   updateProject(_id: ID!, data: ProjectUpdate!): Project!
 }
