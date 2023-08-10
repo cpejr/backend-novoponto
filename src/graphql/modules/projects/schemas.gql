@@ -1,0 +1,19 @@
+type Project {
+  _id: ID!
+  name: String!
+  area: String!
+}
+
+type Query {
+  projects: [Project]!
+  project(_id: ID!): Project
+}
+
+input ProjectInput {
+  name: String!
+  area: String!
+}
+
+type Mutation {
+  createProject(data: ProjectInput!): Project!
+}
