@@ -13,4 +13,5 @@ input DescriptionInput {
 
 type Mutation{
     createDescription(data: DescriptionInput!): Description!
+    deleteDescription(_id: ID!): Description
 }

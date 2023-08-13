@@ -8,5 +8,6 @@ export default {
 
   Mutation: {
     createDescription: async (_, { data }) => DescriptionModel.create(data),
+    deleteDescription: async (_,{_id})=> DescriptionModel.findByIdAndDelete(_id),
   },
 };
