@@ -10,8 +10,8 @@ export default {
     },
   
     Mutation: {
-      createStudent: (_, { data }) => StudentModel.create(data),
-      deleteStudent: async (_, { _id }) => !!(await StudentModel.findByIdAndDelete(_id)),
+      createStudent: (_, { data }) =>  StudentModel.create(data),
+      deleteStudent: async (_, { studentId }) => !!(await StudentModel.findByIdAndDelete(studentId)),
       updateStudent: (_, { studentId, data }) => StudentModel.findOneAndUpdate({ _id: studentId }, data, {new: true})
     }
   }

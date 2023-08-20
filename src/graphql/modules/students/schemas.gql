@@ -1,7 +1,7 @@
 type Student{
     _id: ID!
     name: String!
-    note: Note!
+    # note: Note!
 }
 
 type Query {
@@ -10,13 +10,12 @@ type Query {
 }
 
 input StudentInput {
-    _id: ID!
     name: String!
-    note: ID!
+    # note: ID
 }
 
 type Mutation {
   createStudent(data: StudentInput!): Student!
-  deleteStudent(studentId: ID!): Student
+  deleteStudent(studentId: ID!): Boolean
   updateStudent(studentId: ID, data: StudentInput): Student!
 }
