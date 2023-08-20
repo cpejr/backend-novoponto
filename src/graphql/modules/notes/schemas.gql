@@ -4,7 +4,7 @@ type Note {
 }
 
 type Query {
-    note(id: ID!): Note!
+    note(_id: ID!): Note!
 }
 
 input NoteInput {
