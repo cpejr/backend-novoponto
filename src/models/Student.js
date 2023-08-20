@@ -1,17 +1,8 @@
 import mongoose from "mongoose";
+import NoteModel from "./Note";
 
 const StudentSchema = new mongoose.Schema (
     {
-        // studentId: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: "students",
-        //     required: true,
-        // },
-        // noteId: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: "notes",
-        //     required: true,
-        // },
         name: {
             type: String,
             required: true,

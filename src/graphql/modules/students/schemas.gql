@@ -1,17 +1,15 @@
 type Student{
     _id: ID!
     name: String!
-    # note: Note!
 }
 
 type Query {
     students: [Student]!
-    student(id: ID!): Student!
+    student(_id: ID!): Student!
 }
 
 input StudentInput {
     name: String!
-    # note: ID
 }
 
 type Mutation {

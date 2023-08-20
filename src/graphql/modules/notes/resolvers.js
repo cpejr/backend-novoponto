@@ -1,12 +1,12 @@
 import _ from "lodash";
 import jwt from "jsonwebtoken";
 
-import { NoteModel } from "../../../models";
+import { NoteModel, StudentModel } from "../../../models";
 
 export default {
   Query: {
     notes: () => NoteModel.find(),
-    note: (_, { _id }) => NoteModel.findById(_id),
+    note: (_, { _id}) => { NoteModel.findById(_id) }
   },
 
   Mutation: {
