@@ -156,20 +156,6 @@ SessionSchema.statics.getLoggedMembers = async function () {
     },
     {
       $lookup: {
-        from: "projects",
-        localField: "member.projectId",
-        foreignField: "_id",
-        as: "project",
-      },
-    },
-    {
-      $unwind: {
-        path: "$project",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
         from: "badges",
         localField: "member.badgeId",
         foreignField: "_id",
@@ -187,6 +173,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
     {
       $unwind: {
         path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
         preserveNullAndEmptyArrays: true,
       },
     },

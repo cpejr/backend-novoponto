@@ -50,7 +50,7 @@ export default {
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
-      }).populate(["member", "task"]);
+      }).populate(["member", "task", "project"]);
       if (!islogged) {
         let newSession = await SessionModel.create({
           memberId,
@@ -70,6 +70,7 @@ export default {
           },
         });
         newSession.member = MemberModel.findOne({ _id: memberId });
+        console.log(newSession);
         return newSession;
       } else
         throw new UserInputError(`${islogged.member.name} já está logado/a`, {
