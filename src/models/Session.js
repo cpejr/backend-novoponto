@@ -23,7 +23,6 @@ const SessionSchema = new mongoose.Schema(
     projectId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
-      required: false,
     },
     description: {
       type: mongoose.Schema.Types.String,

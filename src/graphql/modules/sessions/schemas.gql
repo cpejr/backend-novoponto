@@ -43,7 +43,7 @@ type Query {
     endDate: DateScalar
     isPresential: Boolean
     taskId: ID!
-    projectId: ID!
+    projectId: ID
     description: String
   ): [Session]!
 
@@ -70,7 +70,7 @@ type Mutation {
     memberId: ID!
     isPresential: Boolean!
     taskId: ID!
-    projectId: ID!
+    projectId: ID
     description: String
   ): Session!
   endSession(memberId: ID!): Session!
