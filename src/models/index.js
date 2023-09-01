@@ -9,4 +9,5 @@ export { default as JustificativeModel } from "./Justificative";
 export { default as ChangelogModel } from "./ChangeLog";
 export { default as NewsModel } from "./News";
 export { default as BadgesModel } from "./Badges";
+export { default as ColorModel } from "./Color";
  

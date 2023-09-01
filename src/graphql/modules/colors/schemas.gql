@@ -1,6 +1,8 @@
 type Color {
   _id: ID!
-  color: String!
+  primaryColor: String!
+  secundaryColor: String!
+
 }
 type Query {
   colors: [Color]!
@@ -8,14 +10,15 @@ type Query {
 }
 
 input ColorInput {
-  color: String!
+  primaryColor: String!
+  secundaryColor: String!
 }
 
 input ColorUpdate {
-  color: String
+  primaryColor: String!
+  secundaryColor: String!
 }
 type Mutation {
   createColor(data: ColorInput!): Color!
   deleteColor(colorId: ID!): Color
-  updateColor(colorId: ID, data: ColorUpdate): Color
 }
