@@ -23,6 +23,6 @@ input DepartamentUpdate {
 
 type Mutation {
   createDepartament(data: DepartamentInput!): Departament!
-  deleteDepartament(departament_id: ID!): Departament
-  updateDepartament(departament_id: ID, data: TribeUpdate): Departament
+  deleteDepartament(departamentId: ID!): Departament
+  updateDepartament(departamentId: ID, data: DepartamentUpdate): Departament
 }

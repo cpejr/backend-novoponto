@@ -34,8 +34,8 @@ const DepartamentSchema = new mongoose.Schema(
 // Quando deletar uma tribo, ela é deletada dos membros
 DepartamentSchema.pre("remove", function (next) {
   MemberModel.updateMany(
-    { departament_id: this._id },
-    { $set: { departament_id: null } },
+    { departamentId: this._id },
+    { $set: { departamentId: null } },
     { multi: true }
   );
   next();
