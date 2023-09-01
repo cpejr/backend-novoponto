@@ -25,6 +25,6 @@ export default async function startServer({ typeDefs, resolvers }) {
   });
 
   server
-    .listen({ port: process.env.PORT || 4000 })
+    .listen({ port: process.env.PORT || 4321 })
     .then(({ url }) => console.log(`✅ Server started at ${url}`));
 }

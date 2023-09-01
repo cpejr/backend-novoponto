@@ -140,6 +140,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
     },
     {
       $lookup: {
+        from: "departaments",
+        localField: "member.departamentId",
+        foreignField: "_id",
+        as: "member.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
         from: "badges",
         localField: "member.badgeId",
         foreignField: "_id",

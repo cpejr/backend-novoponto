@@ -1,0 +1,28 @@
+type Departament {
+  _id: ID!
+  name: String!
+  color: String!
+  segment: String!
+}
+
+type Query {
+  departament: [Departament]!
+}
+
+input DepartamentInput {
+  name: String!
+  color: String!
+  segment: String!
+}
+
+input DepartamentUpdate {
+  name: String
+  color: String
+  segment: String
+}
+
+type Mutation {
+  createDepartament(data: DepartamentInput!): Departament!
+  deleteDepartament(departament_id: ID!): Departament
+  updateDepartament(departament_id: ID, data: TribeUpdate): Departament
+}

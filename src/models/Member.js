@@ -23,6 +23,12 @@ const MemberSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
+    departamentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "departaments",
+      required: false,
+      default: null,
+    },
     badgeId: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "badges",
@@ -61,6 +67,14 @@ MemberSchema.virtual("responsible", {
 MemberSchema.virtual("tribe", {
   ref: "tribes", // The model to use
   localField: "tribeId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+MemberSchema.virtual("departament", {
+  ref: "departaments", // The model to use
+  localField: "departamentId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
   // If `justOne` is true, 'members' will be a single doc as opposed to
   // an array. `justOne` is false by default.
@@ -127,6 +141,20 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
     {
       $unwind: {
         path: "$tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departaments",
+        localField: "departamentId",
+        foreignField: "_id",
+        as: "departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$departament",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -268,6 +296,20 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     {
       $unwind: {
         path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departaments",
+        localField: "member.departamentId",
+        foreignField: "_id",
+        as: "member.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.departament",
         preserveNullAndEmptyArrays: true,
       },
     },
