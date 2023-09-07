@@ -10,3 +10,4 @@ export { default as ChangelogModel } from "./ChangeLog";
 export { default as NewsModel } from "./News";
 export { default as BadgesModel } from "./Badges";
 export { default as ProjectsModel } from "./Projects";
+export { default as DescriptionModel } from "./Description";
