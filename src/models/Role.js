@@ -20,7 +20,7 @@ const RoleSchema = new mongoose.Schema(
     },
     departamentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'departament', // Reference to the 'departament' collection
+      ref: 'departament',
     },
   },
   { timestamps: false, versionKey: false }

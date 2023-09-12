@@ -13,7 +13,7 @@ type Query {
 input RoleInput {
   name: String!
   access: Int!
-  departamentId: ID
+  departamentId: ID!
 }
 
 input RoleUpdate {
