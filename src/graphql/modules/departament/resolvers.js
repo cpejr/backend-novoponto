@@ -4,6 +4,7 @@ import { DepartamentModel } from "../../../models";
 export default {
   Query: {
     departament: () => DepartamentModel.find().sort("name"),
+    departamentById: (_, { departamentId }) => DepartamentModel.findById(departamentId),
   },
 
   Mutation: {

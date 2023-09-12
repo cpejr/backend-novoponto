@@ -2,8 +2,8 @@ type Role {
   _id: ID!
   name: String!
   access: Int!
-  departamentId: ID!
-  departament: Departament!
+  departamentId: ID
+  departament: Departament
 }
 
 type Query {
@@ -13,7 +13,7 @@ type Query {
 input RoleInput {
   name: String!
   access: Int!
-  departamentId: ID!
+  departamentId: ID
 }
 
 input RoleUpdate {
@@ -25,5 +25,5 @@ input RoleUpdate {
 type Mutation {
   createRole(data: RoleInput!): Role!
   deleteRole(roleId: ID!): Role
-  updateRole(roleId: ID, data: RoleUpdate): Role
+  updateRole(roleId: ID!, data: RoleUpdate): Role
 }

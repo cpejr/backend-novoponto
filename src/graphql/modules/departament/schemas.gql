@@ -7,6 +7,7 @@ type Departament {
 
 type Query {
   departament: [Departament]!
+  departamentById(departamentId: ID!): Departament!
 }
 
 input DepartamentInput {
