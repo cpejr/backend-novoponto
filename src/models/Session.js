@@ -101,6 +101,20 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
   ]);
 };
 

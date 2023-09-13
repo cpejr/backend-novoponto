@@ -74,8 +74,8 @@ type Mutation {
     description: String
   ): Session!
   endSession(memberId: ID!): Session!
-  updateSession(_id: ID!, data: SessionUpdateInput!): Session!
-  deleteSession(_id: ID!): Boolean
+  updateSession(sessionId: ID!, data: SessionUpdateInput!): Session!
+  deleteSession(sessionId: ID!): Session
   endAllSessions: Int!
 }
 
