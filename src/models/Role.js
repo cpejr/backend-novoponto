@@ -17,7 +17,11 @@ const RoleSchema = new mongoose.Schema(
     compileGroup: {
       type: Number,
       default: 1
-    }
+    },
+    departamentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'departament',
+    },
   },
   { timestamps: false, versionKey: false }
 );
