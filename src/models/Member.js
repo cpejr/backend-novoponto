@@ -14,7 +14,7 @@ const MemberSchema = new mongoose.Schema(
   {
     firebaseId: String,
     name: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true},
+    email: { type: String, required: true, unique: true },
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
     tribeId: {
@@ -25,16 +25,18 @@ const MemberSchema = new mongoose.Schema(
     },
     departamentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "departaments",
+      ref: "departament",
       required: false,
       default: null,
     },
-    badgeId: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "badges",
-      required: false,
-      default: null,
-    }],
+    badgeId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "badges",
+        required: false,
+        default: null,
+      },
+    ],
     imageLink: String,
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
@@ -73,7 +75,7 @@ MemberSchema.virtual("tribe", {
   justOne: true,
 });
 MemberSchema.virtual("departament", {
-  ref: "departaments", // The model to use
+  ref: "departament", // The model to use
   localField: "departamentId", // Find people where `localField`
   foreignField: "_id", // is equal to `foreignField`
   // If `justOne` is true, 'members' will be a single doc as opposed to
@@ -146,7 +148,7 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
     },
     {
       $lookup: {
-        from: "departaments",
+        from: "departament",
         localField: "departamentId",
         foreignField: "_id",
         as: "departament",
@@ -301,7 +303,7 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
     },
     {
       $lookup: {
-        from: "departaments",
+        from: "departament",
         localField: "member.departamentId",
         foreignField: "_id",
         as: "member.departament",
