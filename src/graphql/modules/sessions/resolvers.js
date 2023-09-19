@@ -42,6 +42,9 @@ export default {
   },
 
   Mutation: {
+    deleteSession: async (_, { sessionId }) => SessionModel.findByIdAndDelete(sessionId),
+    updateSession: (_, { sessionId, data }) =>
+      SessionModel.findOneAndUpdate({ _id: sessionId }, data, { new: true }),
     startSession: async (
       _,
       { memberId, isPresential, taskId, projectId, description },
