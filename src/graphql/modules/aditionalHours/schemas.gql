@@ -3,6 +3,11 @@ type AditionalHour {
   memberId: ID!
   member: Member
   isPresential: Boolean
+  coment: String
+  initialHour: String
+  finalHours: String
+  projectId: ID!
+  project: Project
 
   date: DateScalar!
   """
@@ -44,6 +49,10 @@ input AditionalHourCreateInput {
   memberId: ID!
   date: DateScalar!
   isPresential: Boolean
+  coment: String
+  initialHour: String
+  finalHours: String
+  projectId: ID!
 
   """
   Quantidade de milisegundos para adicionar ao compilado no dia informado

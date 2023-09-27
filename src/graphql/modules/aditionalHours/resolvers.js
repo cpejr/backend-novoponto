@@ -34,11 +34,14 @@ export default {
   },
 
   Query: {
-    aditionalHours: (_, { memberId, startDate, endDate, isPresential }) =>
+    aditionalHours: (_, { memberId, startDate, endDate, isPresential, initalHour, finalHours, coment, project }) => //ver se manter finalHours funciona ou tem que ser finalHour
       AditionalHourModel.findByDateRangeWithDuration(
         { memberId },
         { startDate, endDate },
-        {isPresential},
+        { isPresential },
+        { initalHour, finalHours },
+        { coment },
+        { project },
       ),
   },
 
