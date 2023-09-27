@@ -5,7 +5,7 @@ type AditionalHour {
   isPresential: Boolean
   coment: String
   initialHour: String
-  finalHours: String
+  finalHour: String
   projectId: ID!
   project: Project
 
@@ -20,10 +20,9 @@ type AditionalHour {
   no formato hh:mm
   """
   formatedAmount: String!
-  
+
   """
-    
-  A descrição somente é retornada se o usuário estiver autenticado e o 
+  A descrição somente é retornada se o usuário estiver autenticado e o
   memberId for o mesmo da sessão ou o nível de acesso do cargo for
   superior a 1
   """
@@ -51,7 +50,7 @@ input AditionalHourCreateInput {
   isPresential: Boolean
   coment: String
   initialHour: String
-  finalHours: String
+  finalHour: String
   projectId: ID!
 
   """

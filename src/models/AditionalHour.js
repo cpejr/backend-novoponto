@@ -11,14 +11,14 @@ const AditionalHourSchema = new mongoose.Schema(
     date: { type: Date, required: true },
     amount: { type: Number, required: true },
     description: { type: String },
-    isPresential: { type: Boolean, required: true},
+    isPresential: { type: Boolean, required: true },
     projectId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
     },
-    initialHour: { type: Number, required: true },
-    finalHour: { type: Number, required: true },
-    coment: { type: String, required: true},
+    initialHour: { type: String, required: true },
+    finalHour: { type: String, required: true },
+    coment: { type: String, required: true },
   },
   { timestamps: false, versionKey: false }
 );
@@ -39,28 +39,14 @@ AditionalHourSchema.virtual("project", {
   justOne: true,
 });
 
-AditionalHourSchema.virtual("initalHour", {
-  ref: "initialHour",
-  localField: "initialHour",
-  foreignField: "_id", //ver se esse precisa
-  justOne: true,
-});
-
-AditionalHourSchema.virtual("finalHours", {
-  ref: "finalHour",
-  localField: "finalHour",
-  foreignField: "_id", //ver se esse precisa
-  justOne: true,
-});
-
 AditionalHourSchema.statics.findByDateRangeWithDuration = function (
   match,
   { startDate, endDate },
   { isPresential }
 ) {
   const newMatch = { ...match };
-  
-  castToObjectIdFields(newMatch, ["memberId", "_id"])
+
+  castToObjectIdFields(newMatch, ["memberId", "_id"]);
 
   if (startDate || endDate) {
     const start = {};
@@ -69,7 +55,7 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
 
     newMatch.date = start;
   }
-  
+
   if (typeof isPresential === "boolean") {
     newMatch.isPresential = isPresential;
   }
@@ -89,34 +75,6 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     {
       $unwind: {
         path: "$project",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "initialHour",
-        localField: "initialHour",
-        foreignField: "_id",
-        as: "initialHour",
-      },
-    },
-    {
-      $unwind: {
-        path: "$initialHour",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "finalHour",
-        localField: "finalHour",
-        foreignField: "_id",
-        as: "finalHour",
-      },
-    },
-    {
-      $unwind: {
-        path: "$finalHour",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -157,34 +115,6 @@ AditionalHourSchema.statics.getAllMembersSessions = function (
     {
       $unwind: {
         path: "$project",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "initialHour",
-        localField: "initialHour",
-        foreignField: "_id",
-        as: "initialHour",
-      },
-    },
-    {
-      $unwind: {
-        path: "$initialHour",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "finalHour",
-        localField: "finalHour",
-        foreignField: "_id",
-        as: "finalHour",
-      },
-    },
-    {
-      $unwind: {
-        path: "$finalHour",
         preserveNullAndEmptyArrays: true,
       },
     },
