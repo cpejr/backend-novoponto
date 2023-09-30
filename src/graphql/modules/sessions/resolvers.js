@@ -113,10 +113,9 @@ export default {
       return sessions.n;
     },
     endSessionAfter20Hours: async (_, __, { pubsub }) => {
-      const twentyHoursInMillis =  5 * 60 * 1000;
+      const twentyHoursInMillis = 20 * 60 * 60 * 1000; 
     
       const sessions = await SessionModel.find({
-        memberId,
         end: null,
       }).populate("member");
     
@@ -150,7 +149,7 @@ export default {
         }
       }
     
-      return updatedSessions.n;
+      return true;
     },
     
     
