@@ -44,7 +44,7 @@ export default {
         initalHour,
         finalHour,
         coment,
-        project,
+        projectId,
       } //ver se manter finalHours funciona ou tem que ser finalHour
     ) =>
       AditionalHourModel.findByDateRangeWithDuration(
@@ -53,7 +53,7 @@ export default {
         { isPresential },
         { initalHour, finalHour },
         { coment },
-        { project }
+        { projectId }
       ),
   },
 

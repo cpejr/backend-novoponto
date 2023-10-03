@@ -16,9 +16,13 @@ const AditionalHourSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "projects",
     },
+    taskId: { 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "tasks",
+      required: true 
+    },
     initialHour: { type: String, required: true },
     finalHour: { type: String, required: true },
-    coment: { type: String, required: true },
   },
   { timestamps: false, versionKey: false }
 );
@@ -36,6 +40,13 @@ AditionalHourSchema.virtual("project", {
   ref: "projects",
   localField: "projectId",
   foreignField: "_id",
+  justOne: true,
+});
+
+AditionalHourSchema.virtual("task", {
+  ref: "tasks", 
+  localField: "taskId", 
+  foreignField: "_id", 
   justOne: true,
 });
 
@@ -78,6 +89,20 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
   ]);
 };
 
@@ -115,6 +140,20 @@ AditionalHourSchema.statics.getAllMembersSessions = function (
     {
       $unwind: {
         path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
         preserveNullAndEmptyArrays: true,
       },
     },

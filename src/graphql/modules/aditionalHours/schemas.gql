@@ -3,11 +3,12 @@ type AditionalHour {
   memberId: ID!
   member: Member
   isPresential: Boolean
-  coment: String
   initialHour: String
   finalHour: String
   projectId: ID!
   project: Project
+  taskId: ID!
+  task: Task
 
   date: DateScalar!
   """
@@ -41,6 +42,8 @@ type Query {
     startDate: DateScalar
     endDate: DateScalar
     isPresential: Boolean
+    projectId: ID!
+    taskId: ID!
   ): [AditionalHour]!
 }
 
@@ -48,9 +51,9 @@ input AditionalHourCreateInput {
   memberId: ID!
   date: DateScalar!
   isPresential: Boolean
-  coment: String
   initialHour: String
   finalHour: String
+  taskId: ID!
   projectId: ID!
 
   """
