@@ -1,58 +1,45 @@
 type AditionalHour {
   _id: ID!
   memberId: ID!
+  taskId: ID!
+  task: Task
   member: Member
+  start: DateScalar!
   isPresential: Boolean
-
-  date: DateScalar!
-  """
-  Quantidade de milisegundos para adicionar ao compilado no dia informado
-  """
-  amount: Int!
-
-  """
-  Quantidade de milisegundos para adicionar ao compilado no dia informado
-  no formato hh:mm
-  """
-  formatedAmount: String!
-  
-  """
-    
-  A descrição somente é retornada se o usuário estiver autenticado e o 
-  memberId for o mesmo da sessão ou o nível de acesso do cargo for
-  superior a 1
-  """
+  projectId: ID!
   description: String
-  action: AditionalHourTypes!
-}
-
-enum AditionalHourTypes {
-  ADD
-  REMOVE
+  project: Project
+  """
+  Se end é undefined, significa que o usuário ainda está logado
+  """
+  end: DateScalar
+  date: DateScalar
+  """
+  Duração da sessão em milisegundos,
+  A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
+  """
+  duration: Int!
+  """
+  Duração da sessão no formato hh:mm
+  A duração pode ser relativa à data de fim, ou, caso não esta exista, a hora atual.
+  """
+  formatedDuration: String!
 }
 
 type Query {
-  aditionalHours(
-    memberId: ID!
-    startDate: DateScalar
-    endDate: DateScalar
-    isPresential: Boolean
-  ): [AditionalHour]!
-}
-
-input AditionalHourCreateInput {
-  memberId: ID!
-  date: DateScalar!
-  isPresential: Boolean
-
-  """
-  Quantidade de milisegundos para adicionar ao compilado no dia informado
-  """
-  amount: Int!
-  description: String
+  AditionalHours(memberId: ID!): [AditionalHour]!
 }
 
 type Mutation {
-  sendAditionalHour(data: AditionalHourCreateInput!): AditionalHour!
-  deleteAditionalHour(_id: ID!): Boolean
+  setAditionalHours(
+    memberId: ID!
+    isPresential: Boolean!
+    taskId: ID!
+    start: String!
+    end: String!
+    date: String!
+    projectId: ID
+    description: String
+  ): AditionalHour!
+  deleteAditionalHours(aditionalHoursId: ID!): AditionalHour
 }

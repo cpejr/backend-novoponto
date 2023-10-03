@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
+import _ from "lodash";
 import { castToObjectIdFields } from "../utils/modelsFunctions";
+import { DateTime } from "luxon";
 
 const AditionalHourSchema = new mongoose.Schema(
   {
@@ -8,10 +10,23 @@ const AditionalHourSchema = new mongoose.Schema(
       ref: "members",
       required: true,
     },
-    date: { type: Date, required: true },
-    amount: { type: Number, required: true },
-    description: { type: String },
-    isPresential: { type: Boolean, required: true},
+    start: { type: String, required: true },
+    end: { type: String, default: true },
+    date: { type: String, required: true },
+    isPresential: { type: Boolean, default: false, required: true },
+    taskId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "tasks",
+      required: true,
+    },
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
+    description: {
+      type: mongoose.Schema.Types.String,
+      ref: "description",
+    },
   },
   { timestamps: false, versionKey: false }
 );
@@ -25,45 +40,30 @@ AditionalHourSchema.virtual("member", {
   justOne: true,
 });
 
-AditionalHourSchema.statics.findByDateRangeWithDuration = function (
+AditionalHourSchema.virtual("task", {
+  ref: "tasks", // The model to use
+  localField: "taskId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, tasks' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+
+AditionalHourSchema.virtual("project", {
+  ref: "projects",
+  localField: "projectId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+AditionalHourSchema.statics.findByDateRangeWithDuration = async function (
   match,
   { startDate, endDate },
   { isPresential }
 ) {
   const newMatch = { ...match };
-  
-  castToObjectIdFields(newMatch, ["memberId", "_id"])
 
-  if (startDate || endDate) {
-    const start = {};
-    if (startDate) start["$gte"] = startDate;
-    if (endDate) start["$lte"] = endDate;
-
-    newMatch.date = start;
-  }
-  
-  if (typeof isPresential === "boolean") {
-    newMatch.isPresential = isPresential;
-  }
-
-  return this.aggregate([
-    {
-      $match: newMatch,
-    },
-    {
-      $addFields: {
-        duration: { $subtract: ["$end", "$start"] },
-      },
-    },
-  ]);
-};
-
-AditionalHourSchema.statics.getAllMembersSessions = function (
-  match,
-  { startDate, endDate },
-  { isPresential }
-) {
-  const newMatch = { ...match };
+  castToObjectIdFields(newMatch, ["memberId", "_id"]);
 
   if (startDate || endDate) {
     const start = {};
@@ -84,6 +84,141 @@ AditionalHourSchema.statics.getAllMembersSessions = function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ]);
+};
+
+AditionalHourSchema.statics.getLoggedMembers = async function () {
+  return this.aggregate([
+    {
+      $match: {
+        end: null,
+      },
+    },
+    {
+      $lookup: {
+        from: "members",
+        localField: "memberId",
+        foreignField: "_id",
+        as: "member",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "roles",
+        localField: "member.roleId",
+        foreignField: "_id",
+        as: "member.role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departament",
+        localField: "member.departamentId",
+        foreignField: "_id",
+        as: "member.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "badges",
+        localField: "member.badgeId",
+        foreignField: "_id",
+        as: "member.Badge",
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $sort: {
+        start: -1,
       },
     },
   ]);

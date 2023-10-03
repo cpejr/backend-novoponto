@@ -1,66 +1,54 @@
-import { AuthenticationError, UserInputError } from "apollo-server-errors";
-import { MemberModel, AditionalHourModel } from "../../../models";
-import { mili2time } from "../../../utils/dateFunctions";
+import { AditionalHourModel, MemberModel } from "../../../models";
 
 export default {
   AditionalHour: {
-    member: ({ member, memberId }) => {
-      if (member) return member;
-      else return MemberModel.findById(memberId);
+    member: async ({ member, memberId }) => {
+      if (!member) MemberModel.findById(memberId).populate("role");
+      return member;
     },
 
-    formatedAmount: ({ amount: duration, end, start }) => {
-      let dur = Math.abs(duration);
-
-      if (!dur) {
-        if (end) dur = end - start;
-        else dur = Date.now() - start;
-      }
-
-      return mili2time(dur);
-    },
-
-    action: ({ amount }) => {
-      if (amount > 0) return "ADD";
-      else return "REMOVE";
-    },
-
-    description: ({ memberId, description }, _, { auth }) => {
-      if (auth?.member?.role?.access > 0 || auth?.member?._id == memberId)
-        return description || "";
-
-      return;
+    duration: ({ end, start }) => {
+      return end - start;
     },
   },
 
   Query: {
-    aditionalHours: (_, { memberId, startDate, endDate, isPresential }) =>
-      AditionalHourModel.findByDateRangeWithDuration(
-        { memberId },
-        { startDate, endDate },
-        {isPresential},
-      ),
+    AditionalHours: (_, { memberId }) => AditionalHourModel.find({ memberId }),
   },
 
   Mutation: {
-    sendAditionalHour: async (_, { data }) => AditionalHourModel.create(data),
+    deleteAditionalHours: async (_, { aditionalHoursId }) =>
+      AditionalHourModel.findByIdAndDelete(aditionalHoursId),
+    setAditionalHours: async (
+      _,
+      {
+        memberId,
+        isPresential,
+        start,
+        end,
+        date,
+        taskId,
+        projectId,
+        description,
+      }
+    ) => {
+      let aditionalHours = await AditionalHourModel.create({
+        memberId,
+        isPresential,
+        taskId,
+        projectId,
+        description,
+        start,
+        end,
+        date,
+      });
+      let addhours = await AditionalHourModel.findOne(aditionalHours)
+        .populate("task")
+        .populate("project")
+        .exec();
+      console.log(addhours);
 
-    deleteAditionalHour: async (_, { _id }, { auth }) => {
-      let result;
-
-      if (auth?.member?.role?.access > 0)
-        result = await AditionalHourModel.findByIdAndDelete(_id);
-      else if (auth?.member?._id)
-        result = await AditionalHourModel.findOneAndDelete({
-          _id,
-          memberId: auth?.member?._id,
-        });
-      else throw new AuthenticationError("O usário não está autenticado");
-
-      if (!result || result === null)
-        throw new UserInputError("Horário adicional não encontrado");
-
-      return !!result;
+      return addhours;
     },
   },
 };
