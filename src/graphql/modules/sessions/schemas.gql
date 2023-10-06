@@ -6,7 +6,9 @@ type Session {
   member: Member
   start: DateScalar!
   isPresential: Boolean
-
+  projectId: ID!
+  description: String
+  project: Project
   """
   Se end é undefined, significa que o usuário ainda está logado
   """
@@ -31,6 +33,8 @@ type Query {
     endDate: DateScalar
     isPresential: Boolean
     taskId: ID!
+    projectId: ID!
+    description: String
   ): [Session]!
 
   sessions(
@@ -39,6 +43,8 @@ type Query {
     endDate: DateScalar
     isPresential: Boolean
     taskId: ID!
+    projectId: ID
+    description: String
   ): [Session]!
 
   loggedMembers: [Session]!
@@ -60,7 +66,13 @@ input SessionUpdateInput {
 }
 
 type Mutation {
-  startSession(memberId: ID!, isPresential: Boolean!, taskId: ID!): Session!
+  startSession(
+    memberId: ID!
+    isPresential: Boolean!
+    taskId: ID!
+    projectId: ID
+    description: String
+  ): Session!
   endSession(memberId: ID!): Session!
   updateSession(_id: ID!, data: SessionUpdateInput!): Session!
   deleteSession(_id: ID!): Boolean

@@ -1,0 +1,17 @@
+type Description{
+    _id: ID!
+    description: String!
+}
+
+type Query {
+  descriptions: [Description]!
+  description(_id: ID!): Description
+}
+input DescriptionInput {
+    description: String!
+}
+
+type Mutation{
+    createDescription(data: DescriptionInput!): Description!
+    deleteDescription(_id: ID!): Description
+}
