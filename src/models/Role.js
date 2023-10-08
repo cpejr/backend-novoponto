@@ -16,11 +16,12 @@ const RoleSchema = new mongoose.Schema(
     // 2 --> --- de trainees
     compileGroup: {
       type: Number,
-      default: 1
+      default: 1,
     },
     departamentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'departament',
+      ref: "departament",
+      required: false,
     },
   },
   { timestamps: false, versionKey: false }
