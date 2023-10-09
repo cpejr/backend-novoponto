@@ -26,3 +26,4 @@ type Mutation {
   deleteTribe(tribeId: ID!): Tribe
   updateTribe(tribeId: ID, data: TribeUpdate): Tribe
 }
+ 

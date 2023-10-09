@@ -101,6 +101,20 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
   ]);
 };
 
@@ -150,6 +164,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
     {
       $unwind: {
         path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departament",
+        localField: "member.departamentId",
+        foreignField: "_id",
+        as: "member.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.departament",
         preserveNullAndEmptyArrays: true,
       },
     },
