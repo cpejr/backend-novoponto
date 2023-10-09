@@ -4,7 +4,7 @@ import _ from "lodash";
 import { castToObjectIdFields } from "../utils/modelsFunctions";
 import { MemberModel } from "./";
 import { TaskModel } from "./";
-
+import { ProjectModel } from "./Projects";
 const SessionSchema = new mongoose.Schema(
   {
     memberId: {
@@ -18,7 +18,15 @@ const SessionSchema = new mongoose.Schema(
     taskId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "tasks",
-      required: false,
+      required: true,
+    },
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "projects",
+    },
+    description: {
+      type: mongoose.Schema.Types.String,
+      ref: "description",
     },
   },
   { timestamps: false, versionKey: false }
@@ -39,6 +47,13 @@ SessionSchema.virtual("task", {
   foreignField: "_id", // is equal to `foreignField`
   // If `justOne` is true, tasks' will be a single doc as opposed to
   // an array. `justOne` is false by default.
+  justOne: true,
+});
+
+SessionSchema.virtual("project", {
+  ref: "projects",
+  localField: "projectId",
+  foreignField: "_id",
   justOne: true,
 });
 
@@ -83,6 +98,20 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     {
       $unwind: {
         path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -140,6 +169,28 @@ SessionSchema.statics.getLoggedMembers = async function () {
     },
     {
       $lookup: {
+        from: "departament",
+        localField: "member.departamentId",
+        foreignField: "_id",
+        as: "member.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "badges",
+        localField: "member.badgeId",
+        foreignField: "_id",
+        as: "member.Badge",
+      },
+    },
+    {
+      $lookup: {
         from: "tasks",
         localField: "taskId",
         foreignField: "_id",
@@ -149,6 +200,20 @@ SessionSchema.statics.getLoggedMembers = async function () {
     {
       $unwind: {
         path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
         preserveNullAndEmptyArrays: true,
       },
     },

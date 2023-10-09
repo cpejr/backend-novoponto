@@ -27,9 +27,9 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role").populate("tribe"),
+      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("departament").populate("Badge"),
     member: (_, { _id }) =>
-      MemberModel.findById(_id).populate("role").populate("tribe"),
+      MemberModel.findById(_id).populate("role").populate("tribe").populate("departament").populate("Badge"),
   },
 
   Mutation: {
@@ -81,7 +81,9 @@ export default {
           }
         )
           .populate("role")
-          .populate("tribe");
+          .populate("tribe")
+          .populate("departament")
+          .populate("Badge");
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
@@ -96,8 +98,9 @@ export default {
         new: true,
       })
         .populate("role")
-        .populate("tribe");
-
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge");
       member = member.toJSON({ virtuals: true });
 
       const accessToken = generateAccessToken(member);
@@ -106,7 +109,7 @@ export default {
 
     login: async (_, { data: { uid, email, photoURL } }) => {
       const foundMember = await MemberModel.findOne({ email })
-        .populate(["role", "tribe"])
+        .populate(["role", "tribe","departament", "Badge"])
         .exec();
       if (!foundMember)
         throw new AuthenticationError(
@@ -140,7 +143,9 @@ export default {
           _id: auth.member._id,
         })
           .populate("role")
-          .populate("tribe");
+          .populate("tribe")
+          .populate("departament")
+          .populate("Badge");
 
         newMember = newMember.toJSON({ virtuals: true });
 

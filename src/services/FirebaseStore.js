@@ -69,14 +69,76 @@ async function uploadFile(file, folder) {
   });
 }
 
+async function uploadBadge(file, folder) {
+  return new Promise((resolve, reject) => {
+    const fileName = `Public/${folder}`;
+    //Sets the adress where the file will be stored
+    const blob = storage.bucket(bucketName).file(fileName);
+    //Create a writeStream that will receive the file data
+    const blobWriter = blob.createWriteStream({
+      resumable: false,
+      metadata: {
+        contentType: file.mimetype,
+        metadata: {
+          firebaseStorageDownloadTokens: v4(),
+        },
+      },
+    });
+    //Turns the file into readStream
+    var readStream = file.createReadStream();
+    //Pushes the readStrem content into writeStream on bucket
+    readStream.pipe(blobWriter);
+    // If there's an error
+    blobWriter.on("error", (err) => {
+      console.warn(err);
+      reject(err);
+    });
+    // If all is good and done
+    blobWriter.on("finish", () => {
+      // Assembling public URL for accessing the file via HTTP
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(
+        blob.name
+      )}?alt=media`;
+
+      // Return the file's public URL
+      resolve(publicUrl);
+    });
+  });
+}
+
 async function deleteFolder(folderName) {
   // Deletes the file from the bucket
   await storage.bucket(bucketName).deleteFiles({ prefix: folderName });
+}
+
+async function deleteBadge(folderName) {
+  try {
+    // Define o caminho do arquivo que deseja excluir
+    const badgePath = `Public/badges/${folderName}`;
+
+    // Obtém uma referência para o arquivo que deseja excluir
+    const file = storage.bucket(bucketName).file(badgePath);
+
+    // Verifica se o arquivo existe
+    const exists = await file.exists();
+
+    // Se o arquivo existir, exclui-o
+    if (exists[0]) {
+      await file.delete();
+      console.log(`Arquivo ${badgePath} excluído com sucesso do bucket ${bucketName}.`);
+    } else {
+      console.log(`Arquivo ${badgePath} não encontrado no bucket ${bucketName}.`);
+    }
+  } catch (error) {
+    console.error(`Erro ao excluir o arquivo ${badgePath}: ${error}`);
+  }
 }
 
 module.exports = {
   config,
   listFiles,
   uploadFile,
+  uploadBadge,
   deleteFolder,
+  deleteBadge,
 };

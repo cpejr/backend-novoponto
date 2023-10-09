@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
 import startServer from "./startServer";
@@ -10,5 +10,5 @@ import startServer from "./startServer";
 //  Mutation => Manipular dados(POST/PUT/PATCH/DELETE)
 //  Scalar types => String, Int, Boolean, Float e ID
 
-dotenv.config();
+// dotenv.config();
 startServer({ typeDefs, resolvers });

@@ -14,7 +14,7 @@ const MemberSchema = new mongoose.Schema(
   {
     firebaseId: String,
     name: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true},
+    email: { type: String, required: true, unique: true },
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
     tribeId: {
@@ -23,6 +23,20 @@ const MemberSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
+    departamentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "departament",
+      required: false,
+      default: null,
+    },
+    badgeId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "badges",
+        required: false,
+        default: null,
+      },
+    ],
     imageLink: String,
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
@@ -59,6 +73,24 @@ MemberSchema.virtual("tribe", {
   // If `justOne` is true, 'members' will be a single doc as opposed to
   // an array. `justOne` is false by default.
   justOne: true,
+});
+MemberSchema.virtual("departament", {
+  ref: "departament", // The model to use
+  localField: "departamentId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+});
+
+// Popular automagicamente o campo badge
+MemberSchema.virtual("Badge", {
+  ref: "badges", // tribesThe model to use
+  localField: "badgeId", // Find people where `localField`
+  foreignField: "_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: false,
 });
 
 // Quando deletar um membro, deletar suas sessoes e justificativas
@@ -112,6 +144,28 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
       $unwind: {
         path: "$tribe",
         preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departament",
+        localField: "departamentId",
+        foreignField: "_id",
+        as: "departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "badges",
+        localField: "badgeId",
+        foreignField: "_id",
+        as: "Badge",
       },
     },
     {
@@ -245,6 +299,28 @@ MemberSchema.statics.getAllMembersDataForCompilation = async function ({
       $unwind: {
         path: "$member.tribe",
         preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departament",
+        localField: "member.departamentId",
+        foreignField: "_id",
+        as: "member.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "badges",
+        localField: "member.badgeId",
+        foreignField: "_id",
+        as: "member.Badge",
       },
     },
     {
