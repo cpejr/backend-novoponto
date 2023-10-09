@@ -68,6 +68,45 @@ export default {
       return { sessions, total, aditionalHours, totalPresential };
     },
 
+    allSessions: async (_, { startDate, endDate, isPresential }) => {
+      try {
+        
+      const sessions = await SessionModel.findByDateRangeWithDuration(
+        {},
+        { startDate, endDate },
+        { isPresential }
+      );
+      
+      const aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
+        {},
+        { startDate, endDate },
+        { isPresential }
+      );
+
+      let totalPresential = 0;
+
+      let total = 0;
+      
+      sessions.forEach((session) => {
+        if (session.isPresential) {
+          totalPresential += session.duration;
+        }
+        total += session.duration;
+      });
+
+      aditionalHours.forEach((aditionalHour) => {
+        if (aditionalHour.isPresential) {
+          totalPresential += aditionalHour.amount;
+        }
+        total += aditionalHour.amount;
+      });
+
+      return { sessions, total, totalPresential };
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
     getMandatoriesReport: async (
       _,
       { memberId, startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
