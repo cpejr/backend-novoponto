@@ -120,6 +120,47 @@ export default {
 
       return sessions.n;
     },
+    endSessionAfter20Hours: async (_, __, { pubsub }) => {
+      const twentyHoursInMillis = 20 * 60 * 60 * 1000; 
+    
+      const sessions = await SessionModel.find({
+        end: null,
+      }).populate("member");
+    
+      const sessionsToUpdate = sessions.filter((session) => {
+        const currentDuration = Date.now() - session.start;
+        return currentDuration >= twentyHoursInMillis;
+      });
+    
+      const updatedSessions = [];
+    
+      for (const session of sessionsToUpdate) {
+        if (session._id) {
+          const updatedSession = await SessionModel.findByIdAndUpdate(
+            session._id,
+            {
+              end: Date.now(),
+            },
+            { new: true }
+          );
+    
+          if (updatedSession) {
+            updatedSessions.push(updatedSession);
+    
+            pubsub.publish(SESSION_UPDATE, {
+              sessionUpdate: {
+                session: updatedSession,
+                action: "FINISHED",
+              },
+            });
+          }
+        }
+      }
+    
+      return true;
+    },
+    
+    
   },
 
   Subscription: {

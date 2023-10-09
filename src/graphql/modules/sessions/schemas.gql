@@ -79,6 +79,7 @@ type Mutation {
   updateSession(sessionId: ID!, data: SessionUpdateInput!): Session!
   deleteSession(sessionId: ID!): Session
   endAllSessions: Int!
+  endSessionAfter20Hours: Boolean
 }
 
 enum Actions {
