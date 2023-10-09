@@ -42,16 +42,25 @@ export default {
   },
 
   Mutation: {
-    startSession: async (_, { memberId, isPresential, taskId }, { pubsub }) => {
+    deleteSession: async (_, { sessionId }) => SessionModel.findByIdAndDelete(sessionId),
+    updateSession: (_, { sessionId, data }) =>
+      SessionModel.findOneAndUpdate({ _id: sessionId }, data, { new: true }),
+    startSession: async (
+      _,
+      { memberId, isPresential, taskId, projectId, description },
+      { pubsub }
+    ) => {
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
-      }).populate(["member", "task"]);
+      }).populate(["member", "task", "project"]);
       if (!islogged) {
         let newSession = await SessionModel.create({
           memberId,
           isPresential,
           taskId,
+          projectId,
+          description,
           start: Date.now(),
         });
 
@@ -63,7 +72,6 @@ export default {
             action: "STARTED",
           },
         });
-
         newSession.member = MemberModel.findOne({ _id: memberId });
         return newSession;
       } else

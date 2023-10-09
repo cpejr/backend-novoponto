@@ -27,9 +27,9 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("Badge"),
+      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("departament").populate("Badge"),
     member: (_, { _id }) =>
-      MemberModel.findById(_id).populate("role").populate("tribe").populate("Badge"),
+      MemberModel.findById(_id).populate("role").populate("tribe").populate("departament").populate("Badge"),
   },
 
   Mutation: {
@@ -82,6 +82,7 @@ export default {
         )
           .populate("role")
           .populate("tribe")
+          .populate("departament")
           .populate("Badge");
       } else if (!!memberId) {
         throw new ForbiddenError(
@@ -98,6 +99,7 @@ export default {
       })
         .populate("role")
         .populate("tribe")
+        .populate("departament")
         .populate("Badge");
       member = member.toJSON({ virtuals: true });
 
@@ -107,7 +109,7 @@ export default {
 
     login: async (_, { data: { uid, email, photoURL } }) => {
       const foundMember = await MemberModel.findOne({ email })
-        .populate(["role", "tribe", "Badge"])
+        .populate(["role", "tribe","departament", "Badge"])
         .exec();
       if (!foundMember)
         throw new AuthenticationError(
@@ -142,6 +144,7 @@ export default {
         })
           .populate("role")
           .populate("tribe")
+          .populate("departament")
           .populate("Badge");
 
         newMember = newMember.toJSON({ virtuals: true });
