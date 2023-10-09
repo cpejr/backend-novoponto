@@ -25,7 +25,8 @@
     "luxon": "^1.26.0",
     "merge-graphql-schemas": "^1.7.8",
     "mongoose": "^5.12.3",
-    "yarn": "^1.22.18"
+    "yarn": "^1.22.18",
+    "repeat-string": "^1.6.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",
