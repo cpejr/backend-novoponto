@@ -1,5 +1,5 @@
 import { AditionalHourModel, MemberModel, SessionModel } from "../../../models";
-import { mili2time } from "../../../utils/dateFunctions";
+import { mili2time, mili2timeWith4Digits } from "../../../utils/dateFunctions";
 
 export default {
   CompiledMember: {
@@ -16,6 +16,34 @@ export default {
       if (!dur) dur = 0;
 
       return mili2time(dur);
+    },
+  },
+  CompiledSessions: {
+    formatedTotal: ({ total }) => {
+      let dur = total;
+
+      if (!dur) dur = 0;
+
+      let formatedTotal = mili2timeWith4Digits(dur);
+
+      if (formatedTotal[0] === '0') {
+        return mili2time(dur);
+      } else {
+        return formatedTotal;
+      }
+    },
+    formatedPresentialTotal: ({ totalPresential }) => {
+      let dur = totalPresential;
+
+      if (!dur) dur = 0;
+
+      let formatedPresentialTotal = mili2timeWith4Digits(dur);
+
+      if (formatedPresentialTotal[0] === '0') {
+        return mili2time(dur);
+      } else {
+        return formatedPresentialTotal;
+      }
     },
   },
 

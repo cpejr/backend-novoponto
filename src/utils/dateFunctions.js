@@ -9,4 +9,16 @@ function mili2time(timeInMilis) {
 	else return pad(hours, 3) + ":" + pad(minutes, 2);
 }
 
-export { mili2time };
+function mili2timeWith4Digits(timeInMilis) {
+  let pad = function (num, size) {
+    return ("0000" + num).slice(size * -1);
+  };
+  let time = parseFloat(timeInMilis);
+  let hours = Math.floor(time / 1000 / 60 / 60);
+  let minutes = Math.floor(time / 1000 / 60) % 60;
+  
+  // Ajuste o número de dígitos para 4
+  return pad(hours, 4) + ":" + pad(minutes, 2);
+}
+
+export { mili2time, mili2timeWith4Digits };

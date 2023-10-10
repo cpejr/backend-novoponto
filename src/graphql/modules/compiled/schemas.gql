@@ -15,8 +15,8 @@ type CompiledMember {
 
 type CompiledSessions {
   sessions: [Session]!
-  total: String!
-  totalPresential: String!
+  formatedTotal: String!
+  formatedPresentialTotal: String!
 }
 
 type CompiledMandatory {
