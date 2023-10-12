@@ -24,26 +24,14 @@ export default {
 
       if (!dur) dur = 0;
 
-      let formatedTotal = mili2timeWith4Digits(dur);
-
-      if (formatedTotal[0] === '0') {
-        return mili2time(dur);
-      } else {
-        return formatedTotal;
-      }
+      return mili2time(dur);
     },
     formatedPresentialTotal: ({ totalPresential }) => {
       let dur = totalPresential;
 
       if (!dur) dur = 0;
-
-      let formatedPresentialTotal = mili2timeWith4Digits(dur);
-
-      if (formatedPresentialTotal[0] === '0') {
-        return mili2time(dur);
-      } else {
-        return formatedPresentialTotal;
-      }
+        
+      return mili2time(dur);
     },
   },
 
@@ -129,7 +117,7 @@ export default {
         total += aditionalHour.amount;
       });
 
-      return { sessions, total, totalPresential };
+      return { sessions, total, totalPresential, aditionalHours };
       } catch (error) {
         throw new Error(error);
       }

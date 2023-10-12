@@ -15,6 +15,7 @@ type CompiledMember {
 
 type CompiledSessions {
   sessions: [Session]!
+  aditionalHours: [AditionalHour]!
   formatedTotal: String!
   formatedPresentialTotal: String!
 }
