@@ -19,35 +19,22 @@ export default {
   Mutation: {
     deleteAditionalHours: async (_, { aditionalHoursId }) =>
       AditionalHourModel.findByIdAndDelete(aditionalHoursId),
-    setAditionalHours: async (
+    sendAditionalHours: async (
       _,
       {
-        memberId,
-        isPresential,
-        start,
-        end,
-        date,
-        taskId,
-        projectId,
-        description,
+        data,
       }
     ) => {
-      let aditionalHours = await AditionalHourModel.create({
-        memberId,
-        isPresential,
-        taskId,
-        projectId,
-        description,
-        start,
-        end,
-        date,
-      });
+      let aditionalHours = await AditionalHourModel.create(
+        data
+      );
       let addhours = await AditionalHourModel.findOne(aditionalHours)
         .populate("task")
         .populate("project")
         .exec();
       console.log(addhours);
 
+      //console.log(data);
       return addhours;
     },
   },

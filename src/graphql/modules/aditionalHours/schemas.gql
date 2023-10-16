@@ -30,8 +30,7 @@ type Query {
   AditionalHours(memberId: ID!): [AditionalHour]!
 }
 
-type Mutation {
-  setAditionalHours(
+input AditionalHourCreateInput {
     memberId: ID!
     isPresential: Boolean!
     taskId: ID!
@@ -40,6 +39,11 @@ type Mutation {
     date: String!
     projectId: ID
     description: String
-  ): AditionalHour!
+}
+
+type Mutation {
+  sendAditionalHours(
+    data: AditionalHourCreateInput!
+  ): AditionalHour
   deleteAditionalHours(aditionalHoursId: ID!): AditionalHour
 }
