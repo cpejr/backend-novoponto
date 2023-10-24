@@ -30,7 +30,7 @@ export default {
       let dur = totalPresential;
 
       if (!dur) dur = 0;
-        
+
       return mili2time(dur);
     },
   },
@@ -84,40 +84,40 @@ export default {
       return { sessions, total, aditionalHours, totalPresential };
     },
 
-    allSessions: async (_, { startDate, endDate, isPresential }) => {
+    allSessions: async (_, { startDate, endDate, isPresential, memberId }) => {
       try {
-        
-      const sessions = await SessionModel.findByDateRangeWithDuration(
-        {},
-        { startDate, endDate },
-        { isPresential }
-      );
-      
-      const aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
-        {},
-        { startDate, endDate },
-        { isPresential }
-      );
+        const sessions = await SessionModel.findByDateRangeWithDuration(
+          //{ memberId },
+          { startDate, endDate }
+          // { isPresential }
+        );
 
-      let totalPresential = 0;
+        const aditionalHours =
+          await AditionalHourModel.findByDateRangeWithDuration(
+            {},
+            { startDate, endDate },
+            { isPresential }
+          );
 
-      let total = 0;
-      
-      sessions.forEach((session) => {
-        if (session.isPresential) {
-          totalPresential += session.duration;
-        }
-        total += session.duration;
-      });
+        let totalPresential = 0;
 
-      aditionalHours.forEach((aditionalHour) => {
-        if (aditionalHour.isPresential) {
-          totalPresential += aditionalHour.amount;
-        }
-        total += aditionalHour.amount;
-      });
+        let total = 0;
 
-      return { sessions, total, totalPresential, aditionalHours };
+        sessions.forEach((session) => {
+          if (session.isPresential) {
+            totalPresential += session.duration;
+          }
+          total += session.duration;
+        });
+
+        aditionalHours.forEach((aditionalHour) => {
+          if (aditionalHour.isPresential) {
+            totalPresential += aditionalHour.amount;
+          }
+          total += aditionalHour.amount;
+        });
+
+        return { sessions, total, totalPresential, aditionalHours };
       } catch (error) {
         throw new Error(error);
       }

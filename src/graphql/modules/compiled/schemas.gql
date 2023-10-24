@@ -71,7 +71,8 @@ type Query {
   ): [MandatoryReport]!
 
   allSessions(
-    startDate: DateScalar, 
+    startDate: DateScalar
     endDate: DateScalar
+    memberId: ID
   ): CompiledSessions!
 }
