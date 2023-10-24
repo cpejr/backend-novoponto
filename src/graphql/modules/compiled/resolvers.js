@@ -1,5 +1,5 @@
 import { AditionalHourModel, MemberModel, SessionModel } from "../../../models";
-import { mili2time } from "../../../utils/dateFunctions";
+import { mili2time, mili2timeWith4Digits } from "../../../utils/dateFunctions";
 
 export default {
   CompiledMember: {
@@ -15,6 +15,22 @@ export default {
 
       if (!dur) dur = 0;
 
+      return mili2time(dur);
+    },
+  },
+  CompiledSessions: {
+    formatedTotal: ({ total }) => {
+      let dur = total;
+
+      if (!dur) dur = 0;
+
+      return mili2time(dur);
+    },
+    formatedPresentialTotal: ({ totalPresential }) => {
+      let dur = totalPresential;
+
+      if (!dur) dur = 0;
+        
       return mili2time(dur);
     },
   },
@@ -66,6 +82,45 @@ export default {
       });
 
       return { sessions, total, aditionalHours, totalPresential };
+    },
+
+    allSessions: async (_, { startDate, endDate, isPresential }) => {
+      try {
+        
+      const sessions = await SessionModel.findByDateRangeWithDuration(
+        {},
+        { startDate, endDate },
+        { isPresential }
+      );
+      
+      const aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
+        {},
+        { startDate, endDate },
+        { isPresential }
+      );
+
+      let totalPresential = 0;
+
+      let total = 0;
+      
+      sessions.forEach((session) => {
+        if (session.isPresential) {
+          totalPresential += session.duration;
+        }
+        total += session.duration;
+      });
+
+      aditionalHours.forEach((aditionalHour) => {
+        if (aditionalHour.isPresential) {
+          totalPresential += aditionalHour.amount;
+        }
+        total += aditionalHour.amount;
+      });
+
+      return { sessions, total, totalPresential, aditionalHours };
+      } catch (error) {
+        throw new Error(error);
+      }
     },
 
     getMandatoriesReport: async (

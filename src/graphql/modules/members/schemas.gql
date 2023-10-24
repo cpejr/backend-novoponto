@@ -11,7 +11,7 @@ type MessageData {
 type Member {
   _id: ID!
   firebaseId: String
-  name: String!
+  name: String
   email: String!
   """
   Mensagem de status de login

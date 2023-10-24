@@ -55,6 +55,34 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
         duration: { $subtract: ["$end", "$start"] },
       },
     },
+    {
+      $lookup: {
+        from: "members",
+        localField: "memberId",
+        foreignField: "_id",
+        as: "member",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
   ]);
 };
 
