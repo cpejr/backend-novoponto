@@ -76,6 +76,15 @@ type Mutation {
     description: String
   ): Session!
   endSession(memberId: ID!): Session!
+  addSession( 
+  memberId: ID!
+  isPresential: Boolean!
+  taskId: ID!
+  projectId: ID
+  start: DateScalar!
+  end: DateScalar!
+  description: String
+  ): Session!
   updateSession(sessionId: ID!, data: SessionUpdateInput!): Session!
   deleteSession(sessionId: ID!): Session
   endAllSessions: Int!
