@@ -87,9 +87,9 @@ export default {
     allSessions: async (_, { startDate, endDate, isPresential, memberId }) => {
       try {
         const sessions = await SessionModel.findByDateRangeWithDuration(
-          //{ memberId },
-          { startDate, endDate }
-          // { isPresential }
+          { memberId },
+          { startDate, endDate },
+          { isPresential }
         );
 
         const aditionalHours =
