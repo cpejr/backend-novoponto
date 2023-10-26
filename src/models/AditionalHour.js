@@ -46,6 +46,8 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     newMatch.isPresential = isPresential;
   }
 
+  if (newMatch.memberId === '') delete newMatch.memberId;
+
   return this.aggregate([
     {
       $match: newMatch,
