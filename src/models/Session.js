@@ -64,6 +64,13 @@ SessionSchema.virtual("tribe", {
   justOne: true,
 });
 
+SessionSchema.virtual("departament", {
+  ref: "departaments",
+  localField: "member.departamentId",
+  foreignField: "_id",
+  justOne: true,
+});
+
 SessionSchema.statics.findByDateRangeWithDuration = async function (
   match,
   { startDate, endDate },
@@ -71,6 +78,8 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
 ) {
   const newMatch = { ...match };
   const matchTribes = {}
+  const matchDepartaments = {}
+
 
   castToObjectIdFields(newMatch, ["memberId", "_id"]);
 
@@ -101,9 +110,15 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     if (newMatch.tribeIds.length > 0) matchTribes['member.tribeId'] = { $in: tribeIdsAsObjectIds };
   }
 
+  if (typeof newMatch.departamentIds === "object") {
+    const departamentIdsAsObjectIds = newMatch.departamentId.map(tribeId => mongoose.Types.ObjectId(departamentId));
+    if (newMatch.departamentIds.length > 0) matchDepartaments['member.departamentId'] = { $in: departamentIdsAsObjectIds };
+  }
+
   delete newMatch.taskIds;
   delete newMatch.projectIds;
   delete newMatch.tribeIds;
+  delete newMatch.departamentIds;
   if (newMatch.memberId === '') delete newMatch.memberId;
 
   return this.aggregate([
@@ -173,6 +188,9 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     },
     {
       $match: matchTribes
+    },
+    {
+      $match: matchDepartaments
     },
   ]);
 };
