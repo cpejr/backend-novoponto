@@ -78,6 +78,13 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     newMatch.isPresential = isPresential;
   }
 
+  if (newMatch.taskIds.length > 0) {
+    const taskIdsAsObjectIds = newMatch.taskIds.map(taskId => mongoose.Types.ObjectId(taskId));
+    newMatch.taskId = { $in: taskIdsAsObjectIds };
+  }
+
+  delete newMatch.taskIds;
+
   return this.aggregate([
     {
       $match: newMatch,
