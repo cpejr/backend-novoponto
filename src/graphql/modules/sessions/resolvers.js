@@ -42,6 +42,19 @@ export default {
   },
 
   Mutation: {
+    addSession: async (_, { memberId, isPresential, taskId, projectId, description, start, end }) => {
+      const newSession = await SessionModel.create({
+        memberId,
+        isPresential,
+        taskId,
+        projectId,
+        description,
+        start,
+        end,
+      });
+
+      return newSession;
+    },
     deleteSession: async (_, { sessionId }) => SessionModel.findByIdAndDelete(sessionId),
     updateSession: (_, { sessionId, data }) =>
       SessionModel.findOneAndUpdate({ _id: sessionId }, data, { new: true }),
