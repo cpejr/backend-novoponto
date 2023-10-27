@@ -57,12 +57,20 @@ SessionSchema.virtual("project", {
   justOne: true,
 });
 
+SessionSchema.virtual("tribe", {
+  ref: "tribes",
+  localField: "member.tribeId",
+  foreignField: "_id",
+  justOne: true,
+});
+
 SessionSchema.statics.findByDateRangeWithDuration = async function (
   match,
   { startDate, endDate },
   { isPresential }
 ) {
   const newMatch = { ...match };
+  const matchTribes = {}
 
   castToObjectIdFields(newMatch, ["memberId", "_id"]);
 
@@ -78,9 +86,29 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     newMatch.isPresential = isPresential;
   }
 
+  if (typeof newMatch.taskIds === "object") {
+    const taskIdsAsObjectIds = newMatch.taskIds.map(taskId => mongoose.Types.ObjectId(taskId));
+    if (newMatch.taskIds.length > 0) newMatch.taskId = { $in: taskIdsAsObjectIds };
+  }
+
+  if (typeof newMatch.projectIds === "object") {
+    const projectIdsAsObjectIds = newMatch.projectIds.map(projectId => mongoose.Types.ObjectId(projectId));
+    if (newMatch.projectIds.length > 0) newMatch.projectId = { $in: projectIdsAsObjectIds };
+  }
+
+  if (typeof newMatch.tribeIds === "object") {
+    const tribeIdsAsObjectIds = newMatch.tribeIds.map(tribeId => mongoose.Types.ObjectId(tribeId));
+    if (newMatch.tribeIds.length > 0) matchTribes['member.tribeId'] = { $in: tribeIdsAsObjectIds };
+  }
+
+  delete newMatch.taskIds;
+  delete newMatch.projectIds;
+  delete newMatch.tribeIds;
+  if (newMatch.memberId === '') delete newMatch.memberId;
+
   return this.aggregate([
     {
-      $match: newMatch,
+      $match: newMatch
     },
     {
       $addFields: {
@@ -142,6 +170,9 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
         path: "$member.tribe",
         preserveNullAndEmptyArrays: true,
       },
+    },
+    {
+      $match: matchTribes
     },
   ]);
 };

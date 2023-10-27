@@ -15,7 +15,7 @@ type CompiledMember {
 
 type CompiledSessions {
   sessions: [Session]!
-  aditionalHours: [AditionalHour]!
+  aditionalHours: [AditionalHour]
   formatedTotal: String!
   formatedPresentialTotal: String!
 }
@@ -72,6 +72,10 @@ type Query {
 
   allSessions(
     startDate: DateScalar, 
-    endDate: DateScalar
+    endDate: DateScalar,
+    taskIds: [ID],
+    projectIds: [ID],
+    tribeIds: [ID],
+    memberId: ID,
   ): CompiledSessions!
 }
