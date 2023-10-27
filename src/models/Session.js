@@ -111,7 +111,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   }
 
   if (typeof newMatch.departamentIds === "object") {
-    const departamentIdsAsObjectIds = newMatch.departamentId.map(departamentId => mongoose.Types.ObjectId(departamentId));
+    const departamentIdsAsObjectIds = newMatch.departamentIds.map(departamentId => mongoose.Types.ObjectId(departamentId));
     if (newMatch.departamentIds.length > 0) matchDepartaments['member.departamentId'] = { $in: departamentIdsAsObjectIds };
   }
 
