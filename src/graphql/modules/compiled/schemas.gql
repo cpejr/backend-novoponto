@@ -76,6 +76,7 @@ type Query {
     taskIds: [ID],
     projectIds: [ID],
     tribeIds: [ID],
+    roleIds: [ID],
     departamentIds: [ID],
     memberId: ID,
   ): CompiledSessions!

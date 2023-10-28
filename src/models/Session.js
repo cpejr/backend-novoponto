@@ -79,7 +79,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   const newMatch = { ...match };
   const matchTribes = {}
   const matchDepartaments = {}
-
+  const matchRoles = {}
 
   castToObjectIdFields(newMatch, ["memberId", "_id"]);
 
@@ -115,10 +115,16 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     if (newMatch.departamentIds.length > 0) matchDepartaments['member.departamentId'] = { $in: departamentIdsAsObjectIds };
   }
 
+  if (typeof newMatch.roleIds === "object") {
+    const roleIdsAsObjectIds = newMatch.roleIds.map(roleId => mongoose.Types.ObjectId(roleId));
+    if (newMatch.roleIds.length > 0) matchRoles['member.roleId'] = { $in: roleIdsAsObjectIds };
+  }
+
   delete newMatch.taskIds;
   delete newMatch.projectIds;
   delete newMatch.tribeIds;
   delete newMatch.departamentIds;
+  delete newMatch.roleIds;
   if (newMatch.memberId === '') delete newMatch.memberId;
 
   return this.aggregate([
@@ -187,10 +193,27 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
       },
     },
     {
+      $lookup: {
+        from: "roles",
+        localField: "member.roleId",
+        foreignField: "_id",
+        as: "member.role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $match: matchTribes
     },
     {
       $match: matchDepartaments
+    },
+    {
+      $match: matchRoles
     },
   ]);
 };
