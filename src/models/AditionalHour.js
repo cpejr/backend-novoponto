@@ -46,6 +46,8 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     newMatch.isPresential = isPresential;
   }
 
+  if (newMatch.memberId === '') delete newMatch.memberId;
+
   return this.aggregate([
     {
       $match: newMatch,
@@ -53,6 +55,34 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
+      },
+    },
+    {
+      $lookup: {
+        from: "members",
+        localField: "memberId",
+        foreignField: "_id",
+        as: "member",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
       },
     },
   ]);
