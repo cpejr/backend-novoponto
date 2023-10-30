@@ -84,18 +84,18 @@ export default {
       return { sessions, total, aditionalHours, totalPresential };
     },
 
-    allSessions: async (_, { startDate, endDate, isPresential, taskIds, projectIds, tribeIds, memberId }) => {
+    allSessions: async (_, { startDate, endDate, isPresential, taskIds, projectIds, tribeIds, roleIds, departamentIds, memberId }) => {
       try {
 
       const sessions = await SessionModel.findByDateRangeWithDuration(
-        { memberId, taskIds, projectIds, tribeIds },
+        { memberId, taskIds, projectIds, tribeIds, roleIds, departamentIds },
         { startDate, endDate },
         { isPresential }
       );
 
       let aditionalHours = [];
       
-      if (taskIds.length === 0 && projectIds.length === 0 && tribeIds.length === 0) {
+      if (taskIds.length === 0 && projectIds.length === 0 && tribeIds.length === 0 && roleIds === 0 && departamentIds.length === 0) {
         aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
           { memberId },
           { startDate, endDate },
