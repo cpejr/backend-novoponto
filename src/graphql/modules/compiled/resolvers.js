@@ -30,7 +30,7 @@ export default {
       let dur = totalPresential;
 
       if (!dur) dur = 0;
-        
+
       return mili2time(dur);
     },
   },
@@ -46,15 +46,13 @@ export default {
   },
 
   Query: {
-    compiled: async (_, { memberId, startDate, endDate, isPresential }) => {
+    compiled: async (_, { startDate, endDate, isPresential }) => {
       let sessions = SessionModel.findByDateRangeWithDuration(
-        { memberId },
         { startDate, endDate },
         { isPresential }
       );
 
       let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
-        { memberId },
         { startDate, endDate },
         { isPresential }
       );
@@ -84,44 +82,57 @@ export default {
       return { sessions, total, aditionalHours, totalPresential };
     },
 
-    allSessions: async (_, { startDate, endDate, isPresential, taskIds, projectIds, tribeIds, memberIds }) => {
+    allSessions: async (
+      _,
+      {
+        startDate,
+        endDate,
+        isPresential,
+        taskIds,
+        projectIds,
+        tribeIds,
+        memberIds,
+      }
+    ) => {
       try {
-
-      const sessions = await SessionModel.findByDateRangeWithDuration(
-        { memberIds, taskIds, projectIds, tribeIds },
-        { startDate, endDate },
-        { isPresential }
-      );
-
-      let aditionalHours = [];
-      
-      if (taskIds.length === 0 && projectIds.length === 0 && tribeIds.length === 0) {
-        aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
-          { memberIds },
+        const sessions = await SessionModel.findByDateRangeWithDuration(
+          { memberIds, taskIds, projectIds, tribeIds },
           { startDate, endDate },
           { isPresential }
         );
-      }
 
-      let totalPresential = 0;
+        let aditionalHours = [];
 
-      let total = 0;
-      
-      sessions.forEach((session) => {
-        if (session.isPresential) {
-          totalPresential += session.duration;
+        if (
+          taskIds.length === 0 &&
+          projectIds.length === 0 &&
+          tribeIds.length === 0
+        ) {
+          aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
+            { startDate, endDate },
+            { isPresential }
+          );
         }
-        total += session.duration;
-      });
 
-      aditionalHours.forEach((aditionalHour) => {
-        if (aditionalHour.isPresential) {
-          totalPresential += aditionalHour.amount;
-        }
-        total += aditionalHour.amount;
-      });
+        let totalPresential = 0;
 
-      return { sessions, total, totalPresential, aditionalHours };
+        let total = 0;
+
+        sessions.forEach((session) => {
+          if (session.isPresential) {
+            totalPresential += session.duration;
+          }
+          total += session.duration;
+        });
+
+        aditionalHours.forEach((aditionalHour) => {
+          if (aditionalHour.isPresential) {
+            totalPresential += aditionalHour.amount;
+          }
+          total += aditionalHour.amount;
+        });
+
+        return { sessions, total, totalPresential, aditionalHours };
       } catch (error) {
         throw new Error(error);
       }
@@ -129,10 +140,9 @@ export default {
 
     getMandatoriesReport: async (
       _,
-      { memberId, startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
+      { startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
     ) => {
       let report = await SessionModel.findMandatoriesReport(
-        memberId,
         startWeekYear,
         startWeeknumber,
         endWeekYear,

@@ -71,11 +71,11 @@ type Query {
   ): [MandatoryReport]!
 
   allSessions(
-    startDate: DateScalar, 
-    endDate: DateScalar,
-    taskIds: [ID],
-    projectIds: [ID],
-    tribeIds: [ID],
-    memberIds: [ID],
+    startDate: DateScalar
+    endDate: DateScalar
+    taskIds: [ID]
+    projectIds: [ID]
+    tribeIds: [ID]
+    memberIds: [ID]
   ): CompiledSessions!
 }
