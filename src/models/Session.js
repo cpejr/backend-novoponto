@@ -72,8 +72,6 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   const newMatch = { ...match };
   const matchTribes = {}
 
-  castToObjectIdFields(newMatch, ["memberId", "_id"]); //ver se precisa colocar memberIds se der errado
-
   if (startDate || endDate) {
     const start = {};
     if (startDate) start["$gte"] = startDate;
@@ -109,7 +107,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   delete newMatch.taskIds;
   delete newMatch.projectIds;
   delete newMatch.tribeIds;
-  if (newMatch.memberIds === '') delete newMatch.memberIds;
+  delete newMatch.memberIds
 
   return this.aggregate([
     {
