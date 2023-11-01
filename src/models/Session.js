@@ -72,7 +72,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   const newMatch = { ...match };
   const matchTribes = {}
 
-  castToObjectIdFields(newMatch, ["memberId", "_id"]);
+  castToObjectIdFields(newMatch, ["memberId", "_id"]); //ver se precisa colocar memberIds se der errado
 
   if (startDate || endDate) {
     const start = {};
@@ -84,6 +84,11 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
 
   if (typeof isPresential === "boolean") {
     newMatch.isPresential = isPresential;
+  }
+
+  if (typeof newMatch.memberIds === "object") {
+    const memberIdsAsObjectIds = newMatch.memberIds.map(memberId => mongoose.Types.ObjectId(memberId));
+    if (newMatch.memberIds.length > 0) newMatch.memberId = { $in: memberIdsAsObjectIds };
   }
 
   if (typeof newMatch.taskIds === "object") {
@@ -104,7 +109,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   delete newMatch.taskIds;
   delete newMatch.projectIds;
   delete newMatch.tribeIds;
-  if (newMatch.memberId === '') delete newMatch.memberId;
+  if (newMatch.memberIds === '') delete newMatch.memberIds;
 
   return this.aggregate([
     {
