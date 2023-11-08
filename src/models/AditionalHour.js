@@ -46,7 +46,15 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     newMatch.isPresential = isPresential;
   }
 
-  if (newMatch.memberId === '') delete newMatch.memberId;
+  if (typeof newMatch.memberIds === "object") {
+    const memberIdsAsObjectIds = newMatch.memberIds.map(memberId => mongoose.Types.ObjectId(memberId));
+    if (newMatch.memberIds.length > 0) {
+      newMatch.memberId = { $in: memberIdsAsObjectIds }
+      delete newMatch.memberId;
+    }
+  }
+
+  delete newMatch.memberIds;
 
   return this.aggregate([
     {

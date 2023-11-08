@@ -70,6 +70,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   { isPresential }
 ) {
   const newMatch = { ...match };
+  castToObjectIdFields(newMatch, ["memberId", "_id"])
   const matchTribes = {}
 
   if (startDate || endDate) {

@@ -46,13 +46,15 @@ export default {
   },
 
   Query: {
-    compiled: async (_, { startDate, endDate, isPresential }) => {
+    compiled: async (_, { memberId, startDate, endDate, isPresential }) => {
       let sessions = SessionModel.findByDateRangeWithDuration(
+        { memberId },
         { startDate, endDate },
         { isPresential }
       );
 
       let aditionalHours = AditionalHourModel.findByDateRangeWithDuration(
+        { memberId },
         { startDate, endDate },
         { isPresential }
       );
@@ -109,6 +111,7 @@ export default {
           tribeIds.length === 0
         ) {
           aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
+            { memberIds },
             { startDate, endDate },
             { isPresential }
           );
