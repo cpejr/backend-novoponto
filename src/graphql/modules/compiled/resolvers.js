@@ -1,4 +1,9 @@
-import { AditionalHourModel, MemberModel, SessionModel } from "../../../models";
+import {
+  AditionalHourModel,
+  MemberModel,
+  SessionModel,
+  RoleModel,
+} from "../../../models";
 import { mili2time, mili2timeWith4Digits } from "../../../utils/dateFunctions";
 
 export default {
@@ -94,21 +99,35 @@ export default {
         projectIds,
         tribeIds,
         memberIds,
+        departamentIds,
       }
     ) => {
       try {
-        const sessions = await SessionModel.findByDateRangeWithDuration(
+        let sessions = await SessionModel.findByDateRangeWithDuration(
           { memberIds, taskIds, projectIds, tribeIds },
           { startDate, endDate },
           { isPresential }
         );
+        if (departamentIds.length > 0) {
+          let departamentFilteredSessions = [];
+          sessions.forEach((session) => {
+            if (
+              departamentIds.includes(
+                session.member.role.departamentId.toString()
+              )
+            )
+              departamentFilteredSessions.push(session);
+          });
+          sessions = departamentFilteredSessions;
+        }
 
         let aditionalHours = [];
 
         if (
           taskIds.length === 0 &&
           projectIds.length === 0 &&
-          tribeIds.length === 0
+          tribeIds.length === 0 &&
+          departamentIds == 0
         ) {
           aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
             { memberIds },
