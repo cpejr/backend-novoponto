@@ -1,0 +1,10 @@
+type AverageHour {
+  type: String
+  name: String
+  duration: Int
+  formattedDuration: String
+}
+
+type Query {
+  averageHours(type: String!): [AverageHour]
+}
