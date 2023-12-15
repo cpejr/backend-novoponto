@@ -6,5 +6,9 @@ type AverageHour {
 }
 
 type Query {
-  averageHours(type: String!): [AverageHour]
+  averageHours(
+    startDate: DateScalar!
+    endDate: DateScalar!
+    type: String!
+  ): [AverageHour]
 }
