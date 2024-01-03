@@ -13,6 +13,10 @@ export default {
       if (type === "departament") {
         const departaments = await DepartamentModel.find();
         const hours = {};
+        for (let departament of departaments) {
+          hours[departament.name] = 0;
+        }
+
         sessions.forEach((session) => {
           const departamentId = session?.member?.role?.departamentId.toString();
           if (departamentId) {
@@ -22,9 +26,8 @@ export default {
             hours[departament.name] += session?.duration;
           }
         });
-
-        console.log(departaments);
       }
+
       const test = [
         {
           name: "funcionando",
