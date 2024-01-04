@@ -10,12 +10,15 @@ export default {
         {}
       );
 
+      const timeDifference = endDate - startDate;
+      const amountOfWeeks = timeDifference / (7 * 24 * 60 * 60 * 1000);
+
+      console.log(amountOfWeeks);
+
       if (type === "departament") {
         const departaments = await DepartamentModel.find();
         const hours = {};
-        for (let departament of departaments) {
-          hours[departament.name] = 0;
-        }
+        departaments.forEach((departament) => (hours[departament.name] = 0));
 
         sessions.forEach((session) => {
           const departamentId = session?.member?.role?.departamentId.toString();
@@ -26,6 +29,12 @@ export default {
             hours[departament.name] += session?.duration;
           }
         });
+        console.log(hours);
+        departaments.forEach(
+          (departament) => (hours[departament.name] /= amountOfWeeks)
+        );
+
+        console.log(hours);
       }
 
       const test = [
