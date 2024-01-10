@@ -104,42 +104,14 @@ export default {
     ) => {
       try {
         let sessions = await SessionModel.findByDateRangeWithDuration(
-          { memberIds, taskIds, projectIds, tribeIds },
+          { memberIds, taskIds, projectIds, tribeIds, departamentIds },
           { startDate, endDate },
           { isPresential }
         );
-        if (departamentIds.length > 0) {
-          let departamentFilteredSessions = [];
-          sessions.forEach((session) => {
-            if (
-              departamentIds.includes(
-                session.member.role.departamentId.toString()
-              )
-            )
-              departamentFilteredSessions.push(session);
-          });
-          sessions = departamentFilteredSessions;
-        }
 
         let aditionalHours = [];
-
-        if (
-          taskIds.length === 0 &&
-          projectIds.length === 0 &&
-          tribeIds.length === 0 &&
-          departamentIds == 0
-        ) {
-          aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
-            { memberIds },
-            { startDate, endDate },
-            { isPresential }
-          );
-        }
-
         let totalPresential = 0;
-
         let total = 0;
-
         sessions.forEach((session) => {
           if (session.isPresential) {
             totalPresential += session.duration;
@@ -153,7 +125,6 @@ export default {
           }
           total += aditionalHour.amount;
         });
-
         return { sessions, total, totalPresential, aditionalHours };
       } catch (error) {
         throw new Error(error);

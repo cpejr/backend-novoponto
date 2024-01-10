@@ -77,6 +77,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   castToObjectIdFields(newMatch, ["memberId", "_id"]);
   const matchTribes = {};
   const matchRoles = {};
+  const matchDepartaments = {};
 
   if (startDate || endDate) {
     const start = {};
@@ -130,16 +131,28 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
       matchRoles["member.roleId"] = { $in: roleIdsAsObjectIds };
   }
 
+  if (typeof newMatch.departamentIds === "object") {
+    const departamentIdIdsAsObjectIds = newMatch.departamentIds.map(
+      (departamentId) => mongoose.Types.ObjectId(departamentId)
+    );
+
+    if (newMatch.departamentIds.length > 0)
+      matchDepartaments["member.role.departamentId"] = {
+        $in: departamentIdIdsAsObjectIds,
+      };
+  }
+
+  delete newMatch.departamentIds;
   delete newMatch.taskIds;
   delete newMatch.projectIds;
   delete newMatch.tribeIds;
   delete newMatch.roleIds;
   delete newMatch.memberIds;
-
+  console.log("sd");
+  const combinedMatch = { ...newMatch, ...matchDepartaments, ...matchTribes };
+  console.log(combinedMatch);
+  console.log("sf ");
   return this.aggregate([
-    {
-      $match: newMatch,
-    },
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
@@ -231,11 +244,8 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
         preserveNullAndEmptyArrays: true,
       },
     },
-
     {
-      $match: {
-        $or: [matchTribes, matchRoles],
-      },
+      $match: combinedMatch,
     },
   ]);
 };
