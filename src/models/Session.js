@@ -147,34 +147,6 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     },
     {
       $lookup: {
-        from: "tasks",
-        localField: "taskId",
-        foreignField: "_id",
-        as: "task",
-      },
-    },
-    {
-      $unwind: {
-        path: "$task",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "projects",
-        localField: "projectId",
-        foreignField: "_id",
-        as: "project",
-      },
-    },
-    {
-      $unwind: {
-        path: "$project",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
         from: "members",
         localField: "memberId",
         foreignField: "_id",
@@ -184,20 +156,6 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     {
       $unwind: {
         path: "$member",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "tribes",
-        localField: "member.tribeId",
-        foreignField: "_id",
-        as: "member.tribe",
-      },
-    },
-    {
-      $unwind: {
-        path: "$member.tribe",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -215,6 +173,65 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "departaments",
+        localField: "member.role.departamentId",
+        foreignField: "_id",
+        as: "member.role.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role.departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
     {
       $match: {
         $or: [matchTribes, matchRoles],

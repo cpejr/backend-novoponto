@@ -10,32 +10,38 @@ export default {
         {}
       );
 
+      //initialize time variables
       const timeDifference = endDate - startDate;
       const amountOfWeeks = timeDifference / (7 * 24 * 60 * 60 * 1000);
 
-      console.log(amountOfWeeks);
+      //initialize average hour variables
+      const departaments = await DepartamentModel.find();
+      const departamentHours = {};
+      departaments.forEach(
+        (departament) => (departamentHours[departament.name] = 0)
+      );
 
-      if (type === "departament") {
-        const departaments = await DepartamentModel.find();
-        const hours = {};
-        departaments.forEach((departament) => (hours[departament.name] = 0));
+      const levels = ["operacional", "tático", "estratégico"];
+      const levelHours = {};
+      levels.forEach((level) => (levelHours[level] = 0));
 
-        sessions.forEach((session) => {
-          const departamentId = session?.member?.role?.departamentId.toString();
-          if (departamentId) {
-            const departament = departaments.find(
-              (departament) => departament._id == departamentId
-            );
-            hours[departament.name] += session?.duration;
-          }
-        });
-        console.log(hours);
-        departaments.forEach(
-          (departament) => (hours[departament.name] /= amountOfWeeks)
-        );
+      //calculate hours sum
+      sessions.forEach((session) => {
+        const departament = session?.member?.role?.departament?.name;
+        departamentHours[departament] += session?.duration;
 
-        console.log(hours);
-      }
+        const level = session?.member?.role?.level;
+        levelHours[level] += session?.duration;
+      });
+
+      //calculate average hours
+      departaments.forEach(
+        (departament) => (departamentHours[departament.name] /= amountOfWeeks)
+      );
+      levels.forEach((level) => (levelHours[level] /= amountOfWeeks));
+
+      console.log(departamentHours);
+      console.log(levelHours);
 
       const test = [
         {
