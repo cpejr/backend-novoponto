@@ -1,14 +1,9 @@
 type AverageHour {
   type: String
   name: String
-  duration: Int
-  formattedDuration: String
+  duration: Float
 }
 
 type Query {
-  averageHours(
-    startDate: DateScalar!
-    endDate: DateScalar!
-    type: String!
-  ): [AverageHour]
+  averageHours(start: DateScalar!, end: DateScalar!): [AverageHour]
 }

@@ -1,17 +1,30 @@
 import { DepartamentModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
+function formatOutput(hours, type) {
+  const message = [];
+  for (const [name, duration] of Object.entries(hours)) {
+    if (name && name != "undefined" && name != "null")
+      message.push({
+        type,
+        name,
+        duration,
+      });
+  }
+  return message;
+}
+
 export default {
   Query: {
-    averageHours: async (_, { type, startDate, endDate }) => {
+    averageHours: async (_, { type, start, end }) => {
       let sessions = await SessionModel.findByDateRangeWithDuration(
         {},
-        { startDate, endDate },
+        { start, end },
         {}
       );
 
       //initialize time variables
-      const timeDifference = endDate - startDate;
+      const timeDifference = end - start;
       const amountOfWeeks = timeDifference / (7 * 24 * 60 * 60 * 1000);
 
       //initialize average hour variables
@@ -40,24 +53,10 @@ export default {
       );
       levels.forEach((level) => (levelHours[level] /= amountOfWeeks));
 
-      console.log(departamentHours);
-      console.log(levelHours);
-
-      const test = [
-        {
-          name: "funcionando",
-          type,
-          duration: 1,
-          formattedDuration: "1",
-        },
-        {
-          name: "sfd",
-          type,
-          duration: 1,
-          formattedDuration: "1",
-        },
-      ];
-      return test;
+      //format the return message
+      let message = formatOutput(departamentHours, "departament");
+      message = message.concat(formatOutput(levelHours, "level"));
+      return message;
     },
   },
 };
