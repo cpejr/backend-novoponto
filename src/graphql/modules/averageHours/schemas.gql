@@ -1,0 +1,9 @@
+type AverageHour {
+  type: String
+  name: String
+  duration: Float
+}
+
+type Query {
+  averageHours(start: DateScalar!, end: DateScalar!): [AverageHour]
+}
