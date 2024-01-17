@@ -13,6 +13,13 @@ type CompiledMember {
   formatedPresentialTotal: String!
 }
 
+type CompiledSessions {
+  sessions: [Session]!
+  aditionalHours: [AditionalHour]
+  formatedTotal: String!
+  formatedPresentialTotal: String!
+}
+
 type CompiledMandatory {
   sessions: [Session]!
   mandatory: Mandatory!
@@ -62,4 +69,14 @@ type Query {
     endWeekYear: Int!
     endWeeknumber: Int!
   ): [MandatoryReport]!
+
+  allSessions(
+    startDate: DateScalar
+    endDate: DateScalar
+    taskIds: [ID]
+    projectIds: [ID]
+    tribeIds: [ID]
+    memberIds: [ID]
+    departamentIds: [ID]
+  ): CompiledSessions!
 }

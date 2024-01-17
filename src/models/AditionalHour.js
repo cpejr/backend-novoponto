@@ -46,6 +46,16 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     newMatch.isPresential = isPresential;
   }
 
+  if (typeof newMatch.memberIds === "object") {
+    const memberIdsAsObjectIds = newMatch.memberIds.map(memberId => mongoose.Types.ObjectId(memberId));
+    if (newMatch.memberIds.length > 0) {
+      newMatch.memberId = { $in: memberIdsAsObjectIds }
+      delete newMatch.memberId;
+    }
+  }
+
+  delete newMatch.memberIds;
+
   return this.aggregate([
     {
       $match: newMatch,
@@ -53,6 +63,34 @@ AditionalHourSchema.statics.findByDateRangeWithDuration = function (
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
+      },
+    },
+    {
+      $lookup: {
+        from: "members",
+        localField: "memberId",
+        foreignField: "_id",
+        as: "member",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tribes",
+        localField: "member.tribeId",
+        foreignField: "_id",
+        as: "member.tribe",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.tribe",
+        preserveNullAndEmptyArrays: true,
       },
     },
   ]);

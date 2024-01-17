@@ -23,9 +23,17 @@ const RoleSchema = new mongoose.Schema(
       ref: "departament",
       required: false,
     },
+    level: { type: String }, //operacional, tático e estratégico
   },
   { timestamps: false, versionKey: false }
 );
+
+RoleSchema.virtual("departament", {
+  ref: "departament",
+  localField: "departamentId",
+  foreignField: "_id",
+  justOne: true,
+});
 
 const RoleModel = mongoose.model("roles", RoleSchema);
 
