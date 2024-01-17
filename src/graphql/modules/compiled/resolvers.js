@@ -1,4 +1,9 @@
-import { AditionalHourModel, MemberModel, SessionModel } from "../../../models";
+import {
+  AditionalHourModel,
+  MemberModel,
+  SessionModel,
+  RoleModel,
+} from "../../../models";
 import { mili2time, mili2timeWith4Digits } from "../../../utils/dateFunctions";
 
 export default {
@@ -30,7 +35,7 @@ export default {
       let dur = totalPresential;
 
       if (!dur) dur = 0;
-        
+
       return mili2time(dur);
     },
   },
@@ -84,44 +89,43 @@ export default {
       return { sessions, total, aditionalHours, totalPresential };
     },
 
-    allSessions: async (_, { startDate, endDate, isPresential, taskIds, projectIds, tribeIds, memberId }) => {
+    allSessions: async (
+      _,
+      {
+        startDate,
+        endDate,
+        isPresential,
+        taskIds,
+        projectIds,
+        tribeIds,
+        memberIds,
+        departamentIds,
+      }
+    ) => {
       try {
-
-      const sessions = await SessionModel.findByDateRangeWithDuration(
-        { memberId, taskIds, projectIds, tribeIds },
-        { startDate, endDate },
-        { isPresential }
-      );
-
-      let aditionalHours = [];
-      
-      if (taskIds.length === 0 && projectIds.length === 0 && tribeIds.length === 0) {
-        aditionalHours = await AditionalHourModel.findByDateRangeWithDuration(
-          { memberId },
+        let sessions = await SessionModel.findByDateRangeWithDuration(
+          { memberIds, taskIds, projectIds, tribeIds, departamentIds },
           { startDate, endDate },
           { isPresential }
         );
-      }
 
-      let totalPresential = 0;
+        let aditionalHours = [];
+        let totalPresential = 0;
+        let total = 0;
+        sessions.forEach((session) => {
+          if (session.isPresential) {
+            totalPresential += session.duration;
+          }
+          total += session.duration;
+        });
 
-      let total = 0;
-      
-      sessions.forEach((session) => {
-        if (session.isPresential) {
-          totalPresential += session.duration;
-        }
-        total += session.duration;
-      });
-
-      aditionalHours.forEach((aditionalHour) => {
-        if (aditionalHour.isPresential) {
-          totalPresential += aditionalHour.amount;
-        }
-        total += aditionalHour.amount;
-      });
-
-      return { sessions, total, totalPresential, aditionalHours };
+        aditionalHours.forEach((aditionalHour) => {
+          if (aditionalHour.isPresential) {
+            totalPresential += aditionalHour.amount;
+          }
+          total += aditionalHour.amount;
+        });
+        return { sessions, total, totalPresential, aditionalHours };
       } catch (error) {
         throw new Error(error);
       }
@@ -129,10 +133,9 @@ export default {
 
     getMandatoriesReport: async (
       _,
-      { memberId, startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
+      { startWeekYear, startWeeknumber, endWeekYear, endWeeknumber }
     ) => {
       let report = await SessionModel.findMandatoriesReport(
-        memberId,
         startWeekYear,
         startWeeknumber,
         endWeekYear,

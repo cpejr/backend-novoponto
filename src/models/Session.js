@@ -5,6 +5,7 @@ import { castToObjectIdFields } from "../utils/modelsFunctions";
 import { MemberModel } from "./";
 import { TaskModel } from "./";
 import { ProjectModel } from "./Projects";
+
 const SessionSchema = new mongoose.Schema(
   {
     memberId: {
@@ -33,20 +34,23 @@ const SessionSchema = new mongoose.Schema(
 );
 
 SessionSchema.virtual("member", {
-  ref: "members", // The model to use
-  localField: "memberId", // Find people where `localField`
-  foreignField: "_id", // is equal to `foreignField`
-  // If `justOne` is true, 'members' will be a single doc as opposed to
-  // an array. `justOne` is false by default.
+  ref: "members",
+  localField: "memberId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+SessionSchema.virtual("role", {
+  ref: "roles",
+  localField: "member.roleId",
+  foreignField: "_id",
   justOne: true,
 });
 
 SessionSchema.virtual("task", {
-  ref: "tasks", // The model to use
-  localField: "taskId", // Find people where `localField`
-  foreignField: "_id", // is equal to `foreignField`
-  // If `justOne` is true, tasks' will be a single doc as opposed to
-  // an array. `justOne` is false by default.
+  ref: "tasks",
+  localField: "taskId",
+  foreignField: "_id",
   justOne: true,
 });
 
@@ -70,9 +74,10 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   { isPresential }
 ) {
   const newMatch = { ...match };
-  const matchTribes = {}
-
   castToObjectIdFields(newMatch, ["memberId", "_id"]);
+  const matchTribes = {};
+  const matchRoles = {};
+  const matchDepartaments = {};
 
   if (startDate || endDate) {
     const start = {};
@@ -86,61 +91,71 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     newMatch.isPresential = isPresential;
   }
 
+  if (typeof newMatch.memberIds === "object") {
+    const memberIdsAsObjectIds = newMatch.memberIds.map((memberId) =>
+      mongoose.Types.ObjectId(memberId)
+    );
+    if (newMatch.memberIds.length > 0)
+      newMatch.memberId = { $in: memberIdsAsObjectIds };
+  }
+
   if (typeof newMatch.taskIds === "object") {
-    const taskIdsAsObjectIds = newMatch.taskIds.map(taskId => mongoose.Types.ObjectId(taskId));
-    if (newMatch.taskIds.length > 0) newMatch.taskId = { $in: taskIdsAsObjectIds };
+    const taskIdsAsObjectIds = newMatch.taskIds.map((taskId) =>
+      mongoose.Types.ObjectId(taskId)
+    );
+    if (newMatch.taskIds.length > 0)
+      newMatch.taskId = { $in: taskIdsAsObjectIds };
   }
 
   if (typeof newMatch.projectIds === "object") {
-    const projectIdsAsObjectIds = newMatch.projectIds.map(projectId => mongoose.Types.ObjectId(projectId));
-    if (newMatch.projectIds.length > 0) newMatch.projectId = { $in: projectIdsAsObjectIds };
+    const projectIdsAsObjectIds = newMatch.projectIds.map((projectId) =>
+      mongoose.Types.ObjectId(projectId)
+    );
+    if (newMatch.projectIds.length > 0)
+      newMatch.projectId = { $in: projectIdsAsObjectIds };
   }
 
   if (typeof newMatch.tribeIds === "object") {
-    const tribeIdsAsObjectIds = newMatch.tribeIds.map(tribeId => mongoose.Types.ObjectId(tribeId));
-    if (newMatch.tribeIds.length > 0) matchTribes['member.tribeId'] = { $in: tribeIdsAsObjectIds };
+    const tribeIdsAsObjectIds = newMatch.tribeIds.map((tribeId) =>
+      mongoose.Types.ObjectId(tribeId)
+    );
+    if (newMatch.tribeIds.length > 0)
+      matchTribes["member.tribeId"] = { $in: tribeIdsAsObjectIds };
   }
 
+  if (typeof newMatch.roleIds === "object") {
+    const roleIdsAsObjectIds = newMatch.roleIds.map((roleId) =>
+      mongoose.Types.ObjectId(roleId)
+    );
+    if (newMatch.roleIds.length > 0)
+      matchRoles["member.roleId"] = { $in: roleIdsAsObjectIds };
+  }
+
+  if (typeof newMatch.departamentIds === "object") {
+    const departamentIdIdsAsObjectIds = newMatch.departamentIds.map(
+      (departamentId) => mongoose.Types.ObjectId(departamentId)
+    );
+
+    if (newMatch.departamentIds.length > 0)
+      matchDepartaments["member.role.departamentId"] = {
+        $in: departamentIdIdsAsObjectIds,
+      };
+  }
+
+  delete newMatch.departamentIds;
   delete newMatch.taskIds;
   delete newMatch.projectIds;
   delete newMatch.tribeIds;
-  if (newMatch.memberId === '') delete newMatch.memberId;
-
+  delete newMatch.roleIds;
+  delete newMatch.memberIds;
+  console.log("sd");
+  const combinedMatch = { ...newMatch, ...matchDepartaments, ...matchTribes };
+  console.log(combinedMatch);
+  console.log("sf ");
   return this.aggregate([
-    {
-      $match: newMatch
-    },
     {
       $addFields: {
         duration: { $subtract: ["$end", "$start"] },
-      },
-    },
-    {
-      $lookup: {
-        from: "tasks",
-        localField: "taskId",
-        foreignField: "_id",
-        as: "task",
-      },
-    },
-    {
-      $unwind: {
-        path: "$task",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-    {
-      $lookup: {
-        from: "projects",
-        localField: "projectId",
-        foreignField: "_id",
-        as: "project",
-      },
-    },
-    {
-      $unwind: {
-        path: "$project",
-        preserveNullAndEmptyArrays: true,
       },
     },
     {
@@ -159,6 +174,64 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     },
     {
       $lookup: {
+        from: "roles",
+        localField: "member.roleId",
+        foreignField: "_id",
+        as: "member.role",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departaments",
+        localField: "member.role.departamentId",
+        foreignField: "_id",
+        as: "member.role.departament",
+      },
+    },
+    {
+      $unwind: {
+        path: "$member.role.departament",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "taskId",
+        foreignField: "_id",
+        as: "task",
+      },
+    },
+    {
+      $unwind: {
+        path: "$task",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $lookup: {
+        from: "projects",
+        localField: "projectId",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: {
+        path: "$project",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
+    {
+      $lookup: {
         from: "tribes",
         localField: "member.tribeId",
         foreignField: "_id",
@@ -172,7 +245,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
       },
     },
     {
-      $match: matchTribes
+      $match: combinedMatch,
     },
   ]);
 };

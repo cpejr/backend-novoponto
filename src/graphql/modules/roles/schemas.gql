@@ -4,6 +4,7 @@ type Role {
   access: Int!
   departamentId: ID
   departament: Departament
+  level: String
 }
 
 type Query {
@@ -14,12 +15,14 @@ input RoleInput {
   name: String!
   access: Int!
   departamentId: ID!
+  level: String!
 }
 
 input RoleUpdate {
   name: String
   access: Int
   departamentId: ID
+  level: String
 }
 
 type Mutation {
