@@ -148,10 +148,8 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   delete newMatch.tribeIds;
   delete newMatch.roleIds;
   delete newMatch.memberIds;
-  console.log("sd");
   const combinedMatch = { ...newMatch, ...matchDepartaments, ...matchTribes };
   console.log(combinedMatch);
-  console.log("sf ");
   return this.aggregate([
     {
       $addFields: {
