@@ -41,6 +41,7 @@ const MemberSchema = new mongoose.Schema(
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
     mandatories: [MandatorySchema],
+    lastData: { type: Date },
   },
   { timestamps: true, versionKey: false }
 );
@@ -175,8 +176,7 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
     },
   ];
 
-  if (accessArray)
-    query.push({ $match: { "role.access": { $in: accessArray } } });
+  if (accessArray) query.push({ $match: { "role.access": { $in: accessArray } } });
 
   return this.aggregate(query);
 };
