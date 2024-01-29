@@ -17,6 +17,7 @@ const MemberSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
+    lastAccess: { type: Date },
     tribeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "tribes",
@@ -41,7 +42,6 @@ const MemberSchema = new mongoose.Schema(
     responsibleId: { type: mongoose.Schema.Types.ObjectId, ref: "members" },
     message: { text: String, read: Boolean },
     mandatories: [MandatorySchema],
-    lastData: { type: Date },
   },
   { timestamps: true, versionKey: false }
 );
