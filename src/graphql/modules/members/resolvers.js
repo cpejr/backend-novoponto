@@ -167,7 +167,7 @@ export default {
     updateLastAccess: async (_, { memberId }) => {
       const todayDate = new Date().toLocaleDateString("pt-BR");
       const id = memberId;
-      const updatedMember = await MemberModel.findOneAndUpdate(
+      await MemberModel.findOneAndUpdate(
         { _id: id },
         { $set: { lastAccess: todayDate } },
         { new: true }
@@ -176,7 +176,6 @@ export default {
         .populate("tribe")
         .populate("departament")
         .populate("Badge");
-      return updatedMember;
     },
   },
 };
