@@ -1,9 +1,13 @@
-import _ from "lodash";
+import _, { update } from "lodash";
 import jwt from "jsonwebtoken";
 
 import { MemberModel } from "../../../models";
 import { signInWithCustomToken } from "../../../services/FirebaseAuthentication";
-import { AuthenticationError, ForbiddenError, UserInputError } from "apollo-server-errors";
+import {
+  AuthenticationError,
+  ForbiddenError,
+  UserInputError,
+} from "apollo-server-errors";
 
 function generateAccessToken(member) {
   return jwt.sign({ member }, process.env.ACCESS_TOKEN_SECRET);
@@ -20,7 +24,8 @@ export default {
   },
 
   Query: {
-    members: (_, { accessArray }) => MemberModel.getMembersWithAccessArray(accessArray),
+    members: (_, { accessArray }) =>
+      MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
       MemberModel.find({ responsibleId })
         .populate("role")
@@ -40,7 +45,8 @@ export default {
 
     deleteMember: (_, { memberId }, { auth }) => {
       var id;
-      if (!auth.member) throw new AuthenticationError("O usário não está autenticado");
+      if (!auth.member)
+        throw new AuthenticationError("O usário não está autenticado");
 
       if (!!memberId && auth.member.role?.access > 0) {
         id = memberId;
@@ -54,7 +60,11 @@ export default {
     },
 
     addMandatory: (_, { memberId, data }) =>
-      MemberModel.findByIdAndUpdate(memberId, { $push: { mandatories: data } }, { new: true }),
+      MemberModel.findByIdAndUpdate(
+        memberId,
+        { $push: { mandatories: data } },
+        { new: true }
+      ),
 
     removeMandatory: (_, { memberId, mandatoryId }) =>
       MemberModel.findOneAndUpdate(
@@ -67,7 +77,8 @@ export default {
       ),
 
     updateMember: async (_, { memberId, data }, { auth }) => {
-      if (!auth.member) throw new AuthenticationError("O usário não está autenticado");
+      if (!auth.member)
+        throw new AuthenticationError("O usário não está autenticado");
 
       if (!!memberId && auth.member.role?.access > 0) {
         return MemberModel.findOneAndUpdate(
@@ -126,11 +137,14 @@ export default {
     },
 
     getSessionData: async (_, __, { auth }) => {
-      if (!auth.authenticated) throw new AuthenticationError("Invalid authentication token");
+      if (!auth.authenticated)
+        throw new AuthenticationError("Invalid authentication token");
 
-      const { updatedAt } = (await MemberModel.findById(auth.member._id).select("updatedAt")) || {};
+      const { updatedAt } =
+        (await MemberModel.findById(auth.member._id).select("updatedAt")) || {};
 
-      if (!updatedAt) throw new AuthenticationError("Invalid authentication token");
+      if (!updatedAt)
+        throw new AuthenticationError("Invalid authentication token");
 
       if (auth?.member?.updatedAt !== updatedAt) {
         let newMember = await MemberModel.findOne({
@@ -150,24 +164,19 @@ export default {
 
       return { member: auth.member };
     },
-    updateLastAccess: async (_, { memberId }, { auth }) => {
-      try {
-        const todayDate = new Date().toLocaleDateString("pt-BR");
-
-        const updatedMember = await MemberModel.findOneAndUpdate(
-          { _id: memberId },
-          { $set: { lastAccess: todayDate } },
-          { new: true }
-        );
-
-        if (!updatedMember) {
-          throw new Error("Falha ao atualizar o último acesso do membro");
-        }
-
-        return updatedMember;
-      } catch (error) {
-        throw new Error(`Erro ao atualizar o último acesso do membro: ${error.message}`);
-      }
+    updateLastAccess: async (_, { memberId }) => {
+      const todayDate = new Date().toLocaleDateString("pt-BR");
+      const id = memberId;
+      const updatedMember = await MemberModel.findOneAndUpdate(
+        { _id: id },
+        { $set: { lastAccess: todayDate } },
+        { new: true }
+      )
+        .populate("role")
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge");
+      return updatedMember;
     },
   },
 };

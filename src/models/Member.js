@@ -17,7 +17,7 @@ const MemberSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     status: String,
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
-    lastAccess: { type: Date },
+    lastAccess: { type: String },
     tribeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "tribes",
@@ -176,7 +176,8 @@ MemberSchema.statics.getMembersWithAccessArray = async function (accessArray) {
     },
   ];
 
-  if (accessArray) query.push({ $match: { "role.access": { $in: accessArray } } });
+  if (accessArray)
+    query.push({ $match: { "role.access": { $in: accessArray } } });
 
   return this.aggregate(query);
 };

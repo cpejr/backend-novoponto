@@ -16,6 +16,7 @@ type Member {
   """
   Mensagem de status de login
   """
+  lastAccess: String
   status: String
   roleId: ID
   role: Role
