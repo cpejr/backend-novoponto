@@ -16,6 +16,7 @@ type Member {
   """
   Mensagem de status de login
   """
+  lastAccess: DateScalar!
   status: String
   roleId: ID
   role: Role
@@ -120,4 +121,5 @@ type Mutation {
   deleteMember(memberId: ID!): Member
   addMandatory(memberId: ID!, data: MandatoryInput): Member!
   removeMandatory(memberId: ID!, mandatoryId: ID!): Boolean!
+  updateLastAccess(memberId: ID!): Member
 }
