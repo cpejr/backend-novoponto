@@ -78,5 +78,6 @@ type Query {
     tribeIds: [ID]
     memberIds: [ID]
     departamentIds: [ID]
+    roleIds: [ID]
   ): CompiledSessions!
 }
