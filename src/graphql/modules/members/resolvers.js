@@ -164,9 +164,8 @@ export default {
 
       return { member: auth.member };
     },
-    updateLastAccess: async (_, { memberId }) => {
-      const todayDate = new Date().toLocaleDateString("pt-BR");
-      const id = memberId;
+    updateLastAccess: async (_, { memberId: id }) => {
+      const todayDate = new Date();
       await MemberModel.findOneAndUpdate(
         { _id: id },
         { $set: { lastAccess: todayDate } },
