@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { update } from "lodash";
 import jwt from "jsonwebtoken";
 
 import { MemberModel } from "../../../models";
@@ -27,9 +27,17 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("departament").populate("Badge"),
+      MemberModel.find({ responsibleId })
+        .populate("role")
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge"),
     member: (_, { _id }) =>
-      MemberModel.findById(_id).populate("role").populate("tribe").populate("departament").populate("Badge"),
+      MemberModel.findById(_id)
+        .populate("role")
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge"),
   },
 
   Mutation: {
@@ -109,7 +117,7 @@ export default {
 
     login: async (_, { data: { uid, email, photoURL } }) => {
       const foundMember = await MemberModel.findOne({ email })
-        .populate(["role", "tribe","departament", "Badge"])
+        .populate(["role", "tribe", "departament", "Badge"])
         .exec();
       if (!foundMember)
         throw new AuthenticationError(
@@ -155,6 +163,18 @@ export default {
       }
 
       return { member: auth.member };
+    },
+    updateLastAccess: async (_, { memberId: id }) => {
+      const todayDate = new Date();
+      await MemberModel.findOneAndUpdate(
+        { _id: id },
+        { $set: { lastAccess: todayDate } },
+        { new: true }
+      )
+        .populate("role")
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge");
     },
   },
 };
