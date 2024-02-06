@@ -99,12 +99,13 @@ export default {
         projectIds,
         tribeIds,
         memberIds,
+        roleIds,
         departamentIds,
       }
     ) => {
       try {
         let sessions = await SessionModel.findByDateRangeWithDuration(
-          { memberIds, taskIds, projectIds, tribeIds, departamentIds },
+          { memberIds, taskIds, projectIds, tribeIds, departamentIds, roleIds },
           { startDate, endDate },
           { isPresential }
         );

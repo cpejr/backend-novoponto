@@ -139,7 +139,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
     if (newMatch.departamentIds.length > 0)
       matchDepartaments["member.role.departamentId"] = {
         $in: departamentIdIdsAsObjectIds,
-      };
+      };  
   }
 
   delete newMatch.departamentIds;
@@ -148,7 +148,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   delete newMatch.tribeIds;
   delete newMatch.roleIds;
   delete newMatch.memberIds;
-  const combinedMatch = { ...newMatch, ...matchDepartaments, ...matchTribes };
+  const combinedMatch = { ...newMatch, ...matchDepartaments, ...matchRoles, ...matchTribes };
   console.log(combinedMatch);
   return this.aggregate([
     {
