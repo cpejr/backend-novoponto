@@ -357,6 +357,15 @@ SessionSchema.statics.getLoggedMembers = async function () {
   ]);
 };
 
+SessionSchema.statics.findByDateRange = async function (startDate, endDate) {
+  let sessions = this.find({
+    start: { $gte: startDate },
+    end: { $lte: endDate },
+  });
+
+  return sessions;
+};
+
 const SessionModel = mongoose.model("sessions", SessionSchema);
 
 export default SessionModel;

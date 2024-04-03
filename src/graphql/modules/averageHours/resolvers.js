@@ -1,3 +1,4 @@
+import { startSession } from "mongoose";
 import { DepartamentModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
@@ -17,12 +18,7 @@ function formatOutput(hours, type) {
 export default {
   Query: {
     averageHours: async (_, { type, start, end }) => {
-      let sessions = await SessionModel.findByDateRangeWithDuration(
-        {},
-        { start, end },
-        {}
-      );
-
+      let sessions = await SessionModel.findByDateRange(start, end);
       //initialize time variables
       const timeDifference = end - start;
       const amountOfWeeks = timeDifference / (7 * 24 * 60 * 60 * 1000);
@@ -48,9 +44,9 @@ export default {
       });
 
       //calculate average hours
-      departaments.forEach(
-        (departament) => (departamentHours[departament.name] /= amountOfWeeks)
-      );
+      departaments.forEach((departament) => {
+        departamentHours[departament.name] /= amountOfWeeks;
+      });
       levels.forEach((level) => (levelHours[level] /= amountOfWeeks));
 
       //format the return message
