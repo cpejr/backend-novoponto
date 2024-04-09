@@ -361,7 +361,24 @@ SessionSchema.statics.findByDateRange = async function (startDate, endDate) {
   let sessions = this.find({
     start: { $gte: startDate },
     end: { $lte: endDate },
-  });
+  })
+    .populate("projectId")
+    .populate("taskId")
+    .populate({
+      path: "memberId",
+      populate: {
+        path: "roleId",
+      },
+    })
+    .populate({
+      path: "memberId",
+      populate: {
+        path: "roleId",
+        populate: {
+          path: "departamentId",
+        },
+      },
+    });
 
   return sessions;
 };
