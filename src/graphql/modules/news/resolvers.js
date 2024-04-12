@@ -23,8 +23,6 @@ export default {
     },
     uploadImage: async (_, { file, newsId }) => {
       const image = await file;
-      console.log(image);
-      console.log(newsId);
       return uploadFile(image, newsId);
     },
   },
