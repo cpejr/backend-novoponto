@@ -55,11 +55,9 @@ export default {
           } else {
             departamentMembers[departament] += 1;
           }
-          departamentMembers[departament] += 1;
         }
         members[session?.memberId?.name] = true;
       });
-      
 
       //calculate average hours
 
@@ -77,7 +75,6 @@ export default {
 
       let message = formatOutput(departamentHours, "departament");
       message = message.concat(formatOutput(levelHours, "level"));
-      console.log("OK")
 
       return message;
     },
