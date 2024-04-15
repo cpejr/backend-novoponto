@@ -148,10 +148,7 @@ SessionSchema.statics.findByDateRangeWithDuration = async function (
   delete newMatch.tribeIds;
   delete newMatch.roleIds;
   delete newMatch.memberIds;
-  console.log("sd");
   const combinedMatch = { ...newMatch, ...matchDepartaments, ...matchTribes };
-  console.log(combinedMatch);
-  console.log("sf ");
   return this.aggregate([
     {
       $addFields: {
@@ -355,6 +352,32 @@ SessionSchema.statics.getLoggedMembers = async function () {
       },
     },
   ]);
+};
+
+SessionSchema.statics.findByDateRange = async function (startDate, endDate) {
+  let sessions = this.find({
+    start: { $gte: startDate },
+    end: { $lte: endDate },
+  })
+    .populate("projectId")
+    .populate("taskId")
+    .populate({
+      path: "memberId",
+      populate: {
+        path: "roleId",
+      },
+    })
+    .populate({
+      path: "memberId",
+      populate: {
+        path: "roleId",
+        populate: {
+          path: "departamentId",
+        },
+      },
+    });
+
+  return sessions;
 };
 
 const SessionModel = mongoose.model("sessions", SessionSchema);

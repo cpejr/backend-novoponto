@@ -1,4 +1,5 @@
-import { DepartamentModel, SessionModel } from "../../../models";
+import { startSession } from "mongoose";
+import { DepartamentModel, MemberModel, SessionModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 
 function formatOutput(hours, type) {
@@ -17,45 +18,64 @@ function formatOutput(hours, type) {
 export default {
   Query: {
     averageHours: async (_, { type, start, end }) => {
-      let sessions = await SessionModel.findByDateRangeWithDuration(
-        {},
-        { start, end },
-        {}
-      );
+      let sessions = await SessionModel.findByDateRange(start, end);
 
-      //initialize time variables
-      const timeDifference = end - start;
-      const amountOfWeeks = timeDifference / (7 * 24 * 60 * 60 * 1000);
-
-      //initialize average hour variables
-      const departaments = await DepartamentModel.find();
+      //initialize variables
       const departamentHours = {};
+      const levelHours = {};
+      const members = {};
+      let levelMembers = {};
+      let departamentMembers = {};
+      const levels = ["operacional", "tático", "estratégico"];
+      const departaments = await DepartamentModel.find();
+
       departaments.forEach(
         (departament) => (departamentHours[departament.name] = 0)
       );
 
-      const levels = ["operacional", "tático", "estratégico"];
-      const levelHours = {};
       levels.forEach((level) => (levelHours[level] = 0));
 
       //calculate hours sum
       sessions.forEach((session) => {
-        const departament = session?.member?.role?.departament?.name;
-        departamentHours[departament] += session?.duration;
+        const duration = session?.end - session?.start;
+        const departament = session?.memberId?.roleId?.departamentId?.name;
+        departamentHours[departament] += duration;
 
-        const level = session?.member?.role?.level;
-        levelHours[level] += session?.duration;
+        const level = session?.memberId?.roleId?.level;
+        levelHours[level] += duration;
+
+        if(members[session?.memberId?.name] == null) {
+          if(levelMembers[level] == null) {
+            levelMembers[level] = 1;
+          } else {
+            levelMembers[level] += 1;
+          }
+          if(departamentMembers[departament] == null) {
+            departamentMembers[departament] = 1;
+          } else {
+            departamentMembers[departament] += 1;
+          }
+        }
+        members[session?.memberId?.name] = true;
       });
 
       //calculate average hours
-      departaments.forEach(
-        (departament) => (departamentHours[departament.name] /= amountOfWeeks)
-      );
-      levels.forEach((level) => (levelHours[level] /= amountOfWeeks));
 
+      departaments.forEach((departament) => {
+        if(departamentHours[departament.name] !== 0 && departamentMembers[departament.name] !== 0 )
+        departamentHours[departament.name] = Math.round(departamentHours[departament.name] / departamentMembers[departament.name]);
+      });
+
+      levels.forEach((level) => {
+        if (levelHours[level] !== 0 && levelMembers[level] !== 0)
+        levelHours[level] = Math.round(levelHours[level] / levelMembers[level]);
+      });
+      
       //format the return message
+
       let message = formatOutput(departamentHours, "departament");
       message = message.concat(formatOutput(levelHours, "level"));
+
       return message;
     },
   },
