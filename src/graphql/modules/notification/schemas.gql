@@ -1,0 +1,14 @@
+type Notification {
+  _id: ID!
+  text: String!
+  link: String!
+}
+
+type Query {
+  notifications: [Notification!]!
+}
+
+type Mutation {
+  createNotification(text: String!, link: String!): Notification!
+  deleteNotification(_id: ID!): Notification
+}
