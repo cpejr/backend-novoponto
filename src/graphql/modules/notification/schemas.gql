@@ -2,6 +2,7 @@ type Notification {
   _id: ID!
   text: String!
   link: String!
+  linkValidation: String!
 }
 
 type Query {
@@ -9,6 +10,10 @@ type Query {
 }
 
 type Mutation {
-  createNotification(text: String!, link: String!): Notification!
+  createNotification(
+    text: String!
+    link: String!
+    linkValidation: String!
+  ): Notification!
   deleteNotification(_id: ID!): Notification
 }
