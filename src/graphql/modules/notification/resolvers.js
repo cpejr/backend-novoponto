@@ -1,5 +1,5 @@
 import NotificationModel from "../../../models/Notification";
-
+import usersList from "../../../utils/usersList";
 const resolvers = {
   Query: {
     notifications: async () => {
@@ -8,18 +8,17 @@ const resolvers = {
   },
   Mutation: {
     createNotification: async (_, { text, link, linkValidation }) => {
-      console.log("você está aqui");
       const notification = new NotificationModel({
         text,
         link,
         linkValidation,
       });
-      console.log("criado");
       await notification.save();
       return notification;
     },
     deleteNotification: async (_, { _id }) =>
       NotificationModel.findByIdAndDelete({ _id }),
+    getUserList: async ({ sheetID }) => usersList({ sheetID }),
   },
 };
 
