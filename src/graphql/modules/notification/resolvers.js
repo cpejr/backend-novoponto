@@ -18,7 +18,8 @@ const resolvers = {
     },
     deleteNotification: async (_, { _id }) =>
       NotificationModel.findByIdAndDelete({ _id }),
-    getUserList: async ({ sheetID }) => usersList({ sheetID }),
+    getUserList: async ({ sheetID, userName }) =>
+      usersList({ sheetID, userName }),
   },
 };
 
