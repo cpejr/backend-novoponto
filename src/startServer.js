@@ -2,6 +2,7 @@ import Firebase from "./services/Firebase";
 import FirebaseStore from "./services/FirebaseStore";
 import Mongo from "./services/Mongo";
 import auth from "./auth";
+import { startCronWork } from "./utils/Libraries/CRON/CronFunction";
 
 import { PubSub, ApolloServer } from "apollo-server";
 
@@ -11,6 +12,7 @@ export default async function startServer({ typeDefs, resolvers }) {
   Firebase.config();
   FirebaseStore.config();
   await Mongo.config();
+  startCronWork();
 
   const server = new ApolloServer({
     typeDefs,
