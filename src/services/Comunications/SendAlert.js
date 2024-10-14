@@ -4,7 +4,7 @@ export const sendAlert = (phoneNumber, message) => {
   client.messages
     .create({
       body: message,
-      from: "+12024172808",
+      from: process.env.TWILIONUMBER,
       to: phoneNumber,
     })
     .then((message) => console.log("Alert sent: " + message.sid))
