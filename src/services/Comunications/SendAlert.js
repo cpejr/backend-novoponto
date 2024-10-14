@@ -1,7 +1,4 @@
-import twilio from "twilio";
-
-
-const client = require("twilio")(accountSid, authToken);
+const client = require("twilio")(process.env.ACCOUNTSID, process.env.AUTHTOKEN);
 
 export const sendAlert = (phoneNumber, message) => {
   client.messages
