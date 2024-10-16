@@ -1,5 +1,8 @@
-async function usersList(sheetID, nomeUsers) {
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv`;
+async function usersList(sheetID, usersName) {
+  const split = sheetID.split("/");
+  const ID = split[5];
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${ID}/gviz/tq?tqx=out:csv`;
 
   try {
     const response = await fetch(csvUrl);
@@ -13,13 +16,14 @@ async function usersList(sheetID, nomeUsers) {
     const secondColumn = data.map((row) => row[1]); // Pega a segunda coluna
 
     for (let i = 1; i < secondColumn.lenght(); i++) {
-      if (secondColumn[1] === nomeUsers) {
+      if (secondColumn[1] === usersName) {
         return true;
       }
     }
     return false;
   } catch (error) {
     console.error("Erro:", error);
+    return false;
   }
 
   function parseCSV(text) {

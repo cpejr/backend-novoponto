@@ -18,8 +18,11 @@ const resolvers = {
     },
     deleteNotification: async (_, { _id }) =>
       NotificationModel.findByIdAndDelete({ _id }),
-    getUserList: async ({ sheetID, userName }) =>
-      usersList({ sheetID, userName }),
+    getUserList: async (sheetID, userName) => {
+      console.log("oi");
+      const isValid = usersList(sheetID, userName);
+      return isValid;
+    },
   },
 };
 
