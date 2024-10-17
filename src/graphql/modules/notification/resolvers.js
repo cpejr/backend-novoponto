@@ -1,5 +1,5 @@
 import NotificationModel from "../../../models/Notification";
-import usersList from "../../../utils/usersList";
+import { usersList } from "../../../utils/usersList";
 const resolvers = {
   Query: {
     notifications: async () => {
@@ -18,9 +18,9 @@ const resolvers = {
     },
     deleteNotification: async (_, { _id }) =>
       NotificationModel.findByIdAndDelete({ _id }),
-    getUserList: async (sheetID, userName) => {
-      console.log("oi");
-      const isValid = usersList(sheetID, userName);
+    getUserList: async (_, sheetID) => {
+      const isValid = await usersList(sheetID);
+      console.log("respota: ", isValid);
       return isValid;
     },
   },

@@ -16,5 +16,5 @@ type Mutation {
     linkValidation: String!
   ): Notification!
   deleteNotification(_id: ID!): Notification
-  getUserList(sheetID: String!, userName: String!): Notification
+  getUserList(sheetID: String!, userName: String!): Boolean!
 }
