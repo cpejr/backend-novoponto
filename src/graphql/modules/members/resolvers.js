@@ -27,9 +27,17 @@ export default {
     members: (_, { accessArray }) =>
       MemberModel.getMembersWithAccessArray(accessArray),
     membersByResponsible: (_, { responsibleId }) =>
-      MemberModel.find({ responsibleId }).populate("role").populate("tribe").populate("departament").populate("Badge"),
+      MemberModel.find({ responsibleId })
+        .populate("role")
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge"),
     member: (_, { _id }) =>
-      MemberModel.findById(_id).populate("role").populate("tribe").populate("departament").populate("Badge"),
+      MemberModel.findById(_id)
+        .populate("role")
+        .populate("tribe")
+        .populate("departament")
+        .populate("Badge"),
   },
 
   Mutation: {
@@ -69,11 +77,13 @@ export default {
       ),
 
     updateMember: async (_, { memberId, data }, { auth }) => {
+      console.log(data);
+
       if (!auth.member)
         throw new AuthenticationError("O usário não está autenticado");
 
       if (!!memberId && auth.member.role?.access > 0) {
-        return MemberModel.findOneAndUpdate(
+        const updatedMember = await MemberModel.findOneAndUpdate(
           { _id: memberId },
           { $set: data },
           {
@@ -84,6 +94,7 @@ export default {
           .populate("tribe")
           .populate("departament")
           .populate("Badge");
+        return updatedMember;
       } else if (!!memberId) {
         throw new ForbiddenError(
           "O usário não tem o nível de acesso necessário para realizar tal ação"
@@ -109,7 +120,7 @@ export default {
 
     login: async (_, { data: { uid, email, photoURL } }) => {
       const foundMember = await MemberModel.findOne({ email })
-        .populate(["role", "tribe","departament", "Badge"])
+        .populate(["role", "tribe", "departament", "Badge"])
         .exec();
       if (!foundMember)
         throw new AuthenticationError(
