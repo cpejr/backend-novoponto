@@ -20,7 +20,6 @@ const resolvers = {
       NotificationModel.findByIdAndDelete({ _id }),
     getUserList: async (_, sheetID) => {
       const isValid = await usersList(sheetID);
-      console.log("respota: ", isValid);
       return isValid;
     },
   },

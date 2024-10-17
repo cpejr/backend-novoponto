@@ -14,8 +14,7 @@ async function usersList({ sheetID, userName }) {
     const csvText = await response.text();
     const data = parseCSV(csvText);
     const secondColumn = data.map((row) => row[1]); // Pega a segunda coluna
-    console.log(secondColumn);
-    console.log(userName);
+
     for (let i = 1; i < secondColumn.length; i++) {
       if (secondColumn[i].includes(userName)) {
         return true;
