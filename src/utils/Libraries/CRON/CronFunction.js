@@ -6,14 +6,14 @@ const checkLoggedMembers = async () => {
   try {
     const loggedMembers = await SessionModel.getLoggedMembers();
     const currentTime = new Date();
-    const terminateSessions = [];
+    const terminatePromises = [];
 
     for (const session of loggedMembers) {
       const sessionStart = new Date(session.start);
       let hoursLoggedIn = (currentTime - sessionStart) / (1000 * 60 * 60);
 
       if (hoursLoggedIn >= 12) {
-        terminateSessions.push(session._id);
+        terminatePromises.push(SessionModel.findByIdAndDelete(session._id));
       } else if (hoursLoggedIn >= 6) {
         hoursLoggedIn = hoursLoggedIn.toFixed(2);
 
@@ -24,11 +24,7 @@ const checkLoggedMembers = async () => {
       }
     }
 
-    await Promise.all(
-      terminateSessions.map(async (sessionId) => {
-        await SessionModel.findByIdAndDelete(sessionId);
-      })
-    );
+    await Promise.all(terminatePromises);
   } catch (error) {
     console.error("Erro ao verificar usuários logados", error);
   }
