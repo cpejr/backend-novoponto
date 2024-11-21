@@ -8,6 +8,7 @@ const resolvers = {
   },
   Mutation: {
     createNotification: async (_, { text, link, linkValidation }) => {
+      console.log(text,link,linkValidation)
       const notification = await NotificationModel.create({
         text,
         link,
@@ -17,7 +18,8 @@ const resolvers = {
       return notification;
     },
     deleteNotification: async (_, { _id }) =>{
-      NotificationModel.findByIdAndDelete({ _id })
+      console.log(_id)
+      await NotificationModel.findByIdAndDelete({ _id })
     },
     getUserList: async (_, sheetID) => {
       const isValid = await usersList(sheetID);
