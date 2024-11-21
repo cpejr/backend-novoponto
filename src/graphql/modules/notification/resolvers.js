@@ -8,12 +8,12 @@ const resolvers = {
   },
   Mutation: {
     createNotification: async (_, { text, link, linkValidation }) => {
-      const notification = new NotificationModel({
+      const notification = await NotificationModel.create({
         text,
         link,
         linkValidation,
       });
-      await notification.save();
+      
       return notification;
     },
     deleteNotification: async (_, { _id }) =>
