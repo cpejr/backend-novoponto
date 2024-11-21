@@ -16,8 +16,9 @@ const resolvers = {
       
       return notification;
     },
-    deleteNotification: async (_, { _id }) =>
-      NotificationModel.findByIdAndDelete({ _id }),
+    deleteNotification: async (_, { _id }) =>{
+      NotificationModel.findByIdAndDelete({ _id })
+    },
     getUserList: async (_, sheetID) => {
       const isValid = await usersList(sheetID);
       return isValid;
