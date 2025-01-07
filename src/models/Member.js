@@ -16,6 +16,7 @@ const MemberSchema = new mongoose.Schema(
     name: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     status: String,
+    phoneNumber: { type: String, required: false, unique: true },
     roleId: { type: mongoose.Schema.Types.ObjectId, ref: "roles" },
     tribeId: {
       type: mongoose.Schema.Types.ObjectId,
