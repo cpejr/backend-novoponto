@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { sendAlert } from "../../../services/Comunications/SendAlert";
+import { sendAlert } from "../../../services/Comunications/Twilio/SendAlert";
 import { SessionModel } from "../../../models";
 
 const checkLoggedMembers = async () => {
