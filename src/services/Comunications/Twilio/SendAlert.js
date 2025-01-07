@@ -1,6 +1,6 @@
 const Account = process.env.ACCOUNTSID;
 const Token = process.env.AUTHTOKEN;
-TwilioNumber = process.env.TWILIONUMBER;
+const TwilioNumber = process.env.TWILIONUMBER;
 
 const client = require("twilio")(Account, Token);
 
