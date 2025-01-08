@@ -31,7 +31,7 @@ const checkLoggedMembers = async () => {
 };
 
 export const startCronWork = () => {
-  cron.schedule("0 * * * * *", () => {
+  cron.schedule("0 0 * * * *", () => {
     checkLoggedMembers();
   });
 };
