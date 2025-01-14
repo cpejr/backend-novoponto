@@ -12,7 +12,7 @@ export default async function startServer({ typeDefs, resolvers }) {
   Firebase.config();
   FirebaseStore.config();
   await Mongo.config();
-  startCronWork();
+  //startCronWork();
 
   const server = new ApolloServer({
     typeDefs,
