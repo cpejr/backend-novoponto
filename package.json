@@ -26,6 +26,7 @@
     "merge-graphql-schemas": "^1.7.8",
     "mongoose": "^5.12.3",
     "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
     "twilio": "^5.3.3",
     "yarn": "^1.22.18"
   },

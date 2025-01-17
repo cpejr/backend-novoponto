@@ -2,18 +2,33 @@ import cron from "node-cron";
 import { SessionModel } from "../../../models";
 import {MemberModel} from "../../../models";
 import {AditionalHourModel} from "../../../models";
+import { mili2time } from "../../dateFunctions";
+import transporter from "../../../services/Comunications/Nodemailer/smtp";
 const  checkMemberHours  = async () => {
-    const fulltext = "";
-    const members = await MemberModel.find()
-    members.map((member)=> mapMemberHours(member))
+    
+    const members = await MemberModel.find().populate({path:"roleId"})
+    const manager = members.filter((member)=> member.roleId.name == "dev líder")
+    console.log(manager)
+
+    const memberTexts = await Promise.all(members.map((member) => mapMemberHours(member)));
+    const fulltext = memberTexts.join("\n")
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: `josecampos@cpejr.com.br`, 
+      subject: `horas semanais dos membros`,
+      text: fulltext
+    };
+
+    transporter.sendMail(mailOptions)
 }
 const mapMemberHours = async (member) =>{
     const startOfWeek = new Date();
     startOfWeek.setUTCHours(0, 0, 0, 0);
-    startOfWeek.setUTCDate(startOfWeek.getUTCDate() - startOfWeek.getUTCDay() + 1); // Ajusta para segunda-feira
+    startOfWeek.setUTCDate(startOfWeek.getUTCDate() - startOfWeek.getUTCDay() + 1);
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setUTCDate(startOfWeek.getUTCDate() + 6);
     endOfWeek.setUTCHours(23, 59, 59, 999); 
+
     const sessions = await SessionModel.find({
          memberId: member._id,
          start: { $gte: startOfWeek, $lte: endOfWeek },
@@ -21,17 +36,45 @@ const mapMemberHours = async (member) =>{
      const additionalHours = await AditionalHourModel.find({
       memberId: member._id,
       date: { $gte: startOfWeek, $lte: endOfWeek },
-  });
-    console.log(additionalHours)
-    console.log(`Member ${member.name} has ${sessions.length} and.`);
-    const totalSessionHours = sessions.reduce((total, session) => {
-      const sessionStart = new Date(session.start);
-      const sessionEnd = session.end ? new Date(session.end) : new Date();
-      return total + (sessionEnd - sessionStart)
-  }, 0);
-  console.log(totalSessionHours)
+    });
+    const hours = hoursSum(sessions,additionalHours); 
 
+    const presentialTime = mili2time(hours.totalPresentialMilliseconds);
+    const nonPresentialTime = mili2time(hours.totalNonPresentialMilliseconds);
+
+    return "o membro " + member.name + " fez " + presentialTime + " presenciais e " + nonPresentialTime + " nao presenciais\n" ;
 }
+const hoursSum = (sessions, additionalHours) => {
+  let totalPresentialMilliseconds = 0;
+  let totalNonPresentialMilliseconds = 0;
+  sessions.forEach(session => {
+      if (session.start && session.end) {
+          const start = new Date(session.start).getTime();
+          const end = new Date(session.end).getTime();
+          if (end > start) {
+              const duration = end - start;
+              if (session.isPresential) {
+                  totalPresentialMilliseconds += duration;
+              } else {
+                  totalNonPresentialMilliseconds += duration;
+              }
+          }
+      }
+  });
+  additionalHours.forEach(additionalHour => {
+      if (additionalHour.amount) {
+          if (additionalHour.isPresential) {
+              totalPresentialMilliseconds += additionalHour.amount;
+          } else {
+              totalNonPresentialMilliseconds += additionalHour.amount;
+          }
+      }
+  });
+  return {
+      totalPresentialMilliseconds,
+      totalNonPresentialMilliseconds
+  };
+};
 
 export const startMemberCron = () => {
     cron.schedule("0 * * * * *", () => {
