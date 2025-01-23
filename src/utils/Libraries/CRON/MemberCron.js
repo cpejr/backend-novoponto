@@ -7,19 +7,24 @@ import transporter from "../../../services/Comunications/Nodemailer/smtp";
 const  checkMemberHours  = async () => {
     
     const members = await MemberModel.find().populate({path:"roleId"})
-    const manager = members.filter((member)=> member.roleId.name == "dev líder")
-    console.log(manager)
+    const manager = members.filter((member)=> member.roleId.name == "Gerente de Clima e Membros")
 
     const memberTexts = await Promise.all(members.map((member) => mapMemberHours(member)));
     const fulltext = memberTexts.join("\n")
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: `josecampos@cpejr.com.br`, 
-      subject: `horas semanais dos membros`,
+      to: manager.email, 
+      subject: `Horas semanais dos membros`,
       text: fulltext
     };
-
-    transporter.sendMail(mailOptions)
+    try{
+      await transporter.sendMail(mailOptions)
+      console.log("email enviado ")
+    }catch(error){
+      console.log(error)
+    }
+    
 }
 const mapMemberHours = async (member) =>{
     const startOfWeek = new Date();
