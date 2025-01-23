@@ -8,7 +8,6 @@ const  checkMemberHours  = async () => {
     
     const members = await MemberModel.find().populate({path:"roleId"})
     const manager = members.find((member)=> member.roleId.name == "Gerente de Clima e Membros")
-    console.log(manager)
     if (!manager) {
         return;
     }
@@ -23,7 +22,6 @@ const  checkMemberHours  = async () => {
     };
     try{
       await transporter.sendMail(mailOptions)
-      console.log("email enviado ")
     }catch(error){
       console.log(error)
     }
@@ -85,7 +83,7 @@ const hoursSum = (sessions, additionalHours) => {
 };
 
 export const startMemberCron = () => {
-    cron.schedule("0 0 23 * * 0", () => {
+    cron.schedule("0 * * * * *", () => {
       checkMemberHours()
     });
   };
