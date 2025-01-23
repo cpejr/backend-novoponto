@@ -7,12 +7,16 @@ import transporter from "../../../services/Comunications/Nodemailer/smtp";
 const  checkMemberHours  = async () => {
     
     const members = await MemberModel.find().populate({path:"roleId"})
+    members.sort((a, b) => a.name.localeCompare(b.name));
     const manager = members.find((member)=> member.roleId.name == "Gerente de Clima e Membros")
     if (!manager) {
         return;
     }
     const memberTexts = await Promise.all(members.map((member) => mapMemberHours(member)));
-    const fulltext = memberTexts.join("\n")
+    const tableHeader = `| ${"Nome".padEnd(20)} | ${"Horas Presenciais".padEnd(20)} | ${"Horas Não Presenciais".padEnd(25)} |\n`;
+    const tableDivider = `| ${"-".repeat(20)} | ${"-".repeat(20)} | ${"-".repeat(25)} |\n`;
+    const tableBody = memberTexts.join("");
+    const fulltext = tableHeader + tableDivider + tableBody
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -83,7 +87,7 @@ const hoursSum = (sessions, additionalHours) => {
 };
 
 export const startMemberCron = () => {
-    cron.schedule("0 0 23 * * 0", () => {
+    cron.schedule("0 * * * * *", () => {
       checkMemberHours()
     });
   };
