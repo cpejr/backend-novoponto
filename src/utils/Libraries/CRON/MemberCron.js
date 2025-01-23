@@ -8,6 +8,7 @@ const  checkMemberHours  = async () => {
     
     const members = await MemberModel.find().populate({path:"roleId"})
     const manager = members.find((member)=> member.roleId.name == "Gerente de Clima e Membros")
+    console.log(manager)
     if (!manager) {
         return;
     }
