@@ -87,7 +87,7 @@ const hoursSum = (sessions, additionalHours) => {
 };
 
 export const startMemberCron = () => {
-    cron.schedule("0 * * * * *", () => {
+    cron.schedule("0 0 23 * * 0", () => {
       checkMemberHours()
     });
   };
