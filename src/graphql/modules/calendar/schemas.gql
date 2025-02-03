@@ -1,0 +1,16 @@
+type Calendar {
+  _id: ID!
+  text: String!
+  archive: String!
+}
+
+type Query {
+  calendar: [Calendar!]!
+}
+
+type Mutation {
+  createCalendar(
+    archive: String!
+  ): Calendar!
+  deleteCalendar(_id: ID!): Calendar
+}
