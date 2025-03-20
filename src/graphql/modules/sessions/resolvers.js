@@ -10,7 +10,6 @@ export default {
       if (!member) MemberModel.findById(memberId).populate("role");
       return member;
     },
-
     duration: ({ duration, end, start }) => {
       if (duration) return duration;
       if (end) return end - start;
@@ -60,9 +59,10 @@ export default {
       SessionModel.findOneAndUpdate({ _id: sessionId }, data, { new: true }),
     startSession: async (
       _,
-      { memberId, isPresential, taskId, projectId, description },
+      { memberId, isPresential, taskId, projectId, description,start },
       { pubsub }
     ) => {
+      console.log('>>> start recebido:', start);
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
@@ -74,7 +74,7 @@ export default {
           taskId,
           projectId,
           description,
-          start: Date.now(),
+          start: start||Date.now(),
         });
 
         newSession = newSession.toJSON({ virtuals: true });
