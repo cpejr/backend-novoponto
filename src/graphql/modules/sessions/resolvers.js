@@ -38,6 +38,9 @@ export default {
       ),
 
     loggedMembers: () => SessionModel.getLoggedMembers(),
+    presentialMembers: () =>{
+
+    },
   },
 
   Mutation: {
