@@ -22,7 +22,6 @@ async function usersList({ sheetID, userName }) {
     }
     return false;
   } catch (error) {
-    console.error("Erro:", error);
     return false;
   }
 

@@ -1,6 +1,6 @@
 import { UserInputError } from "apollo-server";
-
-import { SessionModel, MemberModel, TaskModel } from "../../../models";
+import { startOfWeek, endOfWeek } from "date-fns";
+import { SessionModel, MemberModel, TaskModel,AditionalHourModel } from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_UPDATE } from "./channels";
 
@@ -38,10 +38,42 @@ export default {
       ),
 
     loggedMembers: () => SessionModel.getLoggedMembers(),
-    presentialMembers: () =>{
+    presentialMembers: async () => {
+      const members = await MemberModel.find();
+      const result = [];
+    
+      const currentWeekStart = startOfWeek(new Date());
+      const currentWeekEnd = endOfWeek(new Date());
+    
+      for (let member of members) {
+        const [sessions, aditionalHours] = await Promise.all([
+          SessionModel.find({
+            memberId: member._id,
+            isPresential: true,
+            start: { $gte: currentWeekStart, $lte: currentWeekEnd },
+            end: { $ne: null }
+          }),
+          AditionalHourModel.find({
+            memberId: member._id,
+            isPresential: true,
+            date: { $gte: currentWeekStart, $lte: currentWeekEnd }
+          })
+        ]);
 
-    },
+        const sessionHours = sessions.reduce((sum, s) => sum + (s.end - s.start) / 1000 / 60 / 60, 0);
+        const aditionalHoursTotal = aditionalHours.reduce((sum, a) => sum + a.amount, 0);
+    
+        const totalWeeklyHours = sessionHours + aditionalHoursTotal;
+    
+        if (totalWeeklyHours > 3) {
+          result.push({ name: member.name });
+        }
+      }
+    
+      return result;
+    }
   },
+
 
   Mutation: {
     addSession: async (_, { memberId, isPresential, taskId, projectId, description, start, end }) => {
