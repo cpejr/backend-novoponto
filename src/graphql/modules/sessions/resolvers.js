@@ -41,7 +41,7 @@ export default {
     presentialMembers: async () => {
       const members = await MemberModel.find();
       const result = [];
-    
+      console.log("olaaa")
       const currentWeekStart = startOfWeek(new Date());
       const currentWeekEnd = endOfWeek(new Date());
     
