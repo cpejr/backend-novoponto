@@ -1,6 +1,11 @@
 import { UserInputError } from "apollo-server";
 import { startOfWeek, endOfWeek } from "date-fns";
-import { SessionModel, MemberModel, TaskModel,AditionalHourModel } from "../../../models";
+import {
+  SessionModel,
+  MemberModel,
+  TaskModel,
+  AditionalHourModel,
+} from "../../../models";
 import { mili2time } from "../../../utils/dateFunctions";
 import { SESSION_UPDATE } from "./channels";
 
@@ -41,42 +46,49 @@ export default {
     presentialMembers: async () => {
       const members = await MemberModel.find();
       const result = [];
-      console.log("olaaa")
       const currentWeekStart = startOfWeek(new Date());
       const currentWeekEnd = endOfWeek(new Date());
-    
+
       for (let member of members) {
         const [sessions, aditionalHours] = await Promise.all([
           SessionModel.find({
             memberId: member._id,
             isPresential: true,
             start: { $gte: currentWeekStart, $lte: currentWeekEnd },
-            end: { $ne: null }
+            end: { $ne: null },
           }),
           AditionalHourModel.find({
             memberId: member._id,
             isPresential: true,
-            date: { $gte: currentWeekStart, $lte: currentWeekEnd }
-          })
+            date: { $gte: currentWeekStart, $lte: currentWeekEnd },
+          }),
         ]);
 
-        const sessionHours = sessions.reduce((sum, s) => sum + (s.end - s.start) / 1000 / 60 / 60, 0);
-        const aditionalHoursTotal = aditionalHours.reduce((sum, a) => sum + a.amount, 0);
-    
+        const sessionHours = sessions.reduce(
+          (sum, s) => sum + (s.end - s.start) / 1000 / 60 / 60,
+          0
+        );
+        const aditionalHoursTotal = aditionalHours.reduce(
+          (sum, a) => sum + a.amount,
+          0
+        );
+
         const totalWeeklyHours = sessionHours + aditionalHoursTotal;
-    
+
         if (totalWeeklyHours > 3) {
           result.push({ name: member.name });
         }
       }
-    
+
       return result;
-    }
+    },
   },
 
-
   Mutation: {
-    addSession: async (_, { memberId, isPresential, taskId, projectId, description, start, end }) => {
+    addSession: async (
+      _,
+      { memberId, isPresential, taskId, projectId, description, start, end }
+    ) => {
       const newSession = await SessionModel.create({
         memberId,
         isPresential,
@@ -89,15 +101,16 @@ export default {
 
       return newSession;
     },
-    deleteSession: async (_, { sessionId }) => SessionModel.findByIdAndDelete(sessionId),
+    deleteSession: async (_, { sessionId }) =>
+      SessionModel.findByIdAndDelete(sessionId),
     updateSession: (_, { sessionId, data }) =>
       SessionModel.findOneAndUpdate({ _id: sessionId }, data, { new: true }),
     startSession: async (
       _,
-      { memberId, isPresential, taskId, projectId, description,start },
+      { memberId, isPresential, taskId, projectId, description, start },
       { pubsub }
     ) => {
-      console.log('>>> start recebido:', start);
+      console.log(">>> start recebido:", start);
       const islogged = await SessionModel.findOne({
         memberId,
         end: null,
@@ -109,7 +122,7 @@ export default {
           taskId,
           projectId,
           description,
-          start: start||Date.now(),
+          start: start || Date.now(),
         });
 
         newSession = newSession.toJSON({ virtuals: true });
@@ -169,19 +182,19 @@ export default {
       return sessions.n;
     },
     endSessionAfter20Hours: async (_, __, { pubsub }) => {
-      const twentyHoursInMillis = 20 * 60 * 60 * 1000; 
-    
+      const twentyHoursInMillis = 20 * 60 * 60 * 1000;
+
       const sessions = await SessionModel.find({
         end: null,
       }).populate("member");
-    
+
       const sessionsToUpdate = sessions.filter((session) => {
         const currentDuration = Date.now() - session.start;
         return currentDuration >= twentyHoursInMillis;
       });
-    
+
       const updatedSessions = [];
-    
+
       for (const session of sessionsToUpdate) {
         if (session._id) {
           const updatedSession = await SessionModel.findByIdAndUpdate(
@@ -191,10 +204,10 @@ export default {
             },
             { new: true }
           );
-    
+
           if (updatedSession) {
             updatedSessions.push(updatedSession);
-    
+
             pubsub.publish(SESSION_UPDATE, {
               sessionUpdate: {
                 session: updatedSession,
@@ -204,11 +217,9 @@ export default {
           }
         }
       }
-    
+
       return true;
     },
-    
-    
   },
 
   Subscription: {
