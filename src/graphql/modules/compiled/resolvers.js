@@ -78,7 +78,7 @@ export default {
         if (session.isPresential) {
           totalPresential += session.duration;
         }
-        if (session.task.name == "Reunião Gerencial") {
+        if (session.task.name == "Reunião") {
           totalMeeting += session.duration;
         } else if (session.task.name == "Tarefas/Operacional") {
           totalWorking += session.duration;
