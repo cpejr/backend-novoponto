@@ -25,6 +25,12 @@ export default async function startServer({ typeDefs, resolvers }) {
   });
 
   server
-    .listen({ port: process.env.PORT || 4000 })
+    .listen({ 
+    port: process.env.PORT || 4000,
+    cors: {
+      origin: ["https://doti-mult.cpejr.com", "https://www.doti-mult.cpejr.com"],
+      credentials: true
+      }
+    })
     .then(({ url }) => console.log(`✅ Server started at ${url}`));
 }
